@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro - Products</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.12);
+            --muted: #6b7280;
+            --card-bg: #ffffff;
+            --badge-bg: #0b1020;
+        }
+
+        body {
+            background: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+        }
+        .navbar-brand {
+            letter-spacing: 1px;
+        }
+        .navbar .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position: relative;
+            border-radius: 999px;
+            padding-inline: 14px;
+            overflow: hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transform: translateX(-50%);
+            transition: width 0.25s ease-out;
+            border-radius: 999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width: 60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background: rgba(31, 41, 55, 0.7);
+        }
+
+        .search-input {
+            border-radius: 999px;
+            border: 1px solid #1f2937;
+            background: #020617;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+        }
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+        .search-btn {
+            border-radius: 999px;
+            background: #22c55e;
+            border: none;
+            font-weight: 600;
+        }
+        .search-btn:hover {
+            background: #16a34a;
+        }
+
+        .icon-btn {
+            border-radius: 999px;
+            border-color: #1f2937;
+            color: #e5e7eb;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .icon-btn i {
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #bbf7d0;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Page header */
+        .page-header {
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 28px 0 20px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        }
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+
+        /* Filters / sidebar */
+        .filter-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+        }
+        .filter-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .filter-label {
+            font-size: 0.85rem;
+            color: #4b5563;
+        }
+        .chip-filter {
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            background: #f9fafb;
+        }
+        .chip-filter.active {
+            border-color: #22c55e;
+            background: #dcfce7;
+            color: #166534;
+        }
+        .btn-clear {
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            font-size: 0.78rem;
+            padding: 4px 12px;
+            color: #6b7280;
+        }
+        .btn-clear:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+
+        /* Professional-looking filter selects */
+        .filter-select {
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.82rem;
+            padding: 6px 12px;
+            background-color: #f9fafb;
+            color: #111827;
+            box-shadow: none;
+            transition: all 0.18s ease-out;
+        }
+        .filter-select:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+            background-color: #ffffff;
+        }
+        .filter-select:hover {
+            border-color: #cbd5f5;
+            background-color: #ffffff;
+        }
+
+        /* Sort bar */
+        .sort-bar {
+            font-size: 0.85rem;
+            color: #4b5563;
+        }
+        .sort-dropdown {
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #111827;
+        }
+        .sort-dropdown:hover {
+            border-color: #22c55e;
+            background: #ecfdf5;
+            color: #166534;
+        }
+        .sort-dropdown-menu {
+            font-size: 0.82rem;
+        }
+
+        /* Product cards */
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            transition: 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+            border-color: #cbd5f5;
+        }
+        .product-image-wrapper {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 10px;
+            position: relative;
+        }
+        .product-img {
+            width: 100%;
+            height: 190px;
+            object-fit: contain;
+        }
+        .product-body h6 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .product-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .product-price {
+            font-weight: 700;
+            color: #16a34a;
+            font-size: 0.98rem;
+        }
+        .product-old-price {
+            font-size: 0.78rem;
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+        .product-rating {
+            font-size: 0.78rem;
+            color: #facc15;
+        }
+
+        /* Wishlist top-right checkbox */
+        .wishlist-toggle {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .wishlist-label {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+        }
+        .wishlist-label:hover {
+            background: rgba(15, 23, 42, 0.95);
+            transform: translateY(-1px);
+        }
+        .wishlist-toggle:checked + .wishlist-label {
+            background: #22c55e;
+            color: #022c22;
+            border-color: #16a34a;
+            box-shadow: 0 10px 22px rgba(34, 197, 94, 0.5);
+        }
+
+        /* Add to cart button – green hover */
+        .btn-cart {
+            background: #0f172a;
+            border-radius: 999px;
+            color: #f9fafb;
+            font-size: 0.8rem;
+            border: none;
+            transition: all 0.18s ease-out;
+        }
+        .btn-cart:hover {
+            background: #22c55e;
+            color: #022c22;
+            box-shadow: 0 10px 22px rgba(34, 197, 94, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Pagination – updated professional look */
+        .pagination {
+            gap: 4px;
+        }
+        .pagination .page-link {
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+            font-size: 0.78rem;
+            padding: 6px 14px;
+            min-width: 34px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: all 0.18s ease-out;
+        }
+        .pagination .page-item.disabled .page-link {
+            background-color: #f3f4f6;
+            color: #9ca3af;
+            border-color: #e5e7eb;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #0f172a;
+            border-color: #0f172a;
+            color: #f9fafb;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.4);
+        }
+        .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+            background-color: #ecfdf5;
+            border-color: #22c55e;
+            color: #166534;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(34, 197, 94, 0.25);
+        }
+
+        /* Footer */
+        footer {
+            background: #020617;
+            color: #9ca3af;
+        }
+        footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        footer a:hover {
+            color: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                </li>
+
+                <!-- Profile dropdown (icon) -->
+                <li class="nav-item dropdown ms-3">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
+                       href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-5"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                                <i class="bi bi-person-circle me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                                <i class="bi bi-bag-check me-2"></i> Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
+                                <i class="bi bi-info-circle me-2"></i> About
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Wishlist -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <!-- Cart -->
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1 class="page-title mb-1">All products</h1>
+                <p class="page-subtitle mb-0">
+                    Find the right laptop, mobile, TV or tablet for how you work, play and stay connected.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-3">
+            <!-- FILTER SIDEBAR -->
+            <div class="col-lg-3">
+                <div class="filter-card p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="filter-title">Filters</span>
+                        <button type="button" class="btn btn-clear">
+                            <i class="bi bi-x-circle me-1"></i>Clear all
+                        </button>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <span class="filter-label mb-1 d-block">Category</span>
+                        <select class="form-select form-select-sm mb-2 filter-select">
+                            <option selected>All categories</option>
+                            <option>Mobiles</option>
+                            <option>Laptops</option>
+                            <option>Televisions</option>
+                            <option>Tablets</option>
+                        </select>
+                        <div class="d-flex flex-wrap gap-1">
+                            <span class="chip-filter active">All</span>
+                            <span class="chip-filter">Work</span>
+                            <span class="chip-filter">Gaming</span>
+                            <span class="chip-filter">Entertainment</span>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="mb-3">
+                        <span class="filter-label mb-1 d-block">Price</span>
+                        <select class="form-select form-select-sm mt-1 filter-select">
+                            <option selected>Any price</option>
+                            <option>Under ₹20,000</option>
+                            <option>₹20,000 – ₹50,000</option>
+                            <option>₹50,000 – ₹80,000</option>
+                            <option>Above ₹80,000</option>
+                        </select>
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="mb-3">
+                        <span class="filter-label mb-1 d-block">Brand</span>
+                        <select class="form-select form-select-sm mb-2 filter-select">
+                            <option selected>Any brand</option>
+                            <option>Apple</option>
+                            <option>Samsung</option>
+                            <option>Dell</option>
+                            <option>HP</option>
+                            <option>Mi</option>
+                        </select>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="mb-1">
+                        <span class="filter-label mb-1 d-block">Customer rating</span>
+                        <div class="form-check mb-1" style="font-size:0.82rem;">
+                            <input class="form-check-input" type="radio" name="rating" id="rt-4">
+                            <label class="form-check-label" for="rt-4">4★ & above</label>
+                        </div>
+                        <div class="form-check mb-1" style="font-size:0.82rem;">
+                            <input class="form-check-input" type="radio" name="rating" id="rt-3">
+                            <label class="form-check-label" for="rt-3">3★ & above</label>
+                        </div>
+                        <div class="form-check mb-1" style="font-size:0.82rem;">
+                            <input class="form-check-input" type="radio" name="rating" id="rt-all" checked>
+                            <label class="form-check-label" for="rt-all">All ratings</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCTS GRID -->
+            <div class="col-lg-9">
+                <!-- Sort bar with dropdown -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 sort-bar">
+                    <span class="mb-2 mb-md-0">Showing <strong>12</strong> of 120 products</span>
+                    <div class="dropdown">
+                        <button class="btn sort-dropdown dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-arrow-down-up"></i>
+                            Sort by: Featured
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow sort-dropdown-menu" aria-labelledby="sortDropdown">
+                            <li><a class="dropdown-item active" href="#">Featured</a></li>
+                            <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
+                            <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                            <li><a class="dropdown-item" href="#">Newest first</a></li>
+                            <li><a class="dropdown-item" href="#">Rating: High to Low</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Product 1 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='{% url 'product_review' %}'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p1-wish" class="wishlist-toggle">
+                                <label for="p1-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/p1.png" class="product-img mb-2" alt="iPhone 14">
+                            </div>
+
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Apple iPhone 14</h6>
+                                <p class="product-meta mb-1">128GB • A15 Bionic • 6.1"</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹68,999</span>
+                                        <span class="product-old-price ms-1">₹74,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.7</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='{% url 'product_review' %}'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p2-wish" class="wishlist-toggle">
+                                <label for="p2-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/p2.png" class="product-img mb-2" alt="Samsung S23">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Samsung Galaxy S23</h6>
+                                <p class="product-meta mb-1">AMOLED • 5G • Triple camera</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹54,999</span>
+                                        <span class="product-old-price ms-1">₹59,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.6</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_3'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p3-wish" class="wishlist-toggle">
+                                <label for="p3-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/new1.png" class="product-img mb-2" alt="Vivo X100">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Vivo X100 5G</h6>
+                                <p class="product-meta mb-1">12GB • 256GB • 120Hz</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹49,999</span>
+                                        <span class="product-old-price ms-1">₹54,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.5</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 4 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_4'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p4-wish" class="wishlist-toggle">
+                                <label for="p4-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/new4.png" class="product-img mb-2" alt="HP Victus Gaming">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">HP Victus Gaming</h6>
+                                <p class="product-meta mb-1">Ryzen 7 • RTX • 16GB RAM</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹59,999</span>
+                                        <span class="product-old-price ms-1">₹69,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.4</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 5 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_5'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p5-wish" class="wishlist-toggle">
+                                <label for="p5-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/laptop.png" class="product-img mb-2" alt="Macbook Air M1">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Apple Macbook Air M1</h6>
+                                <p class="product-meta mb-1">8GB • 256GB • 13.3" Retina</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹82,499</span>
+                                        <span class="product-old-price ms-1">₹89,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.8</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 6 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_6'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p6-wish" class="wishlist-toggle">
+                                <label for="p6-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/tv.png" class="product-img mb-2" alt="Mi 4K TV">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Mi 55" 4K Smart TV</h6>
+                                <p class="product-meta mb-1">Dolby Vision • Patchwall</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹29,999</span>
+                                        <span class="product-old-price ms-1">₹34,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.3</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 7 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_7'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p7-wish" class="wishlist-toggle">
+                                <label for="p7-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/mobile.png" class="product-img mb-2" alt="Oppo Reno 10">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Oppo Reno 10</h6>
+                                <p class="product-meta mb-1">67W charging • 64MP camera</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹29,499</span>
+                                        <span class="product-old-price ms-1">₹32,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.4</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 8 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_8'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p8-wish" class="wishlist-toggle">
+                                <label for="p8-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/p3.png" class="product-img mb-2" alt="HP 15s">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">HP Laptop 15s</h6>
+                                <p class="product-meta mb-1">i5 • 8GB • 512GB SSD</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹42,499</span>
+                                        <span class="product-old-price ms-1">₹47,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.2</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 9 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_9'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p9-wish" class="wishlist-toggle">
+                                <label for="p9-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/new2.png" class="product-img mb-2" alt="Samsung A55">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Samsung Galaxy A55</h6>
+                                <p class="product-meta mb-1">OIS • AMOLED display</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹27,999</span>
+                                        <span class="product-old-price ms-1">₹30,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.3</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 10 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_10'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p10-wish" class="wishlist-toggle">
+                                <label for="p10-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/watch.png" class="product-img mb-2" alt="Tablet">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Android Tablet 10"</h6>
+                                <p class="product-meta mb-1">4GB • 64GB • LTE</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹18,999</span>
+                                        <span class="product-old-price ms-1">₹21,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.1</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 11 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_11'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p11-wish" class="wishlist-toggle">
+                                <label for="p11-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/speaker.png" class="product-img mb-2" alt="Soundbar">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Sony Soundbar</h6>
+                                <p class="product-meta mb-1">3D surround • Bluetooth</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹14,999</span>
+                                        <span class="product-old-price ms-1">₹17,999</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.4</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 12 -->
+                    <div class="col-6 col-md-4">
+                        <div class="product-card p-2 h-100"
+                             onclick="location.href='PRODUCT_URL_HERE_12'" style="cursor:pointer;">
+                            <div class="product-image-wrapper">
+                                <input type="checkbox" id="p12-wish" class="wishlist-toggle">
+                                <label for="p12-wish" class="wishlist-label">
+                                    <i class="bi bi-heart"></i>
+                                </label>
+                                <img src="img/mobile.png" class="product-img mb-2" alt="Budget phone">
+                            </div>
+                            <div class="product-body p-2 mt-1">
+                                <h6 class="mb-1">Everyday 5G Phone</h6>
+                                <p class="product-meta mb-1">6GB • 128GB • 5000mAh</p>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span class="product-price">₹15,999</span>
+                                        <span class="product-old-price ms-1">₹18,499</span>
+                                    </div>
+                                    <span class="product-rating"><i class="bi bi-star-fill"></i> 4.2</span>
+                                </div>
+                                <button class="btn btn-cart w-100" type="button">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav class="mt-4">
+                    <ul class="pagination pagination-sm justify-content-center">
+                        <li class="page-item disabled"><span class="page-link">Prev</span></li>
+                        <li class="page-item active"><span class="page-link">1</span></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="pt-4 mt-4">
+    <div class="container pb-3">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h5 class="text-light mb-2">Electro</h5>
+                <p style="font-size:0.85rem;">
+                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
+                </p>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="products.html">All products</a></li>
+                    <li><a href="products.html">Mobiles</a></li>
+                    <li><a href="products.html">Laptops</a></li>
+                    <li><a href="products.html">Televisions</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
+                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
+                <form class="d-flex gap-2">
+                    <input type="email" class="form-control form-control-sm" placeholder="Enter your email">
+                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="border-secondary mt-4 mb-2">
+        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
+            <span>© 2025 Electro. All rights reserved.</span>
+            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

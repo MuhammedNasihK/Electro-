@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electro Admin - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --admin-primary: #0f172a;
+            --admin-accent: #22c55e;
+            --admin-border: #e5e7eb;
+            --admin-muted: #6b7280;
+            --admin-bg: #f3f4f6;
+        }
+        body { font-family:'Poppins',sans-serif; background:var(--admin-bg); color:#111827; }
+        .admin-wrapper { min-height:100vh; display:flex; }
+        .admin-sidebar { width:250px; background:#fff; border-right:1px solid var(--admin-border); }
+        .admin-main { flex:1; background:#f9fafb; display:flex; flex-direction:column; }
+        .sidebar-brand { padding:14px 18px; border-bottom:1px solid var(--admin-border); }
+        .sidebar-nav { padding:8px 8px 16px; }
+        .sidebar-section-title { font-size:0.7rem; text-transform:uppercase; color:#9ca3af; padding:10px 10px 4px; }
+        .sidebar-link { display:flex; align-items:center; gap:10px; padding:9px 12px; margin:1px 8px 3px;
+                        border-radius:999px; color:#111827; font-size:0.86rem; text-decoration:none; }
+        .sidebar-link i { width:18px; text-align:center; }
+        .sidebar-link:hover { background:#e5f2ff; }
+        .sidebar-link.active { background:#dbeafe; color:var(--admin-primary); font-weight:600; border:1px solid #bfdbfe; }
+        .admin-topbar { padding:10px 20px; display:flex; align-items:center; justify-content:space-between;
+                        border-bottom:1px solid var(--admin-border); background:#fff; }
+        .admin-breadcrumb { font-size:0.8rem; color:#9ca3af; }
+        .admin-breadcrumb span { color:#111827; font-weight:500; }
+        .admin-content { padding:18px 20px 30px; }
+        .admin-card { background:#fff; border-radius:16px; border:1px solid var(--admin-border); }
+        .admin-card-header { padding:12px 16px; border-bottom:1px solid var(--admin-border); }
+        .admin-card-body { padding:14px 16px 16px; }
+        .section-title { font-size:0.95rem; font-weight:600; }
+        .section-subtitle { font-size:0.8rem; color:var(--admin-muted); }
+        .metric-card { background:#f9fafb; border-radius:14px; border:1px solid var(--admin-border); padding:10px 12px; }
+        .metric-label { font-size:0.75rem; color:var(--admin-muted); }
+        .metric-value { font-size:1.2rem; font-weight:700; }
+        .metric-trend { font-size:0.75rem; }
+        .btn-xs { padding:2px 8px; font-size:0.72rem; border-radius:999px; }
+        @media (max-width:768px){
+            .admin-wrapper{flex-direction:column;}
+            .admin-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--admin-border);}
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar d-flex flex-column">
+        <div class="sidebar-brand d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                     style="width:30px;height:30px;">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <span class="fw-bold">Electro Admin</span>
+            </div>
+            <span class="badge bg-light text-muted border" style="font-size:0.65rem;">v1.0</span>
+        </div>
+        <div class="sidebar-nav flex-grow-1">
+            <div class="sidebar-section-title">Overview</div>
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-link active">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <div class="sidebar-section-title">Management</div>
+            <a href="{% url 'admin_users' %}" class="sidebar-link">
+                <i class="bi bi-people"></i> Users
+            </a>
+            <a href="{% url 'admin_products' %}" class="sidebar-link">
+                <i class="bi bi-box-seam"></i> Products
+            </a>
+            <a href="{% url 'admin_orders' %}" class="sidebar-link">
+                <i class="bi bi-bag-check"></i> Orders
+            </a>
+             <div class="sidebar-section-title">Configuration</div>
+            <a href="{% url 'admin_settings' %}" class="sidebar-link">
+                <i class="bi bi-gear"></i> Settings
+            </a>
+            <a href="{% url 'admin_coupons' %}" class="sidebar-link">
+                <i class="bi bi-ticket-perforated"></i> Coupons
+            </a>
+            <a href="{% url 'admin_banners' %}" class="sidebar-link">
+                <i class="bi bi-image"></i> Banners
+            </a>
+            
+        </div>
+        <div class="px-3 pb-3" style="font-size:0.78rem;">
+            <div class="text-muted mb-1">Logged in as</div>
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="fw-semibold">Admin</div>
+                    <div class="text-muted">admin@electro.com</div>
+                </div>
+                <a href="{% url 'home' %}" class="btn btn-outline-danger btn-xs">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <div class="admin-breadcrumb">Admin / <span>Dashboard</span></div>
+                <div class="fw-semibold" style="font-size:0.95rem;">Good evening, Admin</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                
+            </div>
+        </header>
+
+        <main class="admin-content">
+
+            <!-- TOP SUMMARY METRICS -->
+            <section class="mb-4">
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Total orders</div>
+                            <div class="metric-value">1,248</div>
+                            <div class="metric-trend text-success">
+                                <i class="bi bi-arrow-up-right me-1"></i>+8.2% vs last month
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Total revenue</div>
+                            <div class="metric-value">₹18.6L</div>
+                            <div class="metric-trend text-success">
+                                <i class="bi bi-arrow-up-right me-1"></i>+12.4%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Total users</div>
+                            <div class="metric-value">3,482</div>
+                            <div class="metric-trend text-success">
+                                <i class="bi bi-person-plus me-1"></i>+214 this month
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Total products</div>
+                            <div class="metric-value">196</div>
+                            <div class="metric-trend text-muted">
+                                <i class="bi bi-box-seam me-1"></i>Across all categories
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ORDERS TODAY / THIS WEEK + LOW STOCK -->
+            <section class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="admin-card h-100">
+                            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="section-title">Orders overview</div>
+                                    <div class="section-subtitle">Today and this week performance.</div>
+                                </div>
+                                <span class="badge bg-light text-muted border" style="font-size:0.75rem;">
+                                    IST timezone
+                                </span>
+                            </div>
+                            <div class="admin-card-body">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="metric-card">
+                                            <div class="metric-label">Orders today</div>
+                                            <div class="metric-value">24</div>
+                                            <div class="metric-trend text-success">
+                                                <i class="bi bi-arrow-up-right me-1"></i>+5 vs yesterday
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="metric-card">
+                                            <div class="metric-label">Orders this week</div>
+                                            <div class="metric-value">164</div>
+                                            <div class="metric-trend text-success">
+                                                <i class="bi bi-arrow-up-right me-1"></i>+11.3%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3" style="font-size:0.8rem;">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Conversion rate</span>
+                                        <span class="fw-semibold">2.9%</span>
+                                    </div>
+                                    <div class="progress" style="height:6px;">
+                                        <div class="progress-bar bg-success" style="width: 60%;"></div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-2 mb-1">
+                                        <span class="text-muted">Paid vs COD orders</span>
+                                        <span class="fw-semibold">78% paid</span>
+                                    </div>
+                                    <div class="progress" style="height:6px;">
+                                        <div class="progress-bar bg-success" style="width: 78%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LOW STOCK ALERTS -->
+                    <div class="col-md-6">
+                        <div class="admin-card h-100">
+                            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="section-title">Low stock alerts</div>
+                                    <div class="section-subtitle">Products that need attention soon.</div>
+                                </div>
+                                <a href="admin products.html" class="btn btn-sm btn-outline-secondary btn-xs">
+                                    View all
+                                </a>
+                            </div>
+                            <div class="admin-card-body" style="font-size:0.82rem;">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Items below threshold</span>
+                                    <span class="badge bg-warning-subtle text-warning border">5 products</span>
+                                </div>
+
+                                <ul class="list-unstyled mb-0">
+                                    <li class="d-flex justify-content-between align-items-center py-1">
+                                        <div>
+                                            <div class="fw-semibold">HP Victus Gaming Laptop</div>
+                                            <div class="text-muted" style="font-size:0.78rem;">Laptops · Current stock: 8</div>
+                                        </div>
+                                        <span class="badge bg-warning-subtle text-warning border">Low</span>
+                                    </li>
+                                    <li class="d-flex justify-content-between align-items-center py-1">
+                                        <div>
+                                            <div class="fw-semibold">Boat Smartwatch</div>
+                                            <div class="text-muted" style="font-size:0.78rem;">Accessories · Current stock: 0</div>
+                                        </div>
+                                        <span class="badge bg-danger-subtle text-danger border">Out</span>
+                                    </li>
+                                    <li class="d-flex justify-content-between align-items-center py-1">
+                                        <div>
+                                            <div class="fw-semibold">Sony Headphones</div>
+                                            <div class="text-muted" style="font-size:0.78rem;">Accessories · Current stock: 3</div>
+                                        </div>
+                                        <span class="badge bg-warning-subtle text-warning border">Low</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHARTS / GRAPHS AREA -->
+            <section>
+                <div class="row g-3">
+                    <!-- SALES GRAPH -->
+                    <div class="col-md-8">
+                        <div class="admin-card h-100">
+                            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="section-title">Sales graph</div>
+                                    <div class="section-subtitle">Daily revenue for the last 30 days.</div>
+                                </div>
+                                <select class="form-select form-select-sm" style="max-width:130px;">
+                                    <option>Last 30 days</option>
+                                    <option>This month</option>
+                                    <option>Last 6 months</option>
+                                </select>
+                            </div>
+                            <div class="admin-card-body" style="height:220px;">
+                                <!-- Placeholder for chart library -->
+                                <div class="d-flex flex-column justify-content-center align-items-center h-100 text-muted"
+                                     style="font-size:0.85rem;border-radius:12px;border:1px dashed #e5e7eb;">
+                                    <i class="bi bi-graph-up-arrow mb-2" style="font-size:1.4rem;"></i>
+                                    <div>Sales chart goes here</div>
+                                    <div class="text-muted" style="font-size:0.78rem;">
+                                        Integrate with Chart.js or ApexCharts later.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ORDERS BY CATEGORY & TOP PRODUCTS -->
+                    <div class="col-md-4">
+                        <div class="admin-card mb-3">
+                            <div class="admin-card-header">
+                                <div class="section-title">Orders by category</div>
+                                <div class="section-subtitle">Share of total orders.</div>
+                            </div>
+                            <div class="admin-card-body" style="font-size:0.82rem;">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Mobiles</span>
+                                    <span class="fw-semibold">38%</span>
+                                </div>
+                                <div class="progress mb-2" style="height:6px;">
+                                    <div class="progress-bar bg-primary" style="width:38%;"></div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Laptops</span>
+                                    <span class="fw-semibold">27%</span>
+                                </div>
+                                <div class="progress mb-2" style="height:6px;">
+                                    <div class="progress-bar bg-success" style="width:27%;"></div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Accessories</span>
+                                    <span class="fw-semibold">18%</span>
+                                </div>
+                                <div class="progress mb-2" style="height:6px;">
+                                    <div class="progress-bar bg-warning" style="width:18%;"></div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Others</span>
+                                    <span class="fw-semibold">17%</span>
+                                </div>
+                                <div class="progress" style="height:6px;">
+                                    <div class="progress-bar bg-secondary" style="width:17%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <div class="section-title">Top selling products</div>
+                                <div class="section-subtitle">By units sold in last 30 days.</div>
+                            </div>
+                            <div class="admin-card-body" style="font-size:0.82rem;">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="d-flex justify-content-between align-items-center py-1">
+                                        <span>iPhone 14 (128GB)</span>
+                                        <span class="fw-semibold">84 sold</span>
+                                    </li>
+                                    <li class="d-flex justify-content-between align-items-center py-1">
+                                        <span>HP Victus Gaming Laptop</span>
+                                        <span class="fw-semibold">39 sold</span>
+                                    </li>
+                                    <li class="d-flex justify-content-between align-items-center py-1">
+                                        <span>Boat Smartwatch</span>
+                                        <span class="fw-semibold">62 sold</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

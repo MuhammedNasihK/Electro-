@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electro Admin - Products</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root { --admin-primary:#0f172a; --admin-accent:#22c55e; --admin-border:#e5e7eb; --admin-muted:#6b7280; --admin-bg:#f3f4f6;}
+        body{font-family:'Poppins',sans-serif;background:var(--admin-bg);color:#111827;}
+        .admin-wrapper{min-height:100vh;display:flex;}
+        .admin-sidebar{width:250px;background:#fff;border-right:1px solid var(--admin-border);}
+        .admin-main{flex:1;background:#f9fafb;display:flex;flex-direction:column;}
+        .sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--admin-border);}
+        .sidebar-nav{padding:8px 8px 16px;}
+        .sidebar-section-title{font-size:0.7rem;text-transform:uppercase;color:#9ca3af;padding:10px 10px 4px;}
+        .sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:1px 8px 3px;border-radius:999px;color:#111827;font-size:0.86rem;text-decoration:none;}
+        .sidebar-link i{width:18px;text-align:center;}
+        .sidebar-link:hover{background:#e5f2ff;}
+        .sidebar-link.active{background:#dbeafe;color:var(--admin-primary);font-weight:600;border:1px solid #bfdbfe;}
+        .admin-topbar{padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--admin-border);background:#fff;}
+        .admin-breadcrumb{font-size:0.8rem;color:#9ca3af;}
+        .admin-breadcrumb span{color:#111827;font-weight:500;}
+        .admin-content{padding:18px 20px 30px;}
+        .admin-card{background:#fff;border-radius:16px;border:1px solid var(--admin-border);}
+        .admin-card-header{padding:12px 16px;border-bottom:1px solid var(--admin-border);}
+        .admin-card-body{padding:14px 16px 16px;}
+        .section-title{font-size:0.95rem;font-weight:600;}
+        .section-subtitle{font-size:0.8rem;color:var(--admin-muted);}
+        .badge-soft-success{background:#dcfce7;color:#166534;}
+        .badge-soft-warning{background:#fef9c3;color:#a16207;}
+        .badge-soft-danger{background:#fee2e2;color:#b91c1c;}
+        .btn-xs{padding:2px 8px;font-size:0.72rem;border-radius:999px;}
+        /* product image thumb */
+        .product-img-thumb{
+            width:60px;
+            height:60px;
+            object-fit:cover;
+            border-radius:8px;
+            border:1px solid #e5e7eb;
+        }
+        @media(max-width:768px){
+            .admin-wrapper{flex-direction:column}
+            .admin-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--admin-border);}
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <aside class="admin-sidebar d-flex flex-column">
+        <div class="sidebar-brand d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                     style="width:30px;height:30px;">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <span class="fw-bold">Electro Admin</span>
+            </div>
+            <span class="badge bg-light text-muted border" style="font-size:0.65rem;">v1.0</span>
+        </div>
+        <div class="sidebar-nav flex-grow-1">
+            <div class="sidebar-section-title">Overview</div>
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-link">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <div class="sidebar-section-title">Management</div>
+            <a href="{% url 'admin_users' %}" class="sidebar-link">
+                <i class="bi bi-people"></i> Users
+            </a>
+            <a href="{% url 'admin_products' %}" class="sidebar-link active">
+                <i class="bi bi-box-seam"></i> Products
+            </a>
+            <a href="{% url 'admin_orders' %}" class="sidebar-link">
+                <i class="bi bi-bag-check"></i> Orders
+            </a>
+             <div class="sidebar-section-title">Configuration</div>
+            <a href="{% url 'admin_settings' %}" class="sidebar-link">
+                <i class="bi bi-gear"></i> Settings
+            </a>
+            <a href="{% url 'admin_coupons' %}" class="sidebar-link">
+                <i class="bi bi-ticket-perforated"></i> Coupons
+            </a>
+            <a href="{% url 'admin_banners' %}" class="sidebar-link">
+                <i class="bi bi-image"></i> Banners
+            </a>
+        </div>
+        <div class="px-3 pb-3" style="font-size:0.78rem;">
+            <div class="text-muted mb-1">Logged in as</div>
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="fw-semibold">Admin</div>
+                    <div class="text-muted">admin@electro.com</div>
+                </div>
+                <a href="{% url 'home' %}" class="btn btn-outline-danger btn-xs">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <div class="admin-breadcrumb">Admin / <span>Products</span></div>
+                <div class="fw-semibold" style="font-size:0.95rem;">Manage products</div>
+            </div>
+            <button class="btn btn-success btn-sm rounded-pill" onclick="window.location.href='{% url 'admin_add_products' %}'">
+                <i class="bi bi-plus-circle me-1"></i>Add product
+            </button>
+        </header>
+
+        <main class="admin-content">
+            <div class="admin-card">
+                <div class="admin-card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="section-title">Products</div>
+                        <div class="section-subtitle">Catalog, pricing, stock and visibility.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="form-control form-control-sm" placeholder="Search products...">
+                        <select class="form-select form-select-sm">
+                            <option>All categories</option>
+                            <option>Mobiles</option>
+                            <option>Laptops</option>
+                            <option>Accessories</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="admin-card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead class="table-light" style="font-size:0.8rem;">
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody style="font-size:0.82rem;">
+                            <tr>
+                                <td>
+                                    <!-- change src paths to your actual images -->
+                                    <img src="img/p1.png" alt="iPhone 14" class="product-img-thumb">
+                                </td>
+                                <td>iPhone 14 (128GB)</td>
+                                <td>Mobiles</td>
+                                <td>₹68,999</td>
+                                <td>34</td>
+                                <td><span class="badge badge-soft-success">Active</span></td>
+                                <td>2 hours ago</td>
+                                <td>
+                                    <button class="btn btn-outline-secondary btn-xs">Edit</button>
+                                    <button class="btn btn-outline-warning btn-xs">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="img/new4.png" alt="HP Victus" class="product-img-thumb">
+                                </td>
+                                <td>HP Victus Gaming Laptop</td>
+                                <td>Laptops</td>
+                                <td>₹59,999</td>
+                                <td>8</td>
+                                <td><span class="badge badge-soft-warning">Low stock</span></td>
+                                <td>1 day ago</td>
+                                <td>
+                                    <button class="btn btn-outline-secondary btn-xs">Edit</button>
+                                    <button class="btn btn-outline-warning btn-xs">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="img/watch.png" alt="Boat Smartwatch" class="product-img-thumb">
+                                </td>
+                                <td>Boat Smartwatch</td>
+                                <td>Accessories</td>
+                                <td>₹1,999</td>
+                                <td>0</td>
+                                <td><span class="badge badge-soft-danger">Out of stock</span></td>
+                                <td>5 days ago</td>
+                                <td>
+                                    <button class="btn btn-outline-secondary btn-xs">Edit</button>
+                                    <button class="btn btn-outline-warning btn-xs">Disable</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

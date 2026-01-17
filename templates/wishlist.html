@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro - Wishlist</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.12);
+            --muted: #6b7280;
+            --card-bg: #ffffff;
+            --badge-bg: #0b1020;
+        }
+
+        /* Make footer stay at bottom */
+        html, body {
+            height: 100%;
+        }
+        body {
+            background: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+        }
+        .navbar-brand {
+            letter-spacing: 1px;
+        }
+        .navbar .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position: relative;
+            border-radius: 999px;
+            padding-inline: 14px;
+            overflow: hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transform: translateX(-50%);
+            transition: width 0.25s ease-out;
+            border-radius: 999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width: 60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background: rgba(31, 41, 55, 0.7);
+        }
+
+        .icon-btn {
+            border-radius: 999px;
+            border-color: #1f2937;
+            color: #e5e7eb;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .icon-btn i {
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #bbf7d0;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Page header */
+        .wishlist-header {
+            padding: 24px 0 12px;
+        }
+        .wishlist-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .wishlist-subtitle {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        /* Filter / toolbar */
+        .wishlist-toolbar {
+            background: #ffffff;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* Wishlist cards */
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            transition: 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+            border-color: #cbd5f5;
+        }
+        .product-image-wrapper {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 10px;
+            position: relative;
+        }
+        .product-img {
+            width: 100%;
+            height: 170px;
+            object-fit: contain;
+        }
+
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .product-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .price-line {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .price-main {
+            font-weight: 700;
+            color: #16a34a;
+            font-size: 0.95rem;
+        }
+        .price-old {
+            font-size: 0.78rem;
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+        .price-save {
+            font-size: 0.76rem;
+            color: #166534;
+            background: #dcfce7;
+            border-radius: 999px;
+            padding: 2px 8px;
+        }
+
+        /* Wishlist actions */
+        .wishlist-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-add-cart {
+            border-radius: 999px;
+            font-size: 0.82rem;
+            padding-inline: 16px;
+            font-weight: 600;
+            background: #22c55e;
+            border: none;
+            color: #022c22;
+        }
+        .btn-add-cart:hover {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 10px 24px rgba(22, 163, 74, 0.4);
+        }
+        .btn-remove {
+            border-radius: 999px;
+            font-size: 0.8rem;
+            padding-inline: 14px;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            background: #fef2f2;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-remove:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #7f1d1d;
+        }
+
+        /* Empty state */
+        .wishlist-empty-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px dashed #d1d5db;
+        }
+        .wishlist-empty-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 999px;
+            background: #ecfdf5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #16a34a;
+            font-size: 1.6rem;
+        }
+        .wishlist-empty-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        .wishlist-empty-text {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        /* Footer */
+        footer {
+            background: #020617;
+            color: #9ca3af;
+        }
+        footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        footer a:hover {
+            color: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                </li>
+
+
+                <!-- PROFILE ICON DROPDOWN -->
+                <li class="nav-item dropdown ms-3">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-5"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                                <i class="bi bi-person-circle me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                                <i class="bi bi-bag-check me-2"></i> Orders</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Wishlist Icon (active) -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart-fill"></i>
+            </a>
+
+            <!-- Cart Icon -->
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+
+        </div>
+    </div>
+</nav>
+
+<main>
+    <!-- PAGE HEADER -->
+    <section class="wishlist-header">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <h1 class="wishlist-title mb-1">Your wishlist</h1>
+                    <p class="wishlist-subtitle mb-0">
+                        Save products to compare later or add them to your cart when you are ready.
+                    </p>
+                </div>
+                <div class="wishlist-toolbar d-flex align-items-center gap-3">
+                    <span class="text-muted" style="font-size:0.8rem;">
+                        <i class="bi bi-info-circle me-1"></i> Items in wishlist are not reserved.
+                    </span>
+                    <select class="form-select form-select-sm border-0 bg-transparent text-muted" style="width:auto;">
+                        <option selected>Sort by: Recently added</option>
+                        <option>Price: Low to high</option>
+                        <option>Price: High to low</option>
+                        <option>Discount</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WISHLIST GRID -->
+    <section class="py-3">
+        <div class="container">
+            <div class="row g-3">
+
+                <!-- Wishlist item 1 -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="product-card p-3">
+                        <div class="product-image-wrapper mb-2">
+                            <img src="img/p1.png" alt="iPhone 14" class="product-img">
+                        </div>
+                        <div>
+                            <div class="product-title mb-1">iPhone 14 (128GB)</div>
+                            <div class="product-meta mb-1">
+                                Midnight • 6.1&quot; Super Retina XDR
+                            </div>
+                            <div class="price-line">
+                                <span class="price-main">₹68,999</span>
+                                <span class="price-old">₹74,999</span>
+                                <span class="price-save">Save ₹6,000</span>
+                            </div>
+                            <div class="wishlist-actions">
+                                <button class="btn btn-sm btn-add-cart">
+                                    <i class="bi bi-cart-plus me-1"></i> Add to cart
+                                </button>
+                                <button class="btn btn-sm btn-remove">
+                                    <i class="bi bi-x-lg"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wishlist item 2 -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="product-card p-3">
+                        <div class="product-image-wrapper mb-2">
+                            <img src="img/new4.png" alt="HP Victus Gaming" class="product-img">
+                        </div>
+                        <div>
+                            <div class="product-title mb-1">HP Victus Gaming Laptop</div>
+                            <div class="product-meta mb-1">
+                                Ryzen 7 • 16GB RAM • RTX graphics
+                            </div>
+                            <div class="price-line">
+                                <span class="price-main">₹59,999</span>
+                                <span class="price-old">₹69,999</span>
+                                <span class="price-save">Save ₹10,000</span>
+                            </div>
+                            <div class="wishlist-actions">
+                                <button class="btn btn-sm btn-add-cart">
+                                    <i class="bi bi-cart-plus me-1"></i> Add to cart
+                                </button>
+                                <button class="btn btn-sm btn-remove">
+                                    <i class="bi bi-x-lg"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wishlist item 3 -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="product-card p-3">
+                        <div class="product-image-wrapper mb-2">
+                            <img src="img/watch.png" alt="Smartwatch" class="product-img">
+                        </div>
+                        <div>
+                            <div class="product-title mb-1">Boat Smartwatch</div>
+                            <div class="product-meta mb-1">
+                                SpO₂ • Heart rate • 1.69&quot; display
+                            </div>
+                            <div class="price-line">
+                                <span class="price-main">₹1,999</span>
+                                <span class="price-old">₹2,499</span>
+                                <span class="price-save">Save ₹500</span>
+                            </div>
+                            <div class="wishlist-actions">
+                                <button class="btn btn-sm btn-add-cart">
+                                    <i class="bi bi-cart-plus me-1"></i> Add to cart
+                                </button>
+                                <button class="btn btn-sm btn-remove">
+                                    <i class="bi bi-x-lg"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example empty state card (use when no items, and hide the items above) -->
+                <!--
+                <div class="col-12">
+                    <div class="wishlist-empty-card p-4 text-center">
+                        <div class="wishlist-empty-icon">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <div class="wishlist-empty-title mb-1">Your wishlist is empty</div>
+                        <p class="wishlist-empty-text mb-3">
+                            Start saving products you like. Add them to your wishlist and move to cart anytime.
+                        </p>
+                        <a href="products.html" class="btn btn-sm btn-success rounded-pill px-4">
+                            <i class="bi bi-plus-lg me-1"></i> Browse products
+                        </a>
+                    </div>
+                </div>
+                -->
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="pt-4 mt-4">
+    <div class="container pb-3">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h5 class="text-light mb-2">Electro</h5>
+                <p style="font-size:0.85rem;">
+                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
+                </p>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="products.html">All products</a></li>
+                    <li><a href="products.html">Mobiles</a></li>
+                    <li><a href="products.html">Laptops</a></li>
+                    <li><a href="products.html">Televisions</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
+                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
+                <form class="d-flex gap-2">
+                    <input type="email" class="form-control form-control-sm" placeholder="Enter your email">
+                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="border-secondary mt-4 mb-2">
+        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
+            <span>© 2025 Electro. All rights reserved.</span>
+            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS only -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

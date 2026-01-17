@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electro - My Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-dark:#0b1020;
+            --primary:#0f172a;
+            --accent:#22c55e;
+            --border-soft:#e5e7eb;
+            --muted:#6b7280;
+            --bg-soft:#f3f4f6;
+        }
+        body{
+            font-family:'Poppins',sans-serif;
+            background:var(--bg-soft);
+            color:#111827;
+        }
+
+        /* Navbar (copied style from your Electro pages) */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+        }
+        .navbar-brand {
+            letter-spacing: 1px;
+        }
+        .navbar .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position: relative;
+            border-radius: 999px;
+            padding-inline: 14px;
+            overflow: hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transform: translateX(-50%);
+            transition: width 0.25s ease-out;
+            border-radius: 999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width: 60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background: rgba(31, 41, 55, 0.7);
+        }
+        .icon-btn {
+            border-radius: 999px;
+            border-color: #1f2937;
+            color: #e5e7eb;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .icon-btn i {
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #bbf7d0;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Orders page layout */
+        .orders-page-wrapper{
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+        }
+        main{
+            flex:1;
+        }
+
+        .orders-header{
+            background:#ffffff;
+            border-bottom:1px solid var(--border-soft);
+        }
+        .orders-header-inner{
+            max-width:1100px;
+            margin:0 auto;
+            padding:16px 16px 12px;
+        }
+        .orders-title{
+            font-size:1.4rem;
+            font-weight:700;
+        }
+        .orders-subtitle{
+            font-size:0.85rem;
+            color:var(--muted);
+        }
+
+        .orders-filters{
+            background:#ffffff;
+            border-bottom:1px solid var(--border-soft);
+        }
+        .orders-filters-inner{
+            max-width:1100px;
+            margin:0 auto;
+            padding:8px 16px;
+        }
+
+        .orders-container{
+            max-width:1100px;
+            margin:16px auto 24px;
+            padding:0 16px;
+        }
+        .order-card{
+            background:#ffffff;
+            border-radius:14px;
+            border:1px solid var(--border-soft);
+            padding:14px 16px;
+            margin-bottom:12px;
+        }
+        .order-header-line{
+            font-size:0.85rem;
+        }
+        .order-id{
+            font-weight:600;
+        }
+        .order-meta{
+            font-size:0.8rem;
+            color:var(--muted);
+        }
+        .order-total{
+            font-weight:600;
+            font-size:0.95rem;
+        }
+
+        .badge-soft-placed{
+            background:#e0f2fe;
+            color:#0369a1;
+        }
+        .badge-soft-processing{
+            background:#fef9c3;
+            color:#a16207;
+        }
+        .badge-soft-delivered{
+            background:#dcfce7;
+            color:#166534;
+        }
+        .badge-soft-cancelled{
+            background:#fee2e2;
+            color:#b91c1c;
+        }
+
+        .btn-xs{
+            padding:2px 10px;
+            font-size:0.78rem;
+            border-radius:999px;
+        }
+
+        .order-detail-box{
+            font-size:0.8rem;
+            background:#f9fafb;
+            border-radius:10px;
+            border:1px dashed #e5e7eb;
+            padding:10px 12px;
+            margin-top:8px;
+        }
+        .order-detail-box h6{
+            font-size:0.8rem;
+            font-weight:600;
+            margin-bottom:4px;
+        }
+
+        /* Product image in order row */
+        .order-product-img {
+            width:60px;
+            height:60px;
+            object-fit:cover;
+            border-radius:10px;
+            border:1px solid #e5e7eb;
+        }
+
+        @media (max-width: 768px) {
+            .order-main-row{
+                flex-direction:column;
+                align-items:flex-start !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="orders-page-wrapper">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                </li>
+
+                <!-- Profile dropdown (icon) -->
+                <li class="nav-item dropdown ms-3">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
+                       href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-5"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                                <i class="bi bi-person-circle me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                                <i class="bi bi-bag-check me-2"></i> Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
+                                <i class="bi bi-info-circle me-2"></i> About
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Wishlist -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <!-- Cart -->
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+    <!-- HEADER -->
+    <header class="orders-header">
+        <div class="orders-header-inner">
+            <h1 class="orders-title mb-1">My orders</h1>
+            <p class="orders-subtitle mb-0">
+                Track your purchases, check delivery status and download invoices.
+            </p>
+        </div>
+    </header>
+
+    <!-- FILTERS -->
+    <div class="orders-filters">
+        <div class="orders-filters-inner d-flex flex-wrap align-items-center gap-2 justify-content-between">
+            <div class="d-flex flex-wrap gap-2">
+                <select class="form-select form-select-sm" style="width:auto;">
+                    <option selected>All orders</option>
+                    <option>Last 30 days</option>
+                    <option>Last 6 months</option>
+                    <option>2025</option>
+                </select>
+                <select class="form-select form-select-sm" style="width:auto;">
+                    <option selected>All status</option>
+                    <option>Placed</option>
+                    <option>Processing</option>
+                    <option>Shipped</option>
+                    <option>Delivered</option>
+                    <option>Cancelled</option>
+                </select>
+            </div>
+            <div style="max-width:260px;width:100%;">
+                <input type="text" class="form-control form-control-sm" placeholder="Search by order ID or product">
+            </div>
+        </div>
+    </div>
+
+    <!-- ORDERS LIST -->
+    <main>
+        <div class="orders-container">
+
+            <!-- ORDER 1 -->
+            <div class="order-card">
+                <div class="d-flex justify-content-between align-items-center order-header-line mb-1">
+                    <div>
+                        
+                        <span class="text-muted ms-2">Placed on 15 Dec 2025 · 7:15 PM</span>
+                    </div>
+                    <span class="badge badge-soft-processing">Processing</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center order-main-row gap-3 mt-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Product image -->
+                        <img src="img/p1.png" alt="iPhone 14" class="order-product-img">
+                        <div>
+                            <div class="fw-semibold" style="font-size:0.9rem;">iPhone 14 (128GB, Midnight)</div>
+                            <div class="order-meta">
+                                1 item · Expected delivery: 20–22 Dec 2025
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="order-total">₹68,999</div>
+                        <div class="order-meta">Paid via UPI</div>
+                    </div>
+                </div>
+
+                <div class="mt-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                    <div class="order-meta">
+                        Shipping to: John Doe, Mumbai
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-secondary btn-xs">
+                            <i class="bi bi-receipt me-1"></i>View details
+                        </button>
+                        <button class="btn btn-outline-secondary btn-xs">
+                            <i class="bi bi-truck me-1"></i>Track order
+                        </button>
+                        <button class="btn btn-outline-danger btn-xs">
+                            <i class="bi bi-x-circle me-1"></i>Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="order-detail-box mt-3">
+                    <h6>Latest update</h6>
+                    <p class="mb-1">
+                        <i class="bi bi-box-seam me-1"></i>Your order is being packed at the warehouse.
+                    </p>
+                    <p class="mb-0 text-muted">
+                        You will receive tracking information once the courier picks up the package.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ORDER 2 -->
+            <div class="order-card">
+                <div class="d-flex justify-content-between align-items-center order-header-line mb-1">
+                    <div>
+                        
+                        <span class="text-muted ms-2">Placed on 14 Dec 2025 · 3:42 PM</span>
+                    </div>
+                    <span class="badge badge-soft-delivered">Delivered</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center order-main-row gap-3 mt-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="img/new4.png" alt="HP Victus" class="order-product-img">
+                        <div>
+                            <div class="fw-semibold" style="font-size:0.9rem;">HP Victus Gaming Laptop</div>
+                            <div class="order-meta">
+                                1 item · Delivered on 17 Dec 2025
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="order-total">₹59,999</div>
+                        <div class="order-meta">Paid via Credit Card</div>
+                    </div>
+                </div>
+
+                <div class="mt-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                    <div class="order-meta">
+                        Shipping to: Jane Smith, Bengaluru
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-secondary btn-xs">
+                            <i class="bi bi-receipt me-1"></i>View details
+                        </button>
+                        <button class="btn btn-outline-secondary btn-xs">
+                            <i class="bi bi-download me-1"></i>Download invoice
+                        </button>
+                        <button class="btn btn-outline-secondary btn-xs">
+                            <i class="bi bi-arrow-repeat me-1"></i>Return / replace
+                        </button>
+                    </div>
+                </div>
+
+                <div class="order-detail-box mt-3">
+                    <h6>Delivered</h6>
+                    <p class="mb-1">
+                        <i class="bi bi-check-circle text-success me-1"></i>Package delivered to front door.
+                    </p>
+                    <p class="mb-0 text-muted">
+                        If you have any issue with the product, you can request a return within 7 days.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ORDER 3 -->
+            <div class="order-card">
+                <div class="d-flex justify-content-between align-items-center order-header-line mb-1">
+                    <div>
+                        
+                        <span class="text-muted ms-2">Placed on 12 Dec 2025 · 11:05 AM</span>
+                    </div>
+                    <span class="badge badge-soft-cancelled">Cancelled</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center order-main-row gap-3 mt-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="img/watch.png" alt="Boat Smartwatch" class="order-product-img">
+                        <div>
+                            <div class="fw-semibold" style="font-size:0.9rem;">Boat Smartwatch</div>
+                            <div class="order-meta">
+                                1 item · Order cancelled
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="order-total">₹1,999</div>
+                        <div class="order-meta">Payment failed</div>
+                    </div>
+                </div>
+
+                <div class="mt-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                    <div class="order-meta">
+                        Shipping to: Test User, Chennai
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-secondary btn-xs">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Reorder
+                        </button>
+                    </div>
+                </div>
+
+                <div class="order-detail-box mt-3">
+                    <h6>Why cancelled?</h6>
+                    <p class="mb-1 text-muted">
+                        Payment could not be completed with your bank. No amount was charged.
+                    </p>
+                    <p class="mb-0 text-muted">
+                        You can try placing the order again with another payment method.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

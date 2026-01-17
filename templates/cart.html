@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro - Cart</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Custom CSS (same theme as home) -->
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.12);
+            --muted: #6b7280;
+            --card-bg: #ffffff;
+            --badge-bg: #0b1020;
+        }
+
+        body {
+            background: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Navbar with your gradient */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+        }
+        .navbar-brand {
+            letter-spacing: 1px;
+        }
+        .navbar .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position: relative;
+            border-radius: 999px;
+            padding-inline: 14px;
+            overflow: hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transform: translateX(-50%);
+            transition: width 0.25s ease-out;
+            border-radius: 999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width: 60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background: rgba(31, 41, 55, 0.7);
+        }
+
+        .search-input {
+            border-radius: 999px;
+            border: 1px solid #1f2937;
+            background: #020617;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+        }
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+        .search-btn {
+            border-radius: 999px;
+            background: #22c55e;
+            border: none;
+            font-weight: 600;
+        }
+        .search-btn:hover {
+            background: #16a34a;
+        }
+
+        .icon-btn {
+            border-radius: 999px;
+            border-color: #1f2937;
+            color: #e5e7eb;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .icon-btn i {
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #bbf7d0;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Simple page heading (no banner) */
+        .cart-page-header {
+            padding: 20px 0 10px;
+        }
+        .cart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .cart-subtitle {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        /* Cart layout */
+        .cart-container {
+            padding-top: 8px;
+            padding-bottom: 40px;
+        }
+
+        .cart-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px 0;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-img-wrap {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            background: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .cart-item-img-wrap img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .cart-item-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .cart-item-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .cart-price-main {
+            font-weight: 700;
+            color: #16a34a;
+            font-size: 0.95rem;
+        }
+        .cart-price-old {
+            font-size: 0.78rem;
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+        .cart-price-save {
+            font-size: 0.76rem;
+            color: #166534;
+            background: #dcfce7;
+            border-radius: 999px;
+            padding: 2px 8px;
+        }
+
+        /* Quantity control: number input only (no JS) */
+        .qty-input {
+            width: 80px;
+            border-radius: 999px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            opacity: 1;
+        }
+
+        /* More professional inline action buttons */
+        .cart-item-actions {
+            font-size: 0.78rem;
+        }
+        .cart-action-link {
+            border-radius: 999px;
+            padding: 4px 10px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #4b5563;
+            font-size: 0.78rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cart-action-link i {
+            font-size: 0.85rem;
+        }
+        .cart-action-link:hover {
+            border-color: #e5e7eb;
+            background: #f9fafb;
+            color: #111827;
+        }
+        .cart-action-link.text-danger:hover {
+            border-color: #fecaca;
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        /* Summary card */
+        .summary-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            position: sticky;
+            top: 90px;
+        }
+        .summary-title {
+            font-size: 0.98rem;
+            font-weight: 600;
+        }
+        .summary-line {
+            font-size: 0.85rem;
+            color: #4b5563;
+        }
+        .summary-line strong {
+            color: #111827;
+        }
+        .summary-total {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .summary-note {
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        .btn-checkout {
+            background: #22c55e;
+            border-radius: 999px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #0f172a;
+        }
+        .btn-checkout:hover {
+            background: #16a34a;
+            box-shadow: 0 12px 26px rgba(22, 163, 74, 0.45);
+            transform: translateY(-1px);
+            color: #ffffff;
+        }
+        .btn-continue {
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            font-size: 0.85rem;
+            color: #374151;
+            background: #f9fafb;
+        }
+        .btn-continue:hover {
+            background: #ffffff;
+        }
+
+        /* Empty cart state */
+        .empty-cart {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .empty-cart-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 999px;
+            background: #ecfdf5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #16a34a;
+            font-size: 1.6rem;
+        }
+        .empty-cart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .empty-cart-text {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        /* Footer (same as home) */
+        footer {
+            background: #020617;
+            color: #9ca3af;
+        }
+        footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        footer a:hover {
+            color: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                </li>
+
+                <!-- Profile dropdown (icon) -->
+                <li class="nav-item dropdown ms-3">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
+                       href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-5"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                                <i class="bi bi-person-circle me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                                <i class="bi bi-bag-check me-2"></i> Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
+                                <i class="bi bi-info-circle me-2"></i> About
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Wishlist -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <!-- Cart -->
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- SIMPLE PAGE TITLE (no banner) -->
+<section class="cart-page-header">
+    <div class="container">
+        <h1 class="cart-title mb-1">Your cart</h1>
+        <p class="cart-subtitle mb-0">
+            Review your items, update quantities and proceed to a secure checkout.
+        </p>
+    </div>
+</section>
+
+<!-- CART CONTENT -->
+<section class="cart-container">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left: Cart items -->
+            <div class="col-lg-8">
+                <div class="cart-card p-3 p-md-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h6 mb-0">Items in your cart</h2>
+                        <a class="btn btn-sm btn-continue" href="products.html">
+                            <i class="bi bi-arrow-left me-1"></i> Continue shopping
+                        </a>
+                    </div>
+
+                    <!-- Example cart item 1 -->
+                    <div class="cart-item">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-3 col-md-2">
+                                <div class="cart-item-img-wrap">
+                                    <img src="img/p1.png" alt="iPhone 14">
+                                </div>
+                            </div>
+                            <div class="col-9 col-md-5">
+                                <div class="cart-item-title mb-1">iPhone 14 (128GB)</div>
+                                <div class="cart-item-meta mb-2">
+                                    Midnight • 128GB • 6.1" display
+                                </div>
+                                <div class="cart-item-actions d-flex flex-wrap gap-2">
+                                    <button type="button" class="cart-action-link">
+                                        <i class="bi bi-heart"></i> Move to wishlist
+                                    </button>
+                                    <button type="button" class="cart-action-link text-danger">
+                                        <i class="bi bi-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                <input type="number" class="form-control form-control-sm qty-input" min="1" value="1">
+                            </div>
+                            <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
+                                <div>
+                                    <span class="cart-price-main">₹68,999</span>
+                                    <span class="cart-price-old ms-1">₹74,999</span>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="cart-price-save">You save ₹6,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example cart item 2 -->
+                    <div class="cart-item">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-3 col-md-2">
+                                <div class="cart-item-img-wrap">
+                                    <img src="img/new4.png" alt="HP Victus Gaming">
+                                </div>
+                            </div>
+                            <div class="col-9 col-md-5">
+                                <div class="cart-item-title mb-1">HP Victus Gaming Laptop</div>
+                                <div class="cart-item-meta mb-2">
+                                    Ryzen 7 • 16GB RAM • RTX graphics
+                                </div>
+                                <div class="cart-item-actions d-flex flex-wrap gap-2">
+                                    <button type="button" class="cart-action-link">
+                                        <i class="bi bi-heart"></i> Move to wishlist
+                                    </button>
+                                    <button type="button" class="cart-action-link text-danger">
+                                        <i class="bi bi-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                <input type="number" class="form-control form-control-sm qty-input" min="1" value="1">
+                            </div>
+                            <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
+                                <div>
+                                    <span class="cart-price-main">₹59,999</span>
+                                    <span class="cart-price-old ms-1">₹69,999</span>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="cart-price-save">You save ₹10,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example cart item 3 -->
+                    <div class="cart-item">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-3 col-md-2">
+                                <div class="cart-item-img-wrap">
+                                    <img src="img/watch.png" alt="Smartwatch">
+                                </div>
+                            </div>
+                            <div class="col-9 col-md-5">
+                                <div class="cart-item-title mb-1">Boat Smartwatch</div>
+                                <div class="cart-item-meta mb-2">
+                                    SpO₂ • Heart rate • 1.69" display
+                                </div>
+                                <div class="cart-item-actions d-flex flex-wrap gap-2">
+                                    <button type="button" class="cart-action-link">
+                                        <i class="bi bi-heart"></i> Move to wishlist
+                                    </button>
+                                    <button type="button" class="cart-action-link text-danger">
+                                        <i class="bi bi-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                <input type="number" class="form-control form-control-sm qty-input" min="1" value="2">
+                            </div>
+                            <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
+                                <div>
+                                    <span class="cart-price-main">₹3,998</span>
+                                    <span class="cart-price-old ms-1">₹4,998</span>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="cart-price-save">You save ₹1,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Empty cart example (comment out above items and show this when no items) -->
+                <!--
+                <div class="cart-card p-4">
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">
+                            <i class="bi bi-cart-x"></i>
+                        </div>
+                        <div class="empty-cart-title mb-1">Your cart is empty</div>
+                        <p class="empty-cart-text mb-3">
+                            Add products you like to your cart. Review them here before checkout.
+                        </p>
+                        <a href="products.html" class="btn btn-continue px-4">
+                            <i class="bi bi-arrow-left me-1"></i> Browse products
+                        </a>
+                    </div>
+                </div>
+                -->
+            </div>
+
+            <!-- Right: Summary -->
+            <div class="col-lg-4">
+                <div class="summary-card p-3 p-md-4">
+                    <h2 class="summary-title mb-3">Price details</h2>
+
+                    <div class="d-flex justify-content-between align-items-center summary-line mb-2">
+                        <span>Price (4 items)</span>
+                        <span>₹1,32,?96</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center summary-line mb-2">
+                        <span>Discount</span>
+                        <span class="text-success">− ₹17,000</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center summary-line mb-2">
+                        <span>Delivery charges</span>
+                        <span class="text-success">Free</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center summary-line mb-3">
+                        <span>Secure packaging fee</span>
+                        <span>₹99</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="summary-total">Total amount</span>
+                        <span class="summary-total">₹1,16,095</span>
+                    </div>
+                    <p class="summary-note mb-3">
+                        You will save <span class="text-success fw-semibold">₹17,000</span> on this order compared to MRP.
+                    </p>
+
+                    <button class="btn btn-checkout w-100 mb-2" type="button" onclick="window.location.href='{% url 'checkout' %}'">
+                        Proceed to checkout
+                    </button>
+                    <a class="btn btn-continue w-100" href="products.html">
+                        <i class="bi bi-arrow-left me-1"></i> Continue shopping
+                    </a>
+
+                    <hr class="mt-4 mb-3">
+
+                    <div class="d-flex align-items-start gap-2 summary-note">
+                        <i class="bi bi-shield-lock text-success mt-1"></i>
+                        <span>
+                            Payments are 100% secure and encrypted. Support for UPI, cards, netbanking and wallets.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER (same as home) -->
+<footer class="pt-4 mt-4">
+    <div class="container pb-3">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h5 class="text-light mb-2">Electro</h5>
+                <p style="font-size:0.85rem;">
+                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
+                </p>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="products.html">All products</a></li>
+                    <li><a href="products.html">Mobiles</a></li>
+                    <li><a href="products.html">Laptops</a></li>
+                    <li><a href="products.html">Televisions</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
+                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
+                <form class="d-flex gap-2">
+                    <input type="email" class="form-control form-control-sm" placeholder="Enter your email">
+                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="border-secondary mt-4 mb-2">
+        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
+            <span>© 2025 Electro. All rights reserved.</span>
+            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS only -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+

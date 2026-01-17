@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electro Admin - Add Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root { --admin-primary:#0f172a; --admin-accent:#22c55e; --admin-border:#e5e7eb; --admin-muted:#6b7280; --admin-bg:#f3f4f6;}
+        body{font-family:'Poppins',sans-serif;background:var(--admin-bg);color:#111827;}
+        .admin-wrapper{min-height:100vh;display:flex;}
+        .admin-sidebar{width:250px;background:#fff;border-right:1px solid var(--admin-border);}
+        .admin-main{flex:1;background:#f9fafb;display:flex;flex-direction:column;}
+        .sidebar-brand{padding:14px 18px;border-bottom:1px solid var(--admin-border);}
+        .sidebar-nav{padding:8px 8px 16px;}
+        .sidebar-section-title{font-size:0.7rem;text-transform:uppercase;color:#9ca3af;padding:10px 10px 4px;}
+        .sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:1px 8px 3px;border-radius:999px;color:#111827;font-size:0.86rem;text-decoration:none;}
+        .sidebar-link i{width:18px;text-align:center;}
+        .sidebar-link:hover{background:#e5f2ff;}
+        .sidebar-link.active{background:#dbeafe;color:var(--admin-primary);font-weight:600;border:1px solid #bfdbfe;}
+        .admin-topbar{padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--admin-border);background:#fff;}
+        .admin-breadcrumb{font-size:0.8rem;color:#9ca3af;}
+        .admin-breadcrumb span{color:#111827;font-weight:500;}
+        .admin-content{padding:18px 20px 30px;}
+        .admin-card{background:#fff;border-radius:16px;border:1px solid var(--admin-border);}
+        .admin-card-header{padding:12px 16px;border-bottom:1px solid var(--admin-border);}
+        .admin-card-body{padding:14px 16px 16px;}
+        .section-title{font-size:0.95rem;font-weight:600;}
+        .section-subtitle{font-size:0.8rem;color:var(--admin-muted);}
+        .form-label{font-size:0.82rem;font-weight:500;}
+        .form-control,.form-select,textarea{font-size:0.86rem;}
+        .btn-xs{padding:2px 8px;font-size:0.72rem;border-radius:999px;}
+        .image-hint{font-size:0.78rem;color:var(--admin-muted);}
+        @media(max-width:768px){
+            .admin-wrapper{flex-direction:column}
+            .admin-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--admin-border);}
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar d-flex flex-column">
+        <div class="sidebar-brand d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                     style="width:30px;height:30px;">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <span class="fw-bold">Electro Admin</span>
+            </div>
+            <span class="badge bg-light text-muted border" style="font-size:0.65rem;">v1.0</span>
+        </div>
+        <div class="sidebar-nav flex-grow-1">
+            <div class="sidebar-section-title">Overview</div>
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-link">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <div class="sidebar-section-title">Management</div>
+            <a href="{% url 'admin_users' %}" class="sidebar-link">
+                <i class="bi bi-people"></i> Users
+            </a>
+            <a href="{% url 'admin_products' %}" class="sidebar-link active">
+                <i class="bi bi-box-seam"></i> Products
+            </a>
+            <a href="{% url 'admin_orders' %}" class="sidebar-link">
+                <i class="bi bi-bag-check"></i> Orders
+            </a>
+            <div class="sidebar-section-title">Configuration</div>
+            <a href="{% url 'admin_settings' %}" class="sidebar-link">
+                <i class="bi bi-gear"></i> Settings
+            </a>
+            <a href="{% url 'admin_coupons' %}" class="sidebar-link">
+                <i class="bi bi-ticket-perforated"></i> Coupons
+            </a>
+            <a href="{% url 'admin_banners' %}" class="sidebar-link">
+                <i class="bi bi-image"></i> Banners
+            </a>
+        </div>
+        <div class="px-3 pb-3" style="font-size:0.78rem;">
+            <div class="text-muted mb-1">Logged in as</div>
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="fw-semibold">Admin</div>
+                    <div class="text-muted">admin@electro.com</div>
+                </div>
+                <a href="{% url 'home' %}" class="btn btn-outline-danger btn-xs">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <div class="admin-breadcrumb">Admin / Products / <span>Add product</span></div>
+                <div class="fw-semibold" style="font-size:0.95rem;">Add a new product</div>
+            </div>
+            <a href="{% url 'admin_products' %}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                <i class="bi bi-arrow-left me-1"></i>Back to products
+            </a>
+        </header>
+
+        <main class="admin-content">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="section-title">Product & variants</div>
+                    <div class="section-subtitle">Create the base product and its variants.</div>
+                </div>
+                <div class="admin-card-body">
+                    <!-- Adjust action to your Django view -->
+                    <form method="post" action="" enctype="multipart/form-data">
+                        <!-- {% csrf_token %} -->
+
+                        <div class="row g-3">
+                            <!-- Base product (products table) -->
+                            <div class="col-lg-7">
+                                <h6 class="mb-2">Product details</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="name" class="form-control form-control-sm"
+                                           placeholder="iPhone 14" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Slug</label>
+                                    <input type="text" name="slug" class="form-control form-control-sm"
+                                           placeholder="iphone-14-128gb" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea name="description" class="form-control form-control-sm" rows="4"
+                                              placeholder="Full product description, specs, etc."></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Total stock (all variants)</label>
+                                    <input type="number" name="stock" class="form-control form-control-sm"
+                                           placeholder="e.g. 50" min="0" required>
+                                </div>
+                            </div>
+
+                            <!-- Base product meta: category, brand, image -->
+                            <div class="col-lg-5">
+                                <h6 class="mb-2">Meta & image</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Category</label>
+                                    <!-- category_id -->
+                                    <select name="category_id" class="form-select form-select-sm" required>
+                                        <option value="">Select category</option>
+                                        <!-- replace with Django loop over categories -->
+                                        <option value="1">Mobiles</option>
+                                        <option value="2">Laptops</option>
+                                        <option value="3">Televisions</option>
+                                        <option value="4">Accessories</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Brand</label>
+                                    <!-- brand_id -->
+                                    <select name="brand_id" class="form-select form-select-sm" required>
+                                        <option value="">Select brand</option>
+                                        <!-- replace with Django loop over brands -->
+                                        <option value="1">Apple</option>
+                                        <option value="2">Samsung</option>
+                                        <option value="3">HP</option>
+                                        <option value="4">Boat</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Main image</label>
+                                    <!-- main_image (store file path in DB) -->
+                                    <input class="form-control form-control-sm" type="file"
+                                           name="main_image" accept="image/*">
+                                    <div class="image-hint mt-1">
+                                        Recommended: 600x600px, JPG/PNG, &lt; 1 MB.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-3">
+
+                        <!-- Product variants (product_variants table) -->
+                        <h6 class="mb-2">Variants</h6>
+                        <p class="section-subtitle mb-2">
+                            Add at least one variant. Example: 128GB, 256GB, 8GB RAM, different colors, etc.
+                        </p>
+
+                        <!-- Basic single-variant layout; you can later loop for multiple variants -->
+                        <div class="row g-2 align-items-end mb-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Variant name</label>
+                                <input type="text" name="variants[0][variant_name]"
+                                       class="form-control form-control-sm"
+                                       placeholder="128GB • Blue" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Price (₹)</label>
+                                <input type="number" name="variants[0][price]"
+                                       class="form-control form-control-sm"
+                                       placeholder="68999" min="0" step="0.01" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Discount price (₹)</label>
+                                <input type="number" name="variants[0][discount_price]"
+                                       class="form-control form-control-sm"
+                                       placeholder="64999" min="0" step="0.01">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Variant stock</label>
+                                <input type="number" name="variants[0][stock]"
+                                       class="form-control form-control-sm"
+                                       placeholder="20" min="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <!-- placeholder for + button if you add JS later -->
+                            </div>
+                        </div>
+
+                        <!-- You can duplicate the block above manually for more static variants,
+                             or use JS/formsets later to add rows dynamically. -->
+
+                        <hr class="my-3">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="font-size:0.8rem;color:var(--admin-muted);">
+                                Product will be created first, then its variants will be linked using product_id.
+                            </span>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="bi bi-check2-circle me-1"></i>Save product
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary btn-sm">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

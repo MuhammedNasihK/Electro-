@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electro - Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root{
+            --primary-dark:#0b1020;
+            --primary:#0f172a;
+            --accent:#22c55e;
+            --border-soft:#e5e7eb;
+            --muted:#6b7280;
+            --bg-soft:#f3f4f6;
+        }
+        body{
+            font-family:'Poppins',sans-serif;
+            background:var(--bg-soft);
+            color:#111827;
+        }
+
+        /* Electro navbar */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+        }
+        .navbar .nav-link {
+            color:#e5e7eb !important;
+            font-weight:500;
+            font-size:0.95rem;
+        }
+        .navbar .nav-link.special-hover{
+            position:relative;
+            border-radius:999px;
+            padding-inline:14px;
+            overflow:hidden;
+        }
+        .navbar .nav-link.special-hover::after{
+            content:"";
+            position:absolute;
+            left:50%;
+            bottom:2px;
+            width:0;
+            height:2px;
+            background:#22c55e;
+            transform:translateX(-50%);
+            transition:width .25s ease-out;
+            border-radius:999px;
+        }
+        .navbar .nav-link.special-hover:hover::after{
+            width:60%;
+        }
+        .navbar .nav-link.special-hover:hover{
+            background:rgba(31,41,55,.7);
+        }
+        .icon-btn{
+            border-radius:999px;
+            border-color:#1f2937;
+            color:#e5e7eb;
+            background:transparent;
+            transition:all .2s ease;
+        }
+        .icon-btn i{font-size:1.1rem;}
+        .icon-btn:hover{
+            background:rgba(34,197,94,.1);
+            border-color:#22c55e;
+            color:#bbf7d0;
+            transform:translateY(-1px) scale(1.03);
+            box-shadow:0 0 0 1px rgba(34,197,94,.2);
+        }
+
+        /* Profile layout */
+        .profile-wrapper{
+            min-height:calc(100vh - 64px);
+            padding:24px 0 32px;
+        }
+        .profile-container{
+            max-width:700px;
+            margin:0 auto;
+            padding:0 16px;
+        }
+        .profile-card{
+            background:#ffffff;
+            border-radius:18px;
+            border:1px solid var(--border-soft);
+            box-shadow:0 18px 40px rgba(15,23,42,.06);
+            padding:20px 20px 18px;
+        }
+        .profile-label{
+            font-size:0.78rem;
+            text-transform:uppercase;
+            letter-spacing:.04em;
+            color:var(--muted);
+            margin-bottom:2px;
+        }
+        .profile-value{
+            font-size:0.92rem;
+            font-weight:500;
+        }
+        .profile-section-title{
+            font-size:0.95rem;
+            font-weight:600;
+        }
+        .profile-section-sub{
+            font-size:0.8rem;
+            color:var(--muted);
+        }
+        .empty-address-box{
+            border-radius:12px;
+            border:1px dashed var(--border-soft);
+            background:#f9fafb;
+            padding:12px 14px;
+            font-size:0.85rem;
+            color:var(--muted);
+        }
+        .btn-primary{
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            border:none;
+        }
+        .btn-primary:hover{
+            background:linear-gradient(135deg,#16a34a,#15803d);
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                </li>
+                
+            </ul>
+
+            <!-- Wishlist -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <!-- Cart -->
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- PROFILE CONTENT -->
+<div class="profile-wrapper">
+    <div class="profile-container">
+        <h1 class="h5 fw-bold mb-3">My profile</h1>
+
+        <div class="profile-card">
+            <!-- Basic details -->
+            <div class="mb-3">
+                <div class="profile-section-title mb-1">User details</div>
+                <p class="profile-section-sub mb-3">
+                    These details are linked to your account and used for communication and orders.
+                </p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="profile-label">Username</div>
+                        <div class="profile-value">User Name</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-label">Email</div>
+                        <div class="profile-value">user@example.com</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-label">Phone number</div>
+                        <div class="profile-value">+91 98765 43210</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Address section -->
+            <div class="mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <div>
+                        <div class="profile-section-title">Address</div>
+                        <p class="profile-section-sub mb-0">
+                            Default address used for delivery and invoices.
+                        </p>
+                    </div>
+                    <!-- Button to go to address form/page -->
+                    <a href="add_address.html" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i>Add address
+                    </a>
+                </div>
+
+                <!-- When user has no address yet (placeholder) -->
+                <div class="empty-address-box mt-2">
+                    No address added yet. Click “Add address” to save your delivery address.
+                </div>
+
+                <!-- Example of how it might look when address exists (you can render conditionally from backend) -->
+                <!--
+                <div class="mt-2">
+                    <div class="profile-label">Saved address</div>
+                    <div class="profile-value">
+                        John Doe<br>
+                        221B Baker Street, Near Central Mall<br>
+                        Bengaluru, Karnataka – 560001, India
+                    </div>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

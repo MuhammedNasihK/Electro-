@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro Admin - Login</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --muted: #6b7280;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px 26px;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.6);
+            border: 1px solid #e5e7eb;
+        }
+
+        .login-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            font-size: 0.9rem;
+            border-radius: 999px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35);
+        }
+
+        .btn-login {
+            border-radius: 999px;
+            background: var(--accent);
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .btn-login:hover {
+            background: #16a34a;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="text-center mb-3">
+        <div class="fw-bold fs-3" style="color: #0f172a;">Electro</div>
+        <div class="brand-badge mt-1">
+            <span class="brand-dot"></span>
+            <span>Admin panel</span>
+        </div>
+    </div>
+
+    <h1 class="login-title mb-1">Admin Login</h1>
+    <p class="login-subtitle mb-3">Sign in to manage products, orders and users.</p>
+
+    <!-- Use your Django URL name here e.g. {% url 'admin_login' %} -->
+    <form method="post" action="#">
+        <!-- {% csrf_token %} -->
+
+        <div class="mb-3">
+            <label for="adminEmail" class="form-label">Email address</label>
+            <input type="email"
+                   class="form-control"
+                   id="adminEmail"
+                   name="email"
+                   placeholder="admin@example.com"
+                   required>
+        </div>
+
+        <div class="mb-2">
+            <label for="adminPassword" class="form-label">Password</label>
+            <input type="password"
+                   class="form-control"
+                   id="adminPassword"
+                   name="password"
+                   placeholder="Enter password"
+                   required>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span style="font-size:0.8rem; color:var(--muted);">Only authorized admins can login.</span>
+        </div>
+
+        <button type="submit" class="btn btn-login w-100">
+            <i class="bi bi-shield-lock me-1"></i> Login
+        </button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

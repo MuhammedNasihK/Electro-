@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electro - Checkout</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-dark: #0b1020;
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.12);
+            --muted: #6b7280;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+        }
+        .navbar-brand {
+            letter-spacing: 1px;
+        }
+        .navbar .nav-link {
+            color: #e5e7eb !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .navbar .nav-link.special-hover {
+            position: relative;
+            border-radius: 999px;
+            padding-inline: 14px;
+            overflow: hidden;
+        }
+        .navbar .nav-link.special-hover::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transform: translateX(-50%);
+            transition: width 0.25s ease-out;
+            border-radius: 999px;
+        }
+        .navbar .nav-link.special-hover:hover::after {
+            width: 60%;
+        }
+        .navbar .nav-link.special-hover:hover {
+            background: rgba(31, 41, 55, 0.7);
+        }
+
+        .icon-btn {
+            border-radius: 999px;
+            border-color: #1f2937;
+            color: #e5e7eb;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .icon-btn i {
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #bbf7d0;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Header */
+        .checkout-header {
+            padding: 24px 0 10px;
+        }
+        .checkout-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+        .checkout-subtitle {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .checkout-steps {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .checkout-layout {
+            max-width: 800px;
+        }
+
+        .checkout-card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12);
+            transition: box-shadow 0.25s ease, transform 0.2s ease;
+        }
+        .checkout-card:hover {
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .section-heading {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .section-caption {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .profile-address-card {
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 12px 14px;
+            font-size: 0.84rem;
+            background: #f9fafb;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        .profile-address-card:hover {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 1px rgba(34,197,94,0.35);
+            background: #f3faf6;
+        }
+        .profile-address-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .profile-address-name {
+            font-weight: 600;
+        }
+        .profile-address-meta {
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-control, .form-select {
+            font-size: 0.86rem;
+            border-radius: 10px;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
+            background-color: #ffffff;
+        }
+
+        .btn-link-sm {
+            font-size: 0.8rem;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: #2563eb;
+        }
+        .btn-link-sm:hover {
+            text-decoration: underline;
+            color: #1d4ed8;
+        }
+
+        .btn-next-step {
+            background: #22c55e;
+            border-radius: 999px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #0f172a;
+            padding-inline: 26px;
+            transition: all 0.2s ease-out;
+        }
+        .btn-next-step:hover {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 12px 26px rgba(22, 163, 74, 0.45);
+            transform: translateY(-1px);
+        }
+        .btn-back-cart {
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            font-size: 0.85rem;
+            color: #374151;
+            background: #f9fafb;
+            transition: all 0.18s ease-out;
+        }
+        .btn-back-cart:hover {
+            background: #ffffff;
+            border-color: #9ca3af;
+        }
+
+        footer {
+            background: #020617;
+            color: #9ca3af;
+        }
+        footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        footer a:hover {
+            color: #f9fafb;
+        }
+
+        /* Animated collapse block */
+        .collapse-inner {
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .collapse.show .collapse-inner {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
+                </li>
+
+                <!-- Profile dropdown (icon) -->
+                <li class="nav-item dropdown ms-3">
+                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
+                       href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-5"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                                <i class="bi bi-person-circle me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                                <i class="bi bi-bag-check me-2"></i> Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
+                                <i class="bi bi-info-circle me-2"></i> About
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Wishlist -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <!-- Cart -->
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- CHECKOUT HEADER -->
+<section class="checkout-header">
+    <div class="container checkout-layout">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h1 class="checkout-title mb-1">Checkout</h1>
+                <p class="checkout-subtitle mb-1">
+                    Choose your delivery address before moving to payment.
+                </p>
+                <p class="checkout-steps mb-0">
+                    Step 1 of 2 · Delivery details → Payment
+                </p>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-light text-dark me-1" style="font-size:0.75rem;">
+                    <i class="bi bi-lock-fill me-1 text-success"></i> Payment is completed on the next step
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHECKOUT CONTENT -->
+<section class="pb-4">
+    <div class="container checkout-layout">
+
+        <!-- Address choice + form -->
+        <div class="checkout-card p-3 p-md-4 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <div class="section-heading">Delivery address</div>
+                    <div class="section-caption">
+                        Use the address saved in your profile or enter a new address for this order.
+                    </div>
+                </div>
+                <a href="profile.html" class="btn-link-sm">
+                    <i class="bi bi-person-lines-fill me-1"></i>View in profile
+                </a>
+            </div>
+
+            <!-- Option 1: profile address (default) -->
+            <div class="mb-3">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="addressMode" id="optProfile" checked
+                           data-bs-toggle="collapse" data-bs-target="#newAddressCollapse"
+                           aria-expanded="false" aria-controls="newAddressCollapse">
+                    <label class="form-check-label fw-semibold" for="optProfile" style="font-size:0.85rem;">
+                        Use profile address
+                    </label>
+                </div>
+
+                <div class="profile-address-card">
+                    <div class="profile-address-header">
+                        <div>
+                            <div class="profile-address-name">John Doe</div>
+                            <div class="profile-address-meta">
+                                +91 98765 43210 · john@example.com
+                            </div>
+                        </div>
+                        <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Profile address</span>
+                    </div>
+                    <div style="font-size:0.8rem;">
+                        #21, 4th Cross, MG Road, Indiranagar, Bengaluru, Karnataka - 560001
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Option 2: new address -->
+            <div class="mb-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="addressMode" id="optNew"
+                           data-bs-toggle="collapse" data-bs-target="#newAddressCollapse"
+                           aria-expanded="false" aria-controls="newAddressCollapse">
+                    <label class="form-check-label fw-semibold" for="optNew" style="font-size:0.85rem;">
+                        Use a new address for this order
+                    </label>
+                </div>
+            </div>
+
+            <!-- New address + notes with animated collapse -->
+            <div class="collapse mt-3" id="newAddressCollapse">
+                <div class="collapse-inner">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full name</label>
+                            <input type="text" class="form-control" placeholder="John Doe">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mobile number</label>
+                            <input type="tel" class="form-control" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Address line</label>
+                            <input type="text" class="form-control" placeholder="House no, street, locality">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pincode</label>
+                            <input type="text" class="form-control" placeholder="560001">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-control" placeholder="Bengaluru">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">State</label>
+                            <select class="form-select">
+                                <option selected disabled>Select state</option>
+                                <option>Karnataka</option>
+                                <option>Maharashtra</option>
+                                <option>Tamil Nadu</option>
+                                <option>Delhi</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Landmark (optional)</label>
+                            <input type="text" class="form-control" placeholder="Near mall, bus stop, etc.">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Order notes (optional)</label>
+                            <textarea class="form-control" rows="3"
+                                      placeholder="Add delivery instructions or preferences for the delivery partner."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
+            <a href="cart.html" class="btn btn-back-cart">
+                <i class="bi bi-arrow-left me-1"></i> Back to cart
+            </a>
+            <a href="{% url 'payment' %}" class="btn btn-next-step">
+                Continue to payment
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="pt-4 mt-4">
+    <div class="container pb-3">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h5 class="text-light mb-2">Electro</h5>
+                <p style="font-size:0.85rem;">
+                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
+                </p>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="products.html">All products</a></li>
+                    <li><a href="products.html">Mobiles</a></li>
+                    <li><a href="products.html">Laptops</a></li>
+                    <li><a href="products.html">Televisions</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
+                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
+                <form class="d-flex gap-2">
+                    <input type="email" class="form-control form-control-sm" placeholder="Enter your email">
+                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="border-secondary mt-4 mb-2">
+        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
+            <span>© 2025 Electro. All rights reserved.</span>
+            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS only -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electro Admin - Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --admin-primary: #0f172a;
+            --admin-accent: #22c55e;
+            --admin-border: #e5e7eb;
+            --admin-muted: #6b7280;
+            --admin-bg: #f3f4f6;
+        }
+        body { font-family:'Poppins',sans-serif; background:var(--admin-bg); color:#111827; }
+        .admin-wrapper { min-height:100vh; display:flex; }
+        .admin-sidebar { width:250px; background:#fff; border-right:1px solid var(--admin-border); }
+        .admin-main { flex:1; background:#f9fafb; display:flex; flex-direction:column; }
+        .sidebar-brand { padding:14px 18px; border-bottom:1px solid var(--admin-border); }
+        .sidebar-nav { padding:8px 8px 16px; }
+        .sidebar-section-title { font-size:0.7rem; text-transform:uppercase; color:#9ca3af; padding:10px 10px 4px; }
+        .sidebar-link { display:flex; align-items:center; gap:10px; padding:9px 12px; margin:1px 8px 3px;
+                        border-radius:999px; color:#111827; font-size:0.86rem; text-decoration:none; }
+        .sidebar-link i { width:18px; text-align:center; }
+        .sidebar-link:hover { background:#e5f2ff; }
+        .sidebar-link.active { background:#dbeafe; color:var(--admin-primary); font-weight:600; border:1px solid #bfdbfe; }
+        .admin-topbar { padding:10px 20px; display:flex; align-items:center; justify-content:space-between;
+                        border-bottom:1px solid var(--admin-border); background:#fff; }
+        .admin-breadcrumb { font-size:0.8rem; color:#9ca3af; }
+        .admin-breadcrumb span { color:#111827; font-weight:500; }
+        .admin-content { padding:18px 20px 30px; }
+        .admin-card { background:#fff; border-radius:16px; border:1px solid var(--admin-border); }
+        .admin-card-header { padding:12px 16px; border-bottom:1px solid var(--admin-border); }
+        .admin-card-body { padding:14px 16px 16px; }
+        .section-title { font-size:0.95rem; font-weight:600; }
+        .section-subtitle { font-size:0.8rem; color:var(--admin-muted); }
+        .form-label { font-size:0.82rem; font-weight:500; }
+        .form-control, .form-select { font-size:0.86rem; }
+        .btn-xs { padding:2px 8px; font-size:0.72rem; border-radius:999px; }
+        @media (max-width:768px){
+            .admin-wrapper{flex-direction:column;}
+            .admin-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--admin-border);}
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar d-flex flex-column">
+        <div class="sidebar-brand d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                     style="width:30px;height:30px;">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <span class="fw-bold">Electro Admin</span>
+            </div>
+            <span class="badge bg-light text-muted border" style="font-size:0.65rem;">v1.0</span>
+        </div>
+        <div class="sidebar-nav flex-grow-1">
+            <div class="sidebar-section-title">Overview</div>
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-link">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <div class="sidebar-section-title">Management</div>
+            <a href="{% url 'admin_users' %}" class="sidebar-link">
+                <i class="bi bi-people"></i> Users
+            </a>
+            <a href="{% url 'admin_products' %}" class="sidebar-link">
+                <i class="bi bi-box-seam"></i> Products
+            </a>
+            <a href="{% url 'admin_orders' %}" class="sidebar-link">
+                <i class="bi bi-bag-check"></i> Orders
+            </a>
+            <div class="sidebar-section-title">Configuration</div>
+            <a href="{% url 'admin_settings' %}" class="sidebar-link active">
+                <i class="bi bi-gear"></i> Settings
+            </a>
+            <a href="{% url 'admin_coupons' %}" class="sidebar-link">
+                <i class="bi bi-ticket-perforated"></i> Coupons
+            </a>
+            <a href="{% url 'admin_banners' %}" class="sidebar-link">
+                <i class="bi bi-image"></i> Banners
+            </a>
+        </div>
+        <div class="px-3 pb-3" style="font-size:0.78rem;">
+            <div class="text-muted mb-1">Logged in as</div>
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="fw-semibold">Admin</div>
+                    <div class="text-muted">admin@electro.com</div>
+                </div>
+                <a href="{% url 'home' %}" class="btn btn-outline-danger btn-xs">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <div class="admin-breadcrumb">Admin / <span>Settings</span></div>
+                <div class="fw-semibold" style="font-size:0.95rem;">Store & system settings</div>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <div class="row g-3">
+                <!-- Store settings -->
+                <div class="col-lg-7">
+                    <div class="admin-card mb-3">
+                        <div class="admin-card-header">
+                            <div class="section-title">Store details</div>
+                            <div class="section-subtitle">Basic information shown to customers.</div>
+                        </div>
+                        <div class="admin-card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Store name</label>
+                                    <input type="text" class="form-control form-control-sm" value="Electro Store">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Support email</label>
+                                    <input type="email" class="form-control form-control-sm" value="support@electro.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Support phone</label>
+                                    <input type="text" class="form-control form-control-sm" value="+91 90000 00000">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Default address</label>
+                                    <textarea class="form-control form-control-sm" rows="2">Electro Pvt. Ltd, Delhi, India</textarea>
+                                </div>
+                                <button class="btn btn-success btn-sm" type="submit">
+                                    <i class="bi bi-check2-circle me-1"></i>Save changes
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin details -->
+                <div class="col-lg-5">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <div class="section-title">Admin details</div>
+                            <div class="section-subtitle">Update your admin profile and login details.</div>
+                        </div>
+                        <div class="admin-card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Admin name</label>
+                                    <input type="text" class="form-control form-control-sm" value="Admin">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Admin email</label>
+                                    <input type="email" class="form-control form-control-sm" value="admin@electro.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contact number</label>
+                                    <input type="text" class="form-control form-control-sm" value="+91 90000 00000">
+                                </div>
+                                <hr class="my-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Current password</label>
+                                    <input type="password" class="form-control form-control-sm" placeholder="Enter current password">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">New password</label>
+                                    <input type="password" class="form-control form-control-sm" placeholder="Enter new password">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirm new password</label>
+                                    <input type="password" class="form-control form-control-sm" placeholder="Re-enter new password">
+                                </div>
+                                <button class="btn btn-success btn-sm" type="submit">
+                                    <i class="bi bi-person-check me-1"></i>Update admin details
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
