@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electro - Sign up</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
         :root {
@@ -28,13 +24,10 @@
             min-height: 100vh;
         }
 
-        /* Navbar – unchanged colors/behaviour */
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
         }
-        .navbar-brand {
-            letter-spacing: 1px;
-        }
+        .navbar-brand { letter-spacing: 1px; }
         .navbar .nav-link {
             color: #e5e7eb !important;
             font-weight: 500;
@@ -58,12 +51,8 @@
             transition: width 0.25s ease-out;
             border-radius: 999px;
         }
-        .navbar .nav-link.special-hover:hover::after {
-            width: 60%;
-        }
-        .navbar .nav-link.special-hover:hover {
-            background: rgba(15, 23, 42, 0.7);
-        }
+        .navbar .nav-link.special-hover:hover::after { width: 60%; }
+        .navbar .nav-link.special-hover:hover { background: rgba(15, 23, 42, 0.7); }
 
         .icon-btn {
             border-radius: 999px;
@@ -72,9 +61,7 @@
             background: transparent;
             transition: all 0.2s ease;
         }
-        .icon-btn i {
-            font-size: 1.1rem;
-        }
+        .icon-btn i { font-size: 1.1rem; }
         .icon-btn:hover {
             background: rgba(34, 197, 94, 0.1);
             border-color: #22c55e;
@@ -83,7 +70,6 @@
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
         }
 
-        /* Auth layout */
         .auth-wrapper {
             min-height: calc(100vh - 220px);
             display: flex;
@@ -92,10 +78,7 @@
             padding-bottom: 40px;
         }
 
-        .auth-shell {
-            max-width: 940px;
-            margin-inline: auto;
-        }
+        .auth-shell { max-width: 940px; margin-inline: auto; }
 
         .auth-card {
             background: #ffffff;
@@ -122,27 +105,11 @@
             font-size: 0.78rem;
             color: #111827;
         }
+        .auth-visual-badge i { color: #22c55e; }
 
-        .auth-visual-badge i {
-            color: #22c55e;
-        }
-
-        .auth-visual-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .auth-visual-list {
-            font-size: 0.82rem;
-            color: #4b5563;
-        }
-
-        .auth-visual-list li i {
-            color: #22c55e;
-            font-size: 0.9rem;
-        }
-
+        .auth-visual-title { font-size: 1.6rem; font-weight: 700; color: #0f172a; }
+        .auth-visual-list { font-size: 0.82rem; color: #4b5563; }
+        .auth-visual-list li i { color: #22c55e; font-size: 0.9rem; }
         .auth-visual-tag {
             display: inline-flex;
             align-items: center;
@@ -155,27 +122,11 @@
             color: #15803d;
         }
 
-        .auth-form-area {
-            padding: 26px 26px 26px;
-            background: #ffffff;
-        }
+        .auth-form-area { padding: 26px 26px 26px; background: #ffffff; }
+        .auth-title { font-size: 1.4rem; font-weight: 700; color: #111827; }
+        .auth-subtitle { font-size: 0.86rem; color: #6b7280; }
 
-        .auth-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .auth-subtitle {
-            font-size: 0.86rem;
-            color: #6b7280;
-        }
-
-        .form-label {
-            font-size: 0.8rem;
-            color: #111827;
-            margin-bottom: 4px;
-        }
+        .form-label { font-size: 0.8rem; color: #111827; margin-bottom: 4px; }
 
         .form-control {
             font-size: 0.88rem;
@@ -189,12 +140,7 @@
             color: #111827;
             transition: all 0.15s ease-out;
         }
-
-        .form-control::placeholder {
-            color: #9ca3af;
-            font-size: 0.82rem;
-        }
-
+        .form-control::placeholder { color: #9ca3af; font-size: 0.82rem; }
         .form-control:focus {
             border-color: #22c55e;
             box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
@@ -214,17 +160,11 @@
             transition: all 0.18s ease-out;
             box-shadow: 0 8px 18px rgba(22, 163, 74, 0.35);
         }
-
         .btn-primary-main:hover {
             background: #16a34a;
             transform: translateY(-1px);
             box-shadow: 0 12px 26px rgba(22, 163, 74, 0.55);
             color: #ffffff;
-        }
-
-        .btn-primary-main:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
         }
 
         .btn-google {
@@ -238,112 +178,40 @@
             box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08);
         }
 
-        .btn-google:hover {
-            background: #f3f4f6;
-            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
-            transform: translateY(-1px);
-        }
-
-        .btn-google:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 8px rgba(15, 23, 42, 0.12);
-        }
-
-        .auth-meta {
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-
-        .auth-meta strong {
-            color: #111827;
-        }
-
-        .auth-link {
-            font-size: 0.8rem;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .auth-link:hover {
-            text-decoration: underline;
-        }
+        .auth-meta { font-size: 0.8rem; color: #6b7280; }
+        .auth-link { font-size: 0.8rem; color: #2563eb; text-decoration: none; font-weight: 500; }
+        .auth-link:hover { text-decoration: underline; }
 
         .divider-text {
-            text-align: center;
-            font-size: 0.78rem;
-            color: #9ca3af;
-            position: relative;
+            text-align: center; font-size: 0.78rem; color: #9ca3af; position: relative;
         }
+        .divider-text::before, .divider-text::after {
+            content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: #e5e7eb;
+        }
+        .divider-text::before { left: 0; }
+        .divider-text::after { right: 0; }
 
-        .divider-text::before,
-        .divider-text::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: #e5e7eb;
-        }
-
-        .divider-text::before {
-            left: 0;
-        }
-
-        .divider-text::after {
-            right: 0;
-        }
-
-        footer {
-            background: #020617;
-            color: #9ca3af;
-        }
-        footer a {
-            color: #9ca3af;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-        footer a:hover {
-            color: #f9fafb;
-        }
+        footer { background: #020617; color: #9ca3af; }
+        footer a { color: #9ca3af; text-decoration: none; font-size: 0.85rem; }
+        footer a:hover { color: #f9fafb; }
 
         @media (max-width: 991.98px) {
-            .auth-card {
-                border-radius: 20px;
-            }
-            .auth-visual {
-                border-right: none;
-                border-bottom: 1px solid rgba(229, 231, 235, 0.9);
-            }
+            .auth-card { border-radius: 20px; }
+            .auth-visual { border-right: none; border-bottom: 1px solid rgba(229, 231, 235, 0.9); }
         }
+
+        .errorlist { list-style: none; padding: 0; margin: 0; color: #dc3545; font-size: 0.75rem; }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR WITHOUT SEARCH BAR, WITH GREEN–BLACK GRADIENT -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
+        <a class="navbar-brand fw-bold text-light fs-3" href="/">Electro</a>
         <div class="collapse navbar-collapse" id="mainNav">
-
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item me-2">
-                    <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
-                </li>
+                <li class="nav-item me-2"><a class="nav-link fw-semibold special-hover" href="/">Home</a></li>
             </ul>
-
-            <a class="btn icon-btn fw-semibold ms-2 d-none d-lg-inline-flex" href="{% url 'wishlist' %}">
-                <i class="bi bi-heart"></i>
-            </a>
-
         </div>
     </div>
 </nav>
@@ -354,7 +222,6 @@
             <div class="col-lg-10">
                 <div class="auth-card">
                     <div class="row g-0">
-                        <!-- Visual / marketing side -->
                         <div class="col-lg-5 auth-visual d-flex flex-column justify-content-between">
                             <div>
                                 <span class="auth-visual-badge mb-3">
@@ -363,148 +230,83 @@
                                 </span>
                                 <h2 class="auth-visual-title mb-2">Sign up for a faster Electro experience.</h2>
                                 <p class="mb-3" style="font-size:0.86rem;color:#4b5563;">
-                                    Create a free account to sync your cart, track every order in one place, and never miss a launch.
+                                    Create a free account to sync your cart and track every order.
                                 </p>
-                                <ul class="auth-visual-list list-unstyled mb-0">
-                                    <li class="d-flex align-items-start mb-1">
-                                        <i class="bi bi-check-circle me-2 mt-1"></i>
-                                        <span>Track orders and returns in real time.</span>
-                                    </li>
-                                    <li class="d-flex align-items-start mb-1">
-                                        <i class="bi bi-check-circle me-2 mt-1"></i>
-                                        <span>Save multiple addresses and payment preferences.</span>
-                                    </li>
-                                    <li class="d-flex align-items-start">
-                                        <i class="bi bi-check-circle me-2 mt-1"></i>
-                                        <span>Early access to festive and flash sale deals.</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="mt-3">
-                                <span class="auth-visual-tag">
-                                    <span class="badge rounded-pill bg-success-subtle text-success border-0">
-                                        <i class="bi bi-star-fill"></i>
-                                    </span>
-                                    Trusted by thousands of tech shoppers
-                                </span>
                             </div>
                         </div>
 
-                        <!-- Form side -->
                         <div class="col-lg-7 auth-form-area">
                             <h1 class="auth-title mb-1">Create your account</h1>
-                            <p class="auth-subtitle mb-4">
-                                Sign up to track orders, manage your wishlist and receive tailored offers on your favourite tech.
-                            </p>
+                            <p class="auth-subtitle mb-4">Sign up to track orders and manage your wishlist.</p>
 
-                            <form>
+                            <form method="POST">
+                                {% csrf_token %}
+
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger py-2" style="font-size: 0.8rem; border-radius: 12px;">
+                                        {{ form.non_field_errors }}
+                                    </div>
+                                {% endif %}
+
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="username"
-                                               placeholder="Choose a username">
+                                        <label class="form-label">Username</label>
+                                        {{ form.username }}
+                                        {{ form.username.errors }}
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label for="phone" class="form-label">Phone number</label>
-                                        <input type="text" class="form-control" id="phone"
-                                               placeholder="Your active phone number">
+                                    <div class="col-md-6 position-relative">
+                                        <label class="form-label">Phone number</label>
+                                        <div class="position-relative">
+                                            <div class="position-absolute start-0 top-50 translate-middle-y ms-2" style="z-index: 10; pointer-events: none; color: #6b7280; font-weight: 500;">+91</div>
+                                            {{ form.phone }}
+                                        </div>
+                                        {{ form.phone.errors }}
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="email" class="form-label">Email address</label>
-                                        <input type="email" class="form-control" id="email"
-                                               placeholder="name@example.com">
+                                        <label class="form-label">Email address</label>
+                                        {{ form.email }}
+                                        {{ form.email.errors }}
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password"
-                                               placeholder="At least 8 characters">
+                                        <label class="form-label">Password</label>
+                                        {{ form.password }}
+                                        {{ form.password.errors }}
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="confirmPassword" class="form-label">Confirm password</label>
-                                        <input type="password" class="form-control" id="confirmPassword"
-                                               placeholder="Re-enter password">
+                                        <label class="form-label">Confirm password</label>
+                                        {{ form.confirm_password }}
+                                        {{ form.confirm_password.errors }}
                                     </div>
                                 </div>
 
                                 <div class="d-grid gap-2 mt-4 mb-3">
-                                    <button type="submit" class="btn btn-primary-main">
-                                        Sign up
-                                    </button>
+                                    <button type="submit" class="btn btn-primary-main">Sign up</button>
                                 </div>
 
-                                <p class="divider-text mb-3">
-                                    or continue with
-                                </p>
+                                <p class="divider-text mb-3">or continue with</p>
 
                                 <div class="d-grid mb-3">
                                     <button type="button" class="btn btn-google">
-                                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                                             alt="" width="18" class="me-2">
+                                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" width="18" class="me-2">
                                         Google
                                     </button>
                                 </div>
 
                                 <p class="auth-meta mb-0 text-center">
-                                    Already registered with Electro?
-                                    <a href="{% url 'login' %}" class="auth-link">Sign in to your account</a>
+                                    Already registered? <a href="#" class="auth-link">Sign in</a>
                                 </p>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<footer class="pt-4 mt-4">
-    <div class="container pb-3">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <h5 class="text-light mb-2">Electro</h5>
-                <p style="font-size:0.85rem;">
-                    Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
-                </p>
-            </div>
-            <div class="col-md-2">
-                <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
-                <ul class="list-unstyled mb-0">
-                    <li><a href="products.html">All products</a></li>
-                    <li><a href="products.html">Mobiles</a></li>
-                    <li><a href="products.html">Laptops</a></li>
-                    <li><a href="products.html">Televisions</a></li>
-                </ul>
-            </div>
-            <div class="col-md-2">
-                <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
-                <ul class="list-unstyled mb-0">
-                    <li><a href="login.html">Login</a></li>
-                    <li><a href="signup.html">Sign up</a></li>
-                    <li><a href="wishlist.html">Wishlist</a></li>
-                    <li><a href="cart.html">Cart</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h6 class="text-light mb-2" style="font-size:0.9rem;">Stay updated</h6>
-                <p style="font-size:0.82rem;">Get early access to new launches and exclusive offers.</p>
-                <form class="d-flex gap-2">
-                    <input type="email" class="form-control form-control-sm" placeholder="Enter your email">
-                    <button class="btn btn-sm btn-success" type="submit">Subscribe</button>
-                </form>
-            </div>
-        </div>
-        <hr class="border-secondary mt-4 mb-2">
-        <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
-            <span>© 2025 Electro. All rights reserved.</span>
-            <span>Made with Bootstrap &amp; HTML/CSS.</span>
-        </div>
-    </div>
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
