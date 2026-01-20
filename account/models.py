@@ -10,7 +10,6 @@ class User(AbstractBaseUser):
 
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=10,unique=True)
     
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
