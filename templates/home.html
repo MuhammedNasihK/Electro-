@@ -452,9 +452,16 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                            </a>
+                            {% if request.User.is_authenticated %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Logout
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </a>
+                            {% endif %}
+
                         </li>
                     </ul>
                 </li>

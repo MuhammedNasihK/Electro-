@@ -90,7 +90,7 @@
                     <div class="fw-semibold">Admin</div>
                     <div class="text-muted">admin@electro.com</div>
                 </div>
-                <a href="{% url 'home' %}" class="btn btn-outline-danger btn-xs">
+                <a href="{% url 'admin_logout' %}" class="btn btn-outline-danger btn-xs">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>
@@ -134,16 +134,17 @@
                         <table class="table table-sm align-middle mb-0">
                             <thead class="table-light" style="font-size:0.8rem;">
                             <tr>
-                                <th>User</th><th>Email</th><th>Phone</th><th>Joined</th>
+                                <th>User</th><th>Email</th><th>Phone</th><th>Last Logged In</th>
                                 <th>Status</th><th>Orders</th><th>Actions</th>
                             </tr>
                             </thead>
                             <tbody style="font-size:0.82rem;">
+                            {% for i in user_data%}   
                             <tr>
-                                <td>John Doe</td>
-                                <td>john@example.com</td>
+                                <td>{{ i.username }}</td>
+                                <td>{{ i.email }}</td>
                                 <td>+91 98765 43210</td>
-                                <td>2025-01-12</td>
+                                <td>{{ i.last_login }}</td>
                                 <td><span class="badge badge-soft-success">Active</span></td>
                                 <td>12</td>
                                 <td>
@@ -151,17 +152,7 @@
                                     <button class="btn btn-outline-danger btn-xs">Block</button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Test User</td>
-                                <td>test@example.com</td>
-                                <td>-</td>
-                                <td>2025-03-20</td>
-                                <td><span class="badge badge-soft-danger">Blocked</span></td>
-                                <td>0</td>
-                                <td>
-                                    <button class="btn btn-outline-secondary btn-xs">Unblock</button>
-                                </td>
-                            </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

@@ -7,6 +7,7 @@ class UserManager(BaseUserManager):
             username = username,
             email = email,
             is_active = True,
+            is_staff = False,
             is_superuser = False,
         )
 
@@ -20,6 +21,7 @@ class UserManager(BaseUserManager):
             username = username,
             email = email,
             is_active = True,
+            is_staff = True,
             is_superuser = True
         )
 

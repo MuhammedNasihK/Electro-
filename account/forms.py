@@ -25,4 +25,12 @@ class SignUpForm(forms.ModelForm):
             raise forms.ValidationError('Password not matching')
         
         return cleaned_data
+    
+
+class LoginForm(forms.Form):
+    
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'Enter registered email'}))
+
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter your password'}))
+
         
