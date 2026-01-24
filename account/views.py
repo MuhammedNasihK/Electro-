@@ -1,15 +1,18 @@
 from django.shortcuts import render,redirect
-from .forms import SignUpForm,LoginForm
-from django.contrib.auth import get_user_model,login as user_login
+from .forms import SignUpForm,LoginForm,ForgotEmailForm
+from django.contrib.auth import get_user_model,login as user_login,logout as user_logout
 from django.contrib.auth.decorators import login_required
-
+import random
 
 # Create your views here.
 
 
 User = get_user_model()
 
+
 def sign_up(request):
+    if request.user.is_authenticated:
+        return redirect('home')
 
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -28,6 +31,8 @@ def sign_up(request):
 
 def login(request):
 
+    if request.user.is_authenticated:
+        return redirect('home')
     form = LoginForm()
 
     if request.method == 'POST':
@@ -63,7 +68,9 @@ def login(request):
    
     return render(request,'login.html',{'form':form})
 
+@login_required
 def logout(request):
+    user_logout(request)
     return redirect('home')
 
 def wishlist(request):
@@ -73,7 +80,21 @@ def profile(request):
     return render(request,'profile.html')
 
 def forgot_password_email(request):
-    return render(request,'forgot password email.html')
+    if request.method == 'POST':
+        form = ForgotEmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                user_data = User.objects.get(email=email)
+            except User.DoesNotExist:
+                form.add_error(None,'User Not Exist')
+                return render(request,'forgot password email.html',{'form':form})
+            
+            otp = random.randint(000000,999999)
+            
+
+    form = ForgotEmailForm()
+    return render(request,'forgot password email.html',{'form':form})
 
 def forgot_password_otp(request):
     return render(request,'forgot password otp.html')
