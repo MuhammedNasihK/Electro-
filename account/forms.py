@@ -19,8 +19,12 @@ class SignUpForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
+        
         if len(password) < 4:
-            raise forms.ValidationError('Password must contain 4 characters')
+            raise forms.ValidationError('Password must contain four values')
+        
+        elif password.isdigit():
+            raise forms.ValidationError('Password must contain characters')
         confirm_password = cleaned_data.get('confirm_password')
     
         if password and confirm_password and password != confirm_password:
@@ -36,6 +40,39 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter your password'}))
 
 
-
 class ForgotEmailForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'Enter Registerd Email'}))
+
+
+class ForgotOtpForm(forms.Form):
+    otp1 = forms.CharField(max_length=1,widget=forms.TextInput(attrs={'class':'form-control otp-input'}))
+    otp2 = forms.CharField(max_length=1,widget=forms.TextInput(attrs={'class':'form-control otp-input'}))
+    otp3 = forms.CharField(max_length=1,widget=forms.TextInput(attrs={'class':'form-control otp-input'}))
+    otp4 = forms.CharField(max_length=1,widget=forms.TextInput(attrs={'class':'form-control otp-input'}))
+    otp5 = forms.CharField(max_length=1,widget=forms.TextInput(attrs={'class':'form-control otp-input'}))
+    otp6 = forms.CharField(max_length=1,widget=forms.TextInput(attrs={'class':'form-control otp-input'}))
+
+    def get_otp(self):
+        return (self.cleaned_data['otp1']+
+                self.cleaned_data['otp2']+
+                self.cleaned_data['otp3']+
+                self.cleaned_data['otp4']+
+                self.cleaned_data['otp5']+
+                self.cleaned_data['otp6'])
+    
+class NewPasswordForm(forms.Form):
+    password = forms.CharField(min_length=4,widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter new password'}))
+    confirm_password = forms.CharField(min_length=4,widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter new password'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password')
+        p2 = cleaned_data.get('confirm_password')
+
+        if len(p1) < 4:
+            raise forms.ValidationError('Password must contain four values')
+
+        elif p1 and p2 and p1 != p2:
+            raise forms.ValidationError('Password not matching')
+        
+        return cleaned_data

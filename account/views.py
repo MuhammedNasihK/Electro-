@@ -1,15 +1,17 @@
 from django.shortcuts import render,redirect
-from .forms import SignUpForm,LoginForm,ForgotEmailForm
+from .forms import SignUpForm,LoginForm,ForgotEmailForm,ForgotOtpForm,NewPasswordForm
 from django.contrib.auth import get_user_model,login as user_login,logout as user_logout
 from django.contrib.auth.decorators import login_required
+from .decorators import logout_required
+from django.core.mail import send_mail
+from django.conf import settings
 import random
 
 # Create your views here.
 
-
 User = get_user_model()
 
-
+@logout_required
 def sign_up(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -29,6 +31,8 @@ def sign_up(request):
 
     return render(request,'sign up.html',{'form':form})
 
+
+@logout_required
 def login(request):
 
     if request.user.is_authenticated:
@@ -68,6 +72,7 @@ def login(request):
    
     return render(request,'login.html',{'form':form})
 
+
 @login_required
 def logout(request):
     user_logout(request)
@@ -79,6 +84,8 @@ def wishlist(request):
 def profile(request):
     return render(request,'profile.html')
 
+
+@logout_required
 def forgot_password_email(request):
     if request.method == 'POST':
         form = ForgotEmailForm(request.POST)
@@ -90,14 +97,85 @@ def forgot_password_email(request):
                 form.add_error(None,'User Not Exist')
                 return render(request,'forgot password email.html',{'form':form})
             
-            otp = random.randint(000000,999999)
+            otp = str(random.randint(000000,999999))
             
+            send_mail(
+                subject = 'ELECTRO, OTP to reset password',
+                message = f'Your OTP for reset password is {otp}.It expires in 3 minutes',
+                from_email = settings.EMAIL_HOST_USER,
+                recipient_list = [email],
+                fail_silently = False
+            )
+            
+            request.session['otp'] = otp
+            request.session['email'] = email
+            request.session.set_expiry(0)
+
+            return redirect('forgot_password_otp')
 
     form = ForgotEmailForm()
     return render(request,'forgot password email.html',{'form':form})
 
-def forgot_password_otp(request):
-    return render(request,'forgot password otp.html')
 
+@logout_required
+def forgot_password_otp(request):
+    if 'otp' not in request.session:
+        return redirect('forgot_password_email')
+    
+    if request.method == 'POST':
+        form = ForgotOtpForm(request.POST)
+        if form.is_valid():
+            otp = form.get_otp()
+
+            session_otp = request.session.get('otp')
+
+            if otp == session_otp:
+                del request.session['otp']
+                return redirect('new_password')
+            
+            else:
+                form.add_error(None,"Invalid OTP") 
+                return render(request,'forgot password otp.html',{'form':form})
+
+    form = ForgotOtpForm()
+    return render(request,'forgot password otp.html',{'form':form})
+
+
+@logout_required
+def resend_otp(request):
+    if 'email' not in request.session:
+        return redirect('forgot_password_email')
+    email = request.session['email']
+    del request.session['otp']
+    otp = str(random.randint(000000,999999))
+    send_mail(
+        subject = 'ELECTRO, OTP to reset password',
+        message = f"Your OTP to reset password is {otp}.It expires in 3 minutes.",
+        from_email = settings.EMAIL_HOST_USER,
+        recipient_list = [email],
+        fail_silently = False
+    )
+
+    request.session['otp'] = otp
+    request.session.set_expiry(180)
+    return redirect('forgot_password_otp')
+
+@logout_required
 def new_password(request):
-    return render(request,'new password.html')
+    if 'email' not in request.session:
+        return redirect('email')
+    if request.method == 'POST':
+        form = NewPasswordForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password']
+
+            email = request.session['email']
+
+            user_data = User.objects.get(email=email)
+            user_data.set_password(password)
+            user_data.save()
+            return redirect('login')
+    else:
+        form = NewPasswordForm()
+        
+    return render(request,'new password.html',{'form':form})
