@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .decorators import logout_required
 from django.core.mail import send_mail
 from django.conf import settings
-import random
+import random,time
+
 
 # Create your views here.
 
@@ -97,11 +98,11 @@ def forgot_password_email(request):
                 form.add_error(None,'User Not Exist')
                 return render(request,'forgot password email.html',{'form':form})
             
-            otp = str(random.randint(000000,999999))
+            otp = str(random.randint(100000,999999))
             
             send_mail(
                 subject = 'ELECTRO, OTP to reset password',
-                message = f'Your OTP for reset password is {otp}.It expires in 3 minutes',
+                message = f'Your OTP for reset password is {otp}.It expires in 2 minutes',
                 from_email = settings.EMAIL_HOST_USER,
                 recipient_list = [email],
                 fail_silently = False
@@ -109,7 +110,7 @@ def forgot_password_email(request):
             
             request.session['otp'] = otp
             request.session['email'] = email
-            request.session.set_expiry(0)
+            request.session['otp_time'] = time.time()
 
             return redirect('forgot_password_otp')
 
@@ -127,10 +128,18 @@ def forgot_password_otp(request):
         if form.is_valid():
             otp = form.get_otp()
 
+            if time.time() - request.session['otp_time'] > 120:
+                del request.session['otp']
+                del request.session['otp_time']
+                form.add_error(None,'OTP expired')
+                return render(request,'forgot password otp.html',{'form':form,'otp_expired': True})
+
             session_otp = request.session.get('otp')
 
             if otp == session_otp:
                 del request.session['otp']
+                del request.session['otp_time']
+                request.session['otp_verified'] = True
                 return redirect('new_password')
             
             else:
@@ -145,24 +154,29 @@ def forgot_password_otp(request):
 def resend_otp(request):
     if 'email' not in request.session:
         return redirect('forgot_password_email')
+    
     email = request.session['email']
-    del request.session['otp']
-    otp = str(random.randint(000000,999999))
+    try:
+        del request.session['otp']
+    except KeyError:
+        pass
+    otp = str(random.randint(100000,999999))
     send_mail(
         subject = 'ELECTRO, OTP to reset password',
-        message = f"Your OTP to reset password is {otp}.It expires in 3 minutes.",
+        message = f"Your OTP to reset password is {otp}.It expires in 2 minutes.",
         from_email = settings.EMAIL_HOST_USER,
         recipient_list = [email],
         fail_silently = False
     )
 
     request.session['otp'] = otp
-    request.session.set_expiry(180)
+    request.session['otp_time'] = time.time()
     return redirect('forgot_password_otp')
+
 
 @logout_required
 def new_password(request):
-    if 'email' not in request.session:
+    if 'otp_verified' not in request.session:
         return redirect('email')
     if request.method == 'POST':
         form = NewPasswordForm(request.POST)
@@ -170,6 +184,8 @@ def new_password(request):
             password = form.cleaned_data['password']
 
             email = request.session['email']
+            del request.session['email']
+            del request.session['otp_verified']
 
             user_data = User.objects.get(email=email)
             user_data.set_password(password)
