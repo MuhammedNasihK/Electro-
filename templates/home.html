@@ -427,7 +427,18 @@
                     <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
                 </li>
 
-                <!-- Profile dropdown (icon) -->
+               
+
+            <!-- Wishlist -->
+            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
+                <i class="bi bi-heart"></i>
+            </a>
+            <!-- Cart -->
+            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
+                <i class="bi bi-cart"></i>
+            </a>
+
+             <!-- Profile dropdown (icon) -->
                 <li class="nav-item dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -471,15 +482,6 @@
                     </ul>
                 </li>
             </ul>
-
-            <!-- Wishlist -->
-            <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
-                <i class="bi bi-heart"></i>
-            </a>
-            <!-- Cart -->
-            <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
-                <i class="bi bi-cart"></i>
-            </a>
         </div>
     </div>
 </nav>

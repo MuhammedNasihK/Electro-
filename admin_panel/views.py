@@ -43,3 +43,9 @@ def admin_add_products(request):
 def admin_logout(request):
     del request.session['admin_id']
     return redirect('home')
+
+def add_user(request):
+    return render(request)
+
+def edit_user(request):
+    return render(request)
