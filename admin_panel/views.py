@@ -9,7 +9,10 @@ User = get_user_model()
 
 @admin_login_required
 def admin_dashboard(request):
-    return render(request,'admin dashboard.html')
+    if 'admin_id' in request.session:
+        admin_data = User.objects.get(id = request.session['admin_id'])
+
+    return render(request,'admin dashboard.html',{'admin_data':admin_data})
 
 @admin_login_required
 def admin_orders(request):
