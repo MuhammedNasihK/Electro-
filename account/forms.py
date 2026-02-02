@@ -18,13 +18,16 @@ class SignUpForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        if len(username) < 4:
+            raise forms.ValidationError('Username must contain four characters')
+        elif username.isdigit():
+            raise forms.ValidationError("Username must contain Characters")
         password = cleaned_data.get('password')
         
         if len(password) < 4:
             raise forms.ValidationError('Password must contain four values')
         
-        elif password.isdigit():
-            raise forms.ValidationError('Password must contain characters')
         confirm_password = cleaned_data.get('confirm_password')
     
         if password and confirm_password and password != confirm_password:

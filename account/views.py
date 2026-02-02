@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .forms import SignUpForm,LoginForm,ForgotEmailForm,ForgotOtpForm,NewPasswordForm
 from django.contrib.auth import get_user_model,login as user_login,logout as user_logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from .decorators import logout_required
 from django.core.mail import send_mail
 from django.conf import settings
@@ -85,9 +86,11 @@ def wishlist(request):
 def profile(request):
     return render(request,'profile.html')
 
-
+@never_cache
 @logout_required
 def forgot_password_email(request):
+    if 'otp' in request.session:
+        return redirect('forgot_password_otp')
     if request.method == 'POST':
         form = ForgotEmailForm(request.POST)
         if form.is_valid():
@@ -117,7 +120,7 @@ def forgot_password_email(request):
     form = ForgotEmailForm()
     return render(request,'forgot password email.html',{'form':form})
 
-
+@never_cache
 @logout_required
 def forgot_password_otp(request):
     if 'otp' not in request.session:
@@ -173,7 +176,7 @@ def resend_otp(request):
     request.session['otp_time'] = time.time()
     return redirect('forgot_password_otp')
 
-
+@never_cache
 @logout_required
 def new_password(request):
     if 'otp_verified' not in request.session:
