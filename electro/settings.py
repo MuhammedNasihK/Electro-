@@ -173,6 +173,32 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 
 
 
+# Where to go after Google logging in/out
+
+LOGIN_REDIRECT_URL = '/'  # Sends them to homepage after login
+LOGOUT_REDIRECT_URL = '/' # Sends them to homepage after logout
+
+# Google Provider Configuration
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET_KEY'),
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 
 
+# Default adapter to save first name as username on google authentication
+
+SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomSocialAdapter'
