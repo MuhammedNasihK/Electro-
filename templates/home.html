@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electro - Home</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- Custom CSS -->
     <style>
         :root {
             --primary-dark: #0b1020;
@@ -404,11 +401,35 @@
         footer a:hover {
             color: #f9fafb;
         }
+
+        /* --- NEW: Floating Alert Styles --- */
+        .floating-alert-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 9999;
+            width: 100%;
+            max-width: 350px;
+            animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .floating-alert {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: none;
+            border-left: 5px solid #22c55e; /* Green accent */
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
@@ -427,19 +448,14 @@
                     <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
                 </li>
 
-               
-
-            <!-- Wishlist -->
             <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
                 <i class="bi bi-heart"></i>
             </a>
-            <!-- Cart -->
             <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
                 <i class="bi bi-cart"></i>
             </a>
 
-             <!-- Profile dropdown (icon) -->
-                <li class="nav-item dropdown ms-3">
+             <li class="nav-item dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {% if request.user.is_authenticated %}
@@ -486,7 +502,24 @@
     </div>
 </nav>
 
-<!-- HERO SECTION -->
+{% if messages %}
+    <div class="floating-alert-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show floating-alert" role="alert">
+                <div class="d-flex align-items-center">
+                    {% if message.tags == 'success' %}
+                        <i class="bi bi-check-circle-fill text-success me-2 fs-5"></i>
+                    {% else %}
+                        <i class="bi bi-info-circle-fill text-primary me-2 fs-5"></i>
+                    {% endif %}
+                    <div>{{ message }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
 <section class="hero-section">
     <div class="container">
         <div class="row align-items-center g-4">
@@ -545,7 +578,6 @@
             </div>
         </div>
 
-        <!-- Category quick pills -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="d-flex flex-wrap gap-2">
@@ -567,7 +599,6 @@
     </div>
 </section>
 
-<!-- FEATURE STRIP -->
 <section class="py-3 bg-white border-bottom">
     <div class="container">
         <div class="row text-center text-md-start g-3">
@@ -611,7 +642,6 @@
     </div>
 </section>
 
-<!-- SHOP BY NEEDS -->
 <section class="py-5">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -687,7 +717,6 @@
     </div>
 </section>
 
-<!-- TRENDING PICKS -->
 <section class="pb-5">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -698,7 +727,6 @@
             <a href="products.html" class="btn btn-sm btn-outline-dark rounded-pill">Browse all</a>
         </div>
 
-        <!-- Row 1 -->
         <div class="row g-4 mb-3">
 
             <div class="col-6 col-md-3">
@@ -803,7 +831,6 @@
 
         </div>
 
-        <!-- Row 2 -->
         <div class="row g-4">
 
             <div class="col-6 col-md-3">
@@ -910,7 +937,6 @@
     </div>
 </section>
 
-<!-- LARGE PROMO BANNER ABOVE LATEST MOBILES -->
 <section class="pb-2">
     <div class="container">
         <div class="promo-banner d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
@@ -928,7 +954,6 @@
     </div>
 </section>
 
-<!-- LATEST MOBILES SECTION -->
 <section class="pb-5 pt-3">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -1032,7 +1057,6 @@
     </div>
 </section>
 
-<!-- BRAND ROW -->
 <section class="pb-4">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -1052,7 +1076,6 @@
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="pt-4 mt-4">
     <div class="container pb-3">
         <div class="row g-4">
@@ -1097,9 +1120,18 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Automatically fade out the alert after 4 seconds
+    setTimeout(function() {
+        let alerts = document.querySelectorAll('.floating-alert');
+        alerts.forEach(function(alert) {
+            let bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 4000); // 4000ms = 4 seconds
+</script>
 
 </body>
 </html>
-

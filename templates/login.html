@@ -1,3 +1,5 @@
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,10 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electro - Login</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
@@ -221,7 +221,7 @@
             box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
         }
 
-        /* Google button */
+        /* --- UPDATED GOOGLE BUTTON STYLES (MATCHING SIGN UP) --- */
         .btn-google {
             border-radius: 999px;
             font-size: 0.9rem;
@@ -229,23 +229,31 @@
             border: 1px solid rgba(148, 163, 184, 0.85);
             background: #ffffff;
             color: #374151;
-            transition: all 0.18s ease-out;
-            box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08);
+            /* Smoother transition */
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            width: 100%;
+            position: relative;
+            z-index: 1;
         }
         .btn-google:hover {
-            background: #f3f4f6;
-            border-color: #9ca3af;
-            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
-            transform: translateY(-1px);
+            background: #ffffff;
+            border-color: #22c55e; /* Green Border */
+            box-shadow: 0 8px 18px rgba(34, 197, 94, 0.15); /* Greenish Shadow */
+            transform: translateY(-2px); /* Lift */
+            color: #0f172a;
         }
         .btn-google:active {
             transform: translateY(0);
-            box-shadow: 0 3px 8px rgba(15, 23, 42, 0.12);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: #f9fafb;
+            border-color: #22c55e;
         }
         .btn-google img {
             width: 18px;
             height: 18px;
         }
+        /* ---------------------------------------------------- */
 
         /* Link styles for forgot/create */
         .auth-meta {
@@ -364,14 +372,7 @@
                 <li class="nav-item me-2">
                     <a class="nav-link fw-semibold special-hover" href="{% url 'home'%}">Home</a>
                 </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
-                </li>
             </ul>
-
-            <a class="btn icon-btn fw-semibold ms-2 d-none d-lg-inline-flex" href="{% url 'wishlist' %}">
-                <i class="bi bi-heart"></i>
-            </a>
 
         </div>
     </div>
@@ -383,7 +384,6 @@
             <div class="col-lg-10">
                 <div class="auth-card">
                     <div class="row g-0">
-                        <!-- Visual side -->
                         <div class="col-lg-5 auth-visual d-flex flex-column justify-content-between">
                             <div>
                                 <span class="auth-visual-badge mb-3">
@@ -419,7 +419,6 @@
                             </div>
                         </div>
 
-                        <!-- Form side -->
                         <div class="col-lg-7 auth-form-area">
                             <h1 class="auth-title mb-1">Welcome back</h1>
                             <p class="auth-subtitle mb-4">
@@ -446,9 +445,7 @@
                                     </div>
                                 {% endif %}
 
-                                <!-- Email or phone (no icon) -->
                                 <div class="mb-3">
-                                    
                                     {{ form.email }}
                                     {% if form.email.errors %}
                                         <ul class="errorlist">
@@ -468,7 +465,6 @@
                                         </ul>
                                     {% endif %}
                                     {{ form.password }}
-                                    
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -479,26 +475,31 @@
                                     </a>
                                 </div>
 
-                                <div class="d-grid gap-2 mb-3">
+                                <div class="d-grid mb-2">
                                     <button type="submit" class="btn btn-primary-main">
                                         Login
                                     </button>
-
-                                    <!-- Continue with Google button -->
-                                    <button type="button" class="btn btn-google d-flex align-items-center justify-content-center gap-2">
+                                </div>
+                            </form> 
+                            
+                            <div class="d-grid mb-3">
+                                <form action="{% provider_login_url 'google' %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-google d-flex align-items-center justify-content-center gap-2">
                                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
                                         <span>Continue with Google</span>
                                     </button>
-                                </div>
+                                </form>
+                            </div>
 
-                                <p class="mb-0 auth-meta text-center">
-                                    New to Electro?
-                                    <a href="{% url 'sign_up' %}" class="pill-link-cta">
-                                        <i class="bi bi-person-plus"></i>
-                                        <span>Create account</span>
-                                    </a>
-                                </p>
-                            </form>
+                            <p class="mb-0 auth-meta text-center">
+                                New to Electro?
+                                <a href="{% url 'sign_up' %}" class="pill-link-cta">
+                                    <i class="bi bi-person-plus"></i>
+                                    <span>Create account</span>
+                                </a>
+                            </p>
+                            
                         </div>
 
                     </div>
