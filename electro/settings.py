@@ -211,3 +211,9 @@ SOCIALACCOUNT_PROVIDERS = {
 # Default adapter to save first name as username on google authentication
 
 SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomSocialAdapter'
+
+
+# Media setup
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')

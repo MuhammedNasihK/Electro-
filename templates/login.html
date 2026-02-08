@@ -28,7 +28,7 @@
             min-height: 100vh;
         }
 
-        /* --- UPDATED NAVBAR --- */
+        /* --- NAVBAR --- */
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
             height: 72px; /* Fixed height */
@@ -44,7 +44,6 @@
             margin-inline: auto;
             display: flex;
             align-items: center;
-            /* Since Home is gone, you can use 'space-between' or 'flex-start' */
             justify-content: flex-start; 
         }
 
@@ -54,12 +53,14 @@
             display: flex;
             align-items: center;
             height: 100%;
+            /* EXACT POSITION PRESERVED */
+            margin-left: -45px; 
         }
 
-        /* LOGO SIZE INCREASED */
+        /* LOGO SIZE INCREASED TO 240PX */
         .navbar-brand img {
-            height: 65px; /* Nearly fills the 72px bar */
-            width: auto;
+            width: 240px;  /* Increased from 200px to 240px */
+            height: auto;  
             object-fit: contain;
             display: block;
         }
@@ -331,8 +332,7 @@
         <a class="navbar-brand" href="{% url 'home' %}">
             <img src="{% static 'img/veintro_logo.png' %}" alt="Veintro">
         </a>
-
-        </div>
+    </div>
 </nav>
 
 <section class="auth-wrapper">

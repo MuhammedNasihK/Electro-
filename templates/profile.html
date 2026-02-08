@@ -175,12 +175,13 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
+                        
                         <div class="profile-label">Username</div>
-                        <div class="profile-value">User Name</div>
+                        <div class="profile-value">{{request.user.username}}</div>
                     </div>
                     <div class="col-md-6">
                         <div class="profile-label">Email</div>
-                        <div class="profile-value">user@example.com</div>
+                        <div class="profile-value">{{ request.user.email}}</div>
                     </div>
                     <div class="col-md-6">
                         <div class="profile-label">Phone number</div>
