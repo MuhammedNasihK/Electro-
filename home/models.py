@@ -24,6 +24,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,max_length=250)
     description = models.TextField()
+    specification = models.TextField()
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand,on_delete=models.CASCADE)
     added_date = models.DateField(auto_now_add=True)
@@ -68,6 +69,9 @@ class VariantAttribute(models.Model):
 
     def __str__(self):
         return f"{self.product_variant} - {self.attribute_value}"
+
+
+
 
 
 
