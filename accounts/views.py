@@ -3,6 +3,8 @@ from .forms import SignUpForm,LoginForm,ForgotEmailForm,ForgotOtpForm,NewPasswor
 from django.contrib.auth import get_user_model,login as user_login,logout as user_logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from django.contrib.auth import authenticate
+from django.contrib import messages
 from .decorators import logout_required
 from django.core.mail import send_mail
 from django.conf import settings
@@ -51,20 +53,22 @@ def login(request):
                 form.add_error(None,'User not found')
                 return render(request,'login.html',{'form':form})
             
+            if user_data.is_active == False:
+                    form.add_error(None,'Account is disabled')
+                    return render(request,'login.html',{'form':form})
+            
             password = form.cleaned_data['password']
 
-            if user_data.check_password(password):
+            user_data = authenticate(request,email = email,password = password)
 
-                if user_data.is_active == False:
-                    form.add_error(None,'Account is disabled')
-                    return render(request,'login',{'form':form})
-                
+            if user_data is not None:
                 if user_data.is_superuser == True:
                     request.session['admin_id'] = user_data.id
                     request.session.set_expiry(0)
                     return redirect('admin_dashboard')
                 
                 user_login(request,user_data)
+                messages.success(request,f"Successfully Logged In as {email}")
                 return redirect('home')
             
             else:

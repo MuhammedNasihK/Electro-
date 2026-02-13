@@ -23,7 +23,7 @@ class Brand(models.Model):
 class Product(models.Model):
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     brand = models.ForeignKey(Brand,on_delete=models.CASCADE)
     added_date = models.DateField(auto_now_add=True)
 
@@ -50,11 +50,11 @@ class AttributeValue(models.Model):
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product,on_delete = models.CASCADE)
     price = models.DecimalField(max_digits=10,decimal_places=2)
+    discount_price = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
     stock = models.PositiveIntegerField(default=0)
-    attribute = models.ManyToManyField(AttributeValue,related_name='varients')
+    attribute = models.ManyToManyField(AttributeValue,related_name='variants')
 
-    def __str__(self):
-        return f"{self.product} - {self.attribute}"
+    
     
 
 class Specification(models.Model):
