@@ -1,0 +1,40 @@
+<div class="htmx-modal-overlay">
+
+    <div class="htmx-modal">
+
+        <h5>Confirm Action</h5>
+
+        <p>
+            Are you sure you want to 
+            <strong class="text-danger">block</strong> 
+            this user?
+        </p>
+
+        <div class="htmx-modal-actions">
+
+            <!-- Cancel -->
+            <button 
+              class="btn btn-secondary btn-sm"
+              hx-get="{% url 'close_modal' %}"
+              hx-target="#modal-area"
+              hx-swap="innerHTML"
+            >
+              Cancel
+            </button>
+
+            <!-- Confirm -->
+            <button
+              class="btn btn-danger btn-sm"
+
+              hx-post="{% url 'admin_block_user' user.id %}"
+              hx-target="#modal-area"
+              hx-swap="innerHTML"
+            >
+              Yes, Block
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

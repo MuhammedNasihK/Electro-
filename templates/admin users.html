@@ -157,9 +157,9 @@
                                 
                                 <td>
                                     {% if i.is_active %}
-                                        <a href="" class="btn btn-outline-danger btn-xs" onclick="return confirm('Are you sure you want to block this user?')">Block</a>
+                                        <a href="{% url 'block_user' i.id %}" class="btn btn-outline-danger btn-xs">Block</a>
                                     {% else %}
-                                        <a href="" class="btn btn-outline-success btn-xs">Unblock</a>
+                                        <a href="{% url 'block_user' i.id %}" class="btn btn-outline-success btn-xs">Unblock</a>
                                     {% endif %}
                                 </td>
                             </tr>

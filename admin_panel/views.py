@@ -72,3 +72,14 @@ def add_user(request):
 
 def edit_user(request):
     return render(request)
+
+
+def block_user(request,id):
+    user_data = User.objects.get(id=id)
+    if user_data.is_active:
+        user_data.is_active = False
+    else:
+        user_data.is_active = True
+        
+    user_data.save()
+    return redirect('admin_users')

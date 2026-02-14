@@ -12,5 +12,6 @@ urlpatterns = [
     path('add_products/',views.admin_add_products,name='admin_add_products'),
     path('logout/',views.admin_logout,name='admin_logout'),
     path('add_user/',views.add_user,name='add_user'),
-    path('edit_user/',views.edit_user,name='edit_user')
+    path('edit_user/',views.edit_user,name='edit_user'),
+    path('block/<int:id>',views.block_user,name = 'block_user')
 ]
