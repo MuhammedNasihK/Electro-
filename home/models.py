@@ -4,7 +4,7 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=250,unique=True)
+    slug = models.SlugField(max_length=250,unique=True,blank=True,null=True)
 
     def __str__(self):
         return self.name
@@ -12,8 +12,7 @@ class Category(models.Model):
 
 class Brand(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
-    logo = models.ImageField(upload_to='brand_logo/')
+    logo = models.ImageField(upload_to='brand_logo/',null=True,blank=True)
 
     def __str__(self):
         return self.name 

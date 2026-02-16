@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import get_user_model
 from .decorators import admin_login_required
 from django.views.decorators.cache import never_cache
+from django.db.models import Q
 # Create your views here.
 
 User = get_user_model()
@@ -35,6 +36,17 @@ def admin_users(request):
         admin_data = User.objects.get(id = request.session['admin_id'])
 
     user_data = User.objects.filter(is_superuser=False)
+
+    status_filter = request.GET.get('status')
+
+    if status_filter == 'active':
+        user_data = User.objects.filter(is_superuser=False,is_active=True)
+    elif status_filter == 'blocked':
+        user_data = User.objects.filter(is_superuser=False,is_active=False)
+
+    search_data = request.GET.get('search')
+    if search_data:
+        user_data = user_data.filter(Q(username__icontains=search_data)|Q(email__icontains=search_data))
     return render(request,'admin users.html',{'user_data':user_data,'admin_data':admin_data})
 
 @never_cache
