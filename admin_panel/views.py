@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from .decorators import admin_login_required
 from django.views.decorators.cache import never_cache
 from django.db.models import Q
@@ -74,49 +75,78 @@ def admin_banners(request):
 
 @admin_login_required
 def admin_add_products(request):
-    
     if request.method == 'POST':
         product_form = ProductForm(request.POST)
+        
         if product_form.is_valid():
             product = product_form.save()
-            return redirect('admin_product_variants',product_id=product.id)
-        
+            
+            specform_set = SpecificationFormSet(request.POST, instance=product)
+            if specform_set.is_valid():
+                specform_set.save()
+                
+            messages.success(request, "Product and specs saved! Now add variants.")
+            return redirect('admin_product_variants', product_id=product.id)
     else:
         product_form = ProductForm()
+        specform_set = SpecificationFormSet()
 
     context = {
-        'product_form' : product_form
+        'product_form': product_form,
+        'specform_set': specform_set
     }
+    return render(request, 'admin_add_products.html', context)
 
-    return render(request,'admin_add_products.html',context)
 
-
-def admin_add_variants(request,product_id):
-
-    
-    product = get_object_or_404(Product,id=product_id)
-
+def admin_add_variants(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     variants = ProductVariant.objects.filter(product=product)
-    if request.method=='POST':
+    
+    # Get all attribute categories (RAM, Storage, etc.) for the dropdown
+    attributes_list = Attribute.objects.all()
+
+    if request.method == 'POST':
         variant_form = VariantForm(request.POST)
+        
         if variant_form.is_valid():
+            # 1. Save Variant
             new_variant = variant_form.save(commit=False)
             new_variant.product = product
             new_variant.save()
 
-            new_variant.save_m2m()
+            # 2. Process Dynamic Attributes (Your Idea!)
+            # We check the 3 manual HTML rows we will create in the template
+            for i in range(1, 4):
+                attr_id = request.POST.get(f'attr_name_{i}') # Dropdown (e.g., RAM)
+                attr_val_text = request.POST.get(f'attr_value_{i}') # Text input (e.g., "16GB")
+
+                if attr_id and attr_val_text:
+                    attr_obj = Attribute.objects.get(id=attr_id)
+                    # Strip spaces and uppercase it to prevent duplicates (e.g., " 16gb " becomes "16GB")
+                    clean_val = attr_val_text.strip().upper() 
+                    
+                    # Get or Create prevents duplicates!
+                    val_obj, created = AttributeValue.objects.get_or_create(
+                        attribute=attr_obj, 
+                        value=clean_val
+                    )
+                    
+                    # Link it to the variant
+                    new_variant.attribute.add(val_obj)
+
+            messages.success(request, "Variant added successfully!")
             return redirect('admin_product_variants', product_id=product.id)
-        
+            
     else:
         variant_form = VariantForm()
 
     context = {
-        'variant_form':variant_form,
-        'product':product,
-        'variants':variants
+        'variant_form': variant_form,
+        'product': product,
+        'variants': variants,
+        'attributes_list': attributes_list,
     }    
-
-    return render(request,'admin_product_variants.html',context)
+    return render(request, 'admin_product_variants.html', context)
 
 def admin_logout(request):
     del request.session['admin_id']

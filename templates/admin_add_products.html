@@ -95,54 +95,70 @@
             </div>
         </header>
 
-        <main class="admin-content">
-                        <form method="POST">
-                {% csrf_token %}
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="section-title">Step 1: Create Base Product</div>
-                        <div class="section-subtitle">Add the parent product details. You will add colors and prices in the next step.</div>
-                    </div>
-                    <div class="admin-card-body">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label class="form-label">Product Name</label>
-                                {{ product_form.name }}
-                                {% if product_form.name.errors %}
-                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.name.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Slug</label>
-                                {{ product_form.slug }}
-                                {% if product_form.slug.errors %}
-                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.slug.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Category</label>
-                                {{ product_form.category }}
-                                {% if product_form.category.errors %}
-                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.category.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Brand</label>
-                                {{ product_form.brand }}
-                                {% if product_form.brand.errors %}
-                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.brand.errors }}</div>
-                                {% endif %}
+                    <main class="admin-content">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <div class="section-title">Step 1: Product Basics</div>
+                            <div class="section-subtitle">Name, brand, and category.</div>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Product Name</label>
+                                    {{ product_form.name }}
+                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.name.errors }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Slug</label>
+                                    {{ product_form.slug }}
+                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.slug.errors }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Category</label>
+                                    {{ product_form.category }}
+                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.category.errors }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Brand</label>
+                                    {{ product_form.brand }}
+                                    <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.brand.errors }}</div>
+                                </div>
                             </div>
                         </div>
-                        <hr class="mt-4 mb-3">
-                        <div class="text-end">
-                            <a href="{% url 'admin_products' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill me-2">Cancel</a>
-                            <button type="submit" class="btn btn-success btn-sm px-4 rounded-pill">Next: Add Variants <i class="bi bi-arrow-right"></i></button>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header bg-primary bg-opacity-10 border-primary border-opacity-25">
+                            <div class="section-title text-primary">Universal Specifications</div>
+                            <div class="section-subtitle">Features that do not change (e.g., Processor, Display Size, Battery).</div>
+                        </div>
+                        <div class="admin-card-body bg-light">
+                            {{ specform_set.management_form }}
+                            
+                            <div class="row g-3">
+                            {% for form in specform_set %}
+                                <div class="col-md-6">
+                                    <div class="d-flex gap-2">
+                                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                        <div class="w-50">{{ form.spec }}</div>
+                                        <div class="w-50">{{ form.value }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                            <div class="text-muted mt-2" style="font-size:0.75rem;">Fill only the rows you need. Empty rows will be ignored.</div>
                         </div>
                     </div>
-                </div>
-            </form>
-        </main>
+
+                    <div class="text-end mb-5">
+                        <a href="{% url 'admin_products' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill me-2">Cancel</a>
+                        <button type="submit" class="btn btn-success btn-sm px-4 rounded-pill">Save & Add Variants <i class="bi bi-arrow-right"></i></button>
+                    </div>
+                </form>
+            </main>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
