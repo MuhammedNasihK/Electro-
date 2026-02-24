@@ -96,132 +96,50 @@
         </header>
 
         <main class="admin-content">
-            <form method="POST" enctype="multipart/form-data">
+                        <form method="POST">
                 {% csrf_token %}
-                
                 <div class="admin-card">
                     <div class="admin-card-header">
-                        <div class="section-title">Base Product Details</div>
-                        <div class="section-subtitle">General information about the product.</div>
+                        <div class="section-title">Step 1: Create Base Product</div>
+                        <div class="section-subtitle">Add the parent product details. You will add colors and prices in the next step.</div>
                     </div>
                     <div class="admin-card-body">
-                        <div class="row g-3">
+                        <div class="row g-4">
                             <div class="col-md-6">
                                 <label class="form-label">Product Name</label>
                                 {{ product_form.name }}
-                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.name.errors }}</div>
+                                {% if product_form.name.errors %}
+                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.name.errors }}</div>
+                                {% endif %}
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Slug</label>
                                 {{ product_form.slug }}
-                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.slug.errors }}</div>
+                                {% if product_form.slug.errors %}
+                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.slug.errors }}</div>
+                                {% endif %}
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Category</label>
                                 {{ product_form.category }}
-                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.category.errors }}</div>
+                                {% if product_form.category.errors %}
+                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.category.errors }}</div>
+                                {% endif %}
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Brand</label>
                                 {{ product_form.brand }}
-                                <div class="text-danger" style="font-size: 0.8rem;">{{ product_form.brand.errors }}</div>
+                                {% if product_form.brand.errors %}
+                                    <div class="text-danger mt-1" style="font-size:0.8rem;">{{ product_form.brand.errors }}</div>
+                                {% endif %}
                             </div>
                         </div>
+                        <hr class="mt-4 mb-3">
+                        <div class="text-end">
+                            <a href="{% url 'admin_products' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill me-2">Cancel</a>
+                            <button type="submit" class="btn btn-success btn-sm px-4 rounded-pill">Next: Add Variants <i class="bi bi-arrow-right"></i></button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="admin-card">
-                    <div class="admin-card-header bg-success bg-opacity-10 border-success border-opacity-25">
-                        <div class="section-title text-success">Product Variants (SKUs)</div>
-                        <div class="section-subtitle">Add colors, prices, and stock limits here.</div>
-                    </div>
-                    <div class="admin-card-body bg-light">
-                        {{ variantform_set.management_form }}
-                        
-                        {% for form in variantform_set %}
-                            <div class="formset-row">
-                                {% for hidden in form.hidden_fields %}
-                                    {{ hidden }}
-                                {% endfor %}
-                                
-                                <h6 class="mb-3 text-muted" style="font-size:0.8rem; text-transform:uppercase;">Variant {{ forloop.counter }}</h6>
-                                
-                                <div class="row g-2">
-                                    <div class="col-md-3">
-                                        <label class="form-label">Colour</label>
-                                        {{ form.colour }}
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">Price</label>
-                                        {{ form.price }}
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">Discount Price</label>
-                                        {{ form.discount_price }}
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">Stock</label>
-                                        {{ form.stock }}
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Attributes</label>
-                                        {{ form.attribute }}
-                                    </div>
-                                    
-                                    {% if form.can_delete %}
-                                    <div class="col-12 mt-2 text-end">
-                                        <label class="text-danger" style="font-size: 0.8rem;">
-                                            {{ form.DELETE }} Delete Variant
-                                        </label>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="admin-card">
-                    <div class="admin-card-header bg-primary bg-opacity-10 border-primary border-opacity-25">
-                        <div class="section-title text-primary">Technical Specifications</div>
-                        <div class="section-subtitle">Add details like RAM, Display Type, Battery, etc.</div>
-                    </div>
-                    <div class="admin-card-body bg-light">
-                        {{ specform_set.management_form }}
-                        
-                        {% for form in specform_set %}
-                            <div class="formset-row">
-                                {% for hidden in form.hidden_fields %}
-                                    {{ hidden }}
-                                {% endfor %}
-                                
-                                <div class="row g-3 align-items-center">
-                                    <div class="col-md-5">
-                                        <label class="form-label">Specification Name</label>
-                                        {{ form.spec }}
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Value</label>
-                                        {{ form.value }}
-                                    </div>
-                                    {% if form.can_delete %}
-                                    <div class="col-md-1 text-center mt-4 pt-2">
-                                        <label class="text-danger" style="font-size: 0.8rem;">
-                                            {{ form.DELETE }} Del
-                                        </label>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2 mb-5">
-                    <a href="{% url 'admin_products' %}" class="btn btn-outline-secondary px-4 rounded-pill fw-medium">Cancel</a>
-                    <button type="submit" class="btn btn-success px-4 rounded-pill fw-medium">
-                        <i class="bi bi-check-lg me-1"></i> Save Complete Product
-                    </button>
                 </div>
             </form>
         </main>

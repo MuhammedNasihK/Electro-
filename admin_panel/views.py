@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import get_user_model
 from .decorators import admin_login_required
 from django.views.decorators.cache import never_cache
@@ -74,39 +74,49 @@ def admin_banners(request):
 
 @admin_login_required
 def admin_add_products(request):
-
+    
     if request.method == 'POST':
         product_form = ProductForm(request.POST)
-        variantform_set = VariantFormSet(request.POST)
-        specform_set = SpecificationFormSet(request.POST)
-
         if product_form.is_valid():
-            product = product_form.save(commit=False)
-
-            variantform_set = VariantFormSet(request.POST,instance=product)
-            specform_set = SpecificationFormSet(request.POST,instance=product)
-
-            if variantform_set.is_valid() and specform_set.is_valid():
-                product.save()
-                variantform_set.save()
-                specform_set.save()
-
-            return redirect('admin_product')
-        else:
-            variantform_set = VariantFormSet(request.POST)
-            specform_set = SpecificationFormSet(request.POST)
+            product = product_form.save()
+            return redirect('admin_product_variants',product_id=product.id)
+        
     else:
         product_form = ProductForm()
-        variantform_set = VariantFormSet()
-        specform_set = SpecificationFormSet()
 
-        context = {
-            'product_form' : product_form,
-            'variantform_set' : variantform_set,
-            'specform_set' : specform_set
-        }
-                
+    context = {
+        'product_form' : product_form
+    }
+
     return render(request,'admin_add_products.html',context)
+
+
+def admin_add_variants(request,product_id):
+
+    
+    product = get_object_or_404(Product,id=product_id)
+
+    variants = ProductVariant.objects.filter(product=product)
+    if request.method=='POST':
+        variant_form = VariantForm(request.POST)
+        if variant_form.is_valid():
+            new_variant = variant_form.save(commit=False)
+            new_variant.product = product
+            new_variant.save()
+
+            new_variant.save_m2m()
+            return redirect('admin_product_variants', product_id=product.id)
+        
+    else:
+        variant_form = VariantForm()
+
+    context = {
+        'variant_form':variant_form,
+        'product':product,
+        'variants':variants
+    }    
+
+    return render(request,'admin_product_variants.html',context)
 
 def admin_logout(request):
     del request.session['admin_id']
