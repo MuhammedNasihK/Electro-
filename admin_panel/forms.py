@@ -16,7 +16,6 @@ class ProductForm(forms.ModelForm):
 class VariantForm(forms.ModelForm):
     class Meta:
         model = ProductVariant
-        # Notice: We removed 'attribute' from here! We will handle it dynamically in HTML
         fields = ['colour','price','discount_price','stock']
         widgets = {
             'colour': forms.TextInput(attrs={'class':'form-control form-control-sm'}),
@@ -28,11 +27,17 @@ class VariantForm(forms.ModelForm):
 class SpecificationForm(forms.ModelForm):
     class Meta:
         model = Specification
-        fields = ['spec','value']
-        widgets = {
-            'spec': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder': 'e.g., Processor'}),
-            'value': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder': 'e.g., Snapdragon 8 Gen 2'})
+        fields = ['spec', 'value']
+
+        widgets = {   
+            'spec': forms.Select(attrs={'class':'form-select form-select-sm'}), 
+            'value': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'e.g. 5000 mAh'})
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['spec'].empty_label = "Select Specification..."
+
 
 SpecificationFormSet = inlineformset_factory(
     Product, 
