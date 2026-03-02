@@ -22,9 +22,8 @@ class ProductForm(forms.ModelForm):
 class VariantForm(forms.ModelForm):
     class Meta:
         model = ProductVariant
-        fields = ['colour','price','discount_price','stock']
+        fields = ['price','discount_price','stock']
         widgets = {
-            'colour': forms.TextInput(attrs={'class':'form-control form-control-sm'}),
             'price': forms.NumberInput(attrs={'class':'form-control form-control-sm'}),
             'discount_price': forms.NumberInput(attrs={'class':'form-control form-control-sm'}),
             'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm'}),
@@ -43,6 +42,16 @@ class SpecificationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['spec'].empty_label = "Select Specification..."
+
+
+class ProductImageForm(forms.ModelForm):
+    class Meta:
+        model = ProductImage
+        fields = ['image', 'is_main']
+        widgets = {
+            'image': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'is_main': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        }
 
 
 SpecificationFormSet = inlineformset_factory(

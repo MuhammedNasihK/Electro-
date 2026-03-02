@@ -155,8 +155,39 @@ def admin_add_variants(request, product_id):
 
 
 def admin_product_image(request,product_id):
-    return render(request,'admin_product_image.html')
 
+    variant = get_object_or_404(ProductVariant,id=product_id)
+
+    existing_images = ProductImage.objects.filter(variant=variant)
+
+    if request.method == 'POST':
+        image_form = ProductImageForm(request.POST,request.FILES)
+        if image_form.is_valid():
+            new_image = image_form.save(commit=False)
+            new_image.variant = variant
+
+            if new_image.is_main:
+                existing_images.update(is_main=False)
+            new_image.save()
+            messages.success(request,'Image Uploaded Successfully')
+            return redirect('product_image',product_id=variant.id)
+    else:
+        image_form = ProductImageForm()
+    context = {
+        'variant': variant,
+        'existing_images' : existing_images,
+        'image_form' : image_form
+    }
+    
+    return render(request,'add_product_image.html',context)
+
+
+def delete_product_image(request,image_id,variant_id):
+    if request.method == 'POST':
+        ProductImage.objects.get(id=image_id).delete()
+        return redirect('product_image',product_id=variant_id)
+    
+    
 def admin_logout(request):
     del request.session['admin_id']
     return redirect('home')
