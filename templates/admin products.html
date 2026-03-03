@@ -146,22 +146,24 @@
                             </tr>
                             </thead>
                             <tbody style="font-size:0.82rem;">
+                            {% for data in products %}
                             <tr>
                                 <td>
                                     <!-- change src paths to your actual images -->
                                     <img src="img/p1.png" alt="iPhone 14" class="product-img-thumb">
                                 </td>
-                                <td>iPhone 14 (128GB)</td>
-                                <td>Mobiles</td>
-                                <td>₹68,999</td>
-                                <td>34</td>
+                                <td>{{ data.name }}</td>
+                                <td>{{ data.category }}</td>
+                                <td>None</td>
+                                <td>None</td>
                                 <td><span class="badge badge-soft-success">Active</span></td>
-                                <td>2 hours ago</td>
+                                <td>{{ data.added_date }}</td>
                                 <td>
                                     <button class="btn btn-outline-secondary btn-xs">Edit</button>
                                     <button class="btn btn-outline-warning btn-xs">Disable</button>
                                 </td>
                             </tr>
+                            {% endfor %}
                             <tr>
                                 <td>
                                     <img src="img/new4.png" alt="HP Victus" class="product-img-thumb">

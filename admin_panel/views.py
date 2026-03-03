@@ -29,7 +29,17 @@ def admin_orders(request):
 def admin_products(request):
     if 'admin_id' in request.session:
         admin_data = User.objects.get(id = request.session['admin_id'])
-    return render(request,'admin products.html',{"admin_data":admin_data})
+
+    products = Product.objects.all()
+    product_variants = ProductVariant.objects.all()
+
+    context = {
+        "admin_data":admin_data,
+        'products':products,
+        'product_variants':product_variants
+    }
+
+    return render(request,'admin products.html',context)
 
 @never_cache
 @admin_login_required
@@ -121,7 +131,7 @@ def admin_add_variants(request, product_id):
 
             # 2. Process Dynamic Attributes (Your Idea!)
             # We check the 3 manual HTML rows we will create in the template
-            for i in range(1, 4):
+            for i in range(1, len(attributes_list)+1):
                 attr_id = request.POST.get(f'attr_name_{i}') # Dropdown (e.g., RAM)
                 attr_val_text = request.POST.get(f'attr_value_{i}') # Text input (e.g., "16GB")
 
@@ -150,6 +160,7 @@ def admin_add_variants(request, product_id):
         'product': product,
         'variants': variants,
         'attributes_list': attributes_list,
+        'range' : range(1,len(attributes_list)+1)
     }    
     return render(request, 'admin_product_variants.html', context)
 

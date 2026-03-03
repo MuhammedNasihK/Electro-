@@ -90,6 +90,10 @@
                 <div class="admin-breadcrumb">Admin / Products / <span>{{ product.name }}</span></div>
                 <div class="fw-semibold" style="font-size:0.95rem;">Manage Variants</div>
             </div>
+            
+            <button class="btn btn-success btn-sm rounded-pill" onclick="window.location.href='{% url 'admin_products' %}'">
+                <i class="bi bi-arrow-left me-1"></i>Back to Products
+            </button>
         </header>
 
         <main class="admin-content">
@@ -122,41 +126,20 @@
                             </h6>
                             
                             <div class="row g-4 pt-2">
+                                {% for i in range %}
                                 <div class="col-md-4">
                                     <div class="d-flex shadow-sm rounded">
-                                        <select name="attr_name_1" class="form-select premium-select w-50 border-end-0 rounded-end-0" style="font-size:0.85rem;">
+                                        <select name="attr_name_{{i}}" class="form-select premium-select w-50 border-end-0 rounded-end-0" style="font-size:0.85rem;">
                                             <option value="">Select...</option>
                                             {% for attr in attributes_list %}
                                                 <option value="{{ attr.id }}">{{ attr.name }}</option>
                                             {% endfor %}
                                         </select>
-                                        <input type="text" name="attr_value_1" class="form-control premium-input w-50 rounded-start-0" placeholder="e.g. 16GB" style="font-size:0.85rem;">
+                                        <input type="text" name="attr_value_{{i}}" class="form-control premium-input w-50 rounded-start-0" placeholder="e.g. 16GB" style="font-size:0.85rem;">
                                     </div>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <div class="d-flex shadow-sm rounded">
-                                        <select name="attr_name_2" class="form-select premium-select w-50 border-end-0 rounded-end-0" style="font-size:0.85rem;">
-                                            <option value="">Select...</option>
-                                            {% for attr in attributes_list %}
-                                                <option value="{{ attr.id }}">{{ attr.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <input type="text" name="attr_value_2" class="form-control premium-input w-50 rounded-start-0" placeholder="e.g. Red" style="font-size:0.85rem;">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="d-flex shadow-sm rounded">
-                                        <select name="attr_name_3" class="form-select premium-select w-50 border-end-0 rounded-end-0" style="font-size:0.85rem;">
-                                            <option value="">Select...</option>
-                                            {% for attr in attributes_list %}
-                                                <option value="{{ attr.id }}">{{ attr.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <input type="text" name="attr_value_3" class="form-control premium-input w-50 rounded-start-0" placeholder="Value" style="font-size:0.85rem;">
-                                    </div>
-                                </div>
+                                {% endfor %}
+                                
                             </div>
                         </div>
 
