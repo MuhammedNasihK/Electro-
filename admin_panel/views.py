@@ -24,22 +24,55 @@ def admin_orders(request):
         admin_data = User.objects.get(id = request.session['admin_id'])
     return render(request,'admin orders.html',{"admin_data":admin_data})
 
+
 @never_cache
 @admin_login_required
 def admin_products(request):
     if 'admin_id' in request.session:
         admin_data = User.objects.get(id = request.session['admin_id'])
-
-    products = Product.objects.all()
-    product_variants = ProductVariant.objects.all()
+    
+    # 1. Fetch products efficiently to avoid N+1 database hits
+    products = Product.objects.select_related('category', 'brand').order_by('-id')
+    
+    product_list = []
+    
+    # 2. Loop through products to calculate variant data
+    for p in products:
+        # Since you didn't define a related_name, the default is productvariant_set
+        variants = p.productvariant_set.all()
+        
+        # Calculate totals
+        total_stock = sum(v.stock for v in variants)
+        prices = [v.price for v in variants if v.price]
+        starting_price = min(prices) if prices else 0
+        
+        # Find the primary image
+        main_img_url = None
+        for v in variants:
+            img = ProductImage.objects.filter(variant=v, is_main=True).first()
+            if img:
+                main_img_url = img.image.url
+                break # Stop looking once we find the main image
+                
+        # Build a dictionary for the template
+        product_list.append({
+            'id': p.id,
+            'name': p.name,
+            'brand': p.brand.name,
+            'category': p.category.name,
+            'variants_count': variants.count(),
+            'total_stock': total_stock,
+            'starting_price': starting_price,
+            'is_active': p.is_active,
+            'added_date': p.added_date,
+            'image_url': main_img_url
+        })
 
     context = {
-        "admin_data":admin_data,
-        'products':products,
-        'product_variants':product_variants
+        "admin_data": admin_data,
+        "product_list": product_list
     }
-
-    return render(request,'admin products.html',context)
+    return render(request, 'admin products.html', context)
 
 @never_cache
 @admin_login_required
