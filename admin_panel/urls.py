@@ -5,6 +5,7 @@ urlpatterns = [
     path('dashboard/',views.admin_dashboard,name='admin_dashboard'),
     path('orders/',views.admin_orders,name='admin_orders'),
     path('products/',views.admin_products,name='admin_products'),
+    path('disable_variant/<int:variant_id>',views.disable_product_variant,name='disable_product_variant'),
     path('users/',views.admin_users,name='admin_users'),
     path('settings/',views.admin_settings,name='admin_settings'),
     path('coupons/',views.admin_coupons,name='admin_coupons'),

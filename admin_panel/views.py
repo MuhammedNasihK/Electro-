@@ -30,49 +30,67 @@ def admin_orders(request):
 def admin_products(request):
     if 'admin_id' in request.session:
         admin_data = User.objects.get(id = request.session['admin_id'])
+
+    search_query = request.GET.get('search','').strip()
+    category_id = request.GET.get('category','')
+
+    # Fetch product variants efficiently to avoid N+1 database hits
+    variants = ProductVariant.objects.select_related('product','product__category','product__brand').prefetch_related('attribute')
+    categories = Category.objects.all()
+
+    if search_query:
+        variants = variants.filter(Q(product__name__icontains = search_query)|Q(product__brand__name__icontains = search_query))
+
+    if category_id:
+        variants = variants.filter(product__category__id=category_id)
+                                   
+    variants_list = []
     
-    # 1. Fetch products efficiently to avoid N+1 database hits
-    products = Product.objects.select_related('category', 'brand').order_by('-id')
-    
-    product_list = []
-    
-    # 2. Loop through products to calculate variant data
-    for p in products:
-        # Since you didn't define a related_name, the default is productvariant_set
-        variants = p.productvariant_set.all()
-        
-        # Calculate totals
-        total_stock = sum(v.stock for v in variants)
-        prices = [v.price for v in variants if v.price]
-        starting_price = min(prices) if prices else 0
-        
-        # Find the primary image
-        main_img_url = None
-        for v in variants:
-            img = ProductImage.objects.filter(variant=v, is_main=True).first()
-            if img:
-                main_img_url = img.image.url
-                break # Stop looking once we find the main image
+    for v in variants:
+        main_image = ProductImage.objects.filter(variant=v,is_main=True).first()
+
+        attr_values = [a.value for a in v.attribute.all()]
+        variant_attr = " | ".join(attr_values) if attr_values else 'Base Model'
                 
         # Build a dictionary for the template
-        product_list.append({
-            'id': p.id,
-            'name': p.name,
-            'brand': p.brand.name,
-            'category': p.category.name,
-            'variants_count': variants.count(),
-            'total_stock': total_stock,
-            'starting_price': starting_price,
-            'is_active': p.is_active,
-            'added_date': p.added_date,
-            'image_url': main_img_url
+        variants_list.append({
+            'id': v.pk,
+            'product_id' : v.product.pk,
+            'name': v.product.name,
+            'attributes' : variant_attr,
+            'brand': v.product.brand.name,
+            'category': v.product.category.name,
+            'total_stock': v.stock,
+            'starting_price': v.price,
+            'discount_price' : v.discount_price,
+            'is_active': v.is_active,
+            'added_date': v.added_date,
+            'image_url': main_image.image.url
         })
 
     context = {
         "admin_data": admin_data,
-        "product_list": product_list
+        "variants_list": variants_list,
+        'search_data': search_query,
+        'categories': categories
     }
     return render(request, 'admin products.html', context)
+
+
+
+@admin_login_required
+def disable_product_variant(request,variant_id):
+    if request.method=="POST":
+        variant = ProductVariant.objects.get(id=variant_id)
+        if variant.is_active:
+            variant.is_active=False
+        else:
+            variant.is_active=True
+        variant.save()
+        return redirect('admin_products')
+
+
+
 
 @never_cache
 @admin_login_required
@@ -93,6 +111,18 @@ def admin_users(request):
     if search_data:
         user_data = user_data.filter(Q(username__icontains=search_data)|Q(email__icontains=search_data))
     return render(request,'admin users.html',{'user_data':user_data,'admin_data':admin_data})
+
+
+@admin_login_required
+def block_user(request,id):
+    user_data = User.objects.get(id=id)
+    if user_data.is_active:
+        user_data.is_active = False
+    else:
+        user_data.is_active = True
+        
+    user_data.save()
+    return redirect('admin_users')
 
 @never_cache
 @admin_login_required
@@ -198,6 +228,9 @@ def admin_add_variants(request, product_id):
     return render(request, 'admin_product_variants.html', context)
 
 
+
+
+@admin_login_required
 def admin_product_image(request,product_id):
 
     variant = get_object_or_404(ProductVariant,id=product_id)
@@ -243,12 +276,3 @@ def edit_user(request):
     return render(request)
 
 
-def block_user(request,id):
-    user_data = User.objects.get(id=id)
-    if user_data.is_active:
-        user_data.is_active = False
-    else:
-        user_data.is_active = True
-        
-    user_data.save()
-    return redirect('admin_users')

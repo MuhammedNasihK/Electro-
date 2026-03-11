@@ -120,14 +120,25 @@
                         <div class="section-subtitle">Catalog, pricing, stock and visibility.</div>
                     </div>
                     <div class="d-flex gap-2">
-                        <input type="text" class="form-control form-control-sm" placeholder="Search products...">
-                        <select class="form-select form-select-sm">
-                            <option>All categories</option>
-                            <option>Mobiles</option>
-                            <option>Laptops</option>
-                            <option>Accessories</option>
-                        </select>
-                    </div>
+                        <form action="" method="get" class="d-flex gap-2">
+                                
+                            <input type="text" name="search" value="{{ request.GET.search|default:'' }}" class="form-control form-control-sm" style="width: 200px;" placeholder="Search products...">
+                            
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-search"></i>
+                            </button>
+
+                            <select name="category" class="form-select form-select-sm" onchange="this.form.submit()" style="width: 150px;">
+                                <option value="">All categories</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                        </form>
+                        </div>
                 </div>
                 <div class="admin-card-body">
                     <div class="table-responsive">
@@ -137,7 +148,9 @@
                                 <th>Image</th>
                                 <th>Product</th>
                                 <th>Category</th>
+                                <th>Variant</th>
                                 <th>Pricing</th>
+                                <th>Discount Price</th>
                                 <th>Inventory</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -145,7 +158,7 @@
                             </thead>
                             <tbody style="font-size:0.82rem;">
                             
-                            {% for p in product_list %}
+                            {% for p in variants_list %}
                             <tr>
                                 <td>
                                     {% if p.image_url %}
@@ -161,8 +174,9 @@
                                     <div class="text-muted" style="font-size: 0.72rem;">{{ p.brand }}</div>
                                 </td>
                                 <td>{{ p.category }}</td>
+                                <td><span class="badge bg-light text-muted border" style="font-size:0.75rem;">{{p.attributes}}</span></td>
                                 <td>
-                                    {% if p.variants_count > 0 %}
+                                    {% if p.starting_price > 0 %}
                                         <div class="fw-semibold text-success">₹{{ p.starting_price }}</div>
                                         <div class="text-muted" style="font-size: 0.7rem;">Starting price</div>
                                     {% else %}
@@ -170,9 +184,17 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    {% if p.discount_price > 0 %}
+                                        <div class="fw-semibold text-success">₹{{ p.discount_price }}</div>
+                                        <div class="text-muted" style="font-size: 0.7rem;">Discount price</div>
+                                    {% else %}
+                                        <span class="text-muted fst-italic" style="font-size: 0.75rem;">No variants</span>
+                                    {% endif %}
+                                </td>
+                                <td>
                                     {% if p.total_stock == 0 %}
                                         <span class="badge badge-soft-danger">Out of stock (0)</span>
-                                    {% elif p.total_stock < 10 %}
+                                    {% elif p.total_stock < 5 %}
                                         <span class="badge badge-soft-warning">Low stock ({{ p.total_stock }})</span>
                                     {% else %}
                                         <span class="badge badge-soft-success">In stock ({{ p.total_stock }})</span>
@@ -187,12 +209,18 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'admin_product_variants' p.id %}" class="btn btn-outline-secondary btn-xs me-1">Manage</a>
+                                    <a href="{% url 'admin_product_variants' p.product_id %}" class="btn btn-outline-secondary btn-xs me-1 mb-1">Manage</a>
                                     
                                     {% if p.is_active %}
-                                        <button class="btn btn-outline-warning btn-xs">Disable</button>
+                                        <form method="POST" action="{% url 'disable_product_variant' p.id %}">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-warning btn-xs">Disable</button>
+                                        </form>
                                     {% else %}
-                                        <button class="btn btn-outline-success btn-xs">Enable</button>
+                                        <form method="POST" action="{% url 'disable_product_variant' p.id %}">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-warning btn-xs">Enable</button>
+                                        </form>
                                     {% endif %}
                                 </td>
                             </tr>
