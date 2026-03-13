@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from admin_panel.models import *
+from .models import *
 import random
 
 
@@ -15,6 +18,7 @@ def home(request):                                                              
         main_image = v.productimage_set.filter(is_main=True).first()
         
         product_list.append({
+            'variant_id':v.pk,
             'product_name':v.product.name,
             'attribute':{a.attribute.name: a.value for a in v.attribute.all()},
             'price':v.price,
@@ -37,6 +41,61 @@ def home(request):                                                              
 
 def products(request):
     return render(request,'products.html')
+
+
+@login_required
+def add_products_to_wishlist(request,variant_id):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            user_data = request.user
+            variant = get_object_or_404(ProductVariant,id=variant_id)
+
+            wishlist_item = Wishlist.objects.filter(user=request.user,product_variant=variant).first()
+            if wishlist_item:
+                wishlist_item.delete()
+                messages.success(request,'Removed')
+                
+        
+            elif user_data:
+                Wishlist.objects.create(
+                    user=user_data,
+                    product_variant=variant
+                )
+                messages.success(request,'Added to wishlist')
+
+    return redirect(request.META.get('HTTP_REFERER','home'))
+
+
+def wishlist(request):
+    variant_list = []
+
+    if request.user.is_authenticated:
+        products_variants = Wishlist.objects.filter(user=request.user).select_related('product_variant','product_variant__product','product_variant__product__category','product_variant__product__brand').prefetch_related('product_variant__attribute','product_variant__productimage_set')
+
+        variant_list = []
+
+
+        for i in products_variants:
+            main_image = i.product_variant.productimage_set.filter(variant=i.product_variant,is_main=True).first()
+            variant_list.append({
+                'id':i.pk,
+                'variant_id':i.product_variant.id,
+                'product_name':i.product_variant.product.name,
+                'category':i.product_variant.product.category.name,
+                'brand':i.product_variant.product.brand.name,
+                'price':i.product_variant.price,
+                'discount_price':i.product_variant.discount_price,
+                'discount_percentage':i.product_variant.discount_percentage(),
+                'attributes':[a.value for a in i.product_variant.attribute.all()],
+                'image':main_image.image.url if main_image else None
+            })
+    context = {
+        'variant_list':variant_list
+    }
+    return render(request,'wishlist.html',context)
+
+def profile(request):
+    return render(request,'profile.html')
 
 
 def product_review(request):

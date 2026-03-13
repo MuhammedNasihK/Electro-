@@ -84,11 +84,7 @@ def logout(request):
     user_logout(request)
     return redirect('home')
 
-def wishlist(request):
-    return render(request,'wishlist.html')
 
-def profile(request):
-    return render(request,'profile.html')
 
 @never_cache
 @logout_required

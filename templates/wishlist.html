@@ -349,107 +349,73 @@
         <div class="container">
             <div class="row g-3">
 
-                <!-- Wishlist item 1 -->
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="product-card p-3">
-                        <div class="product-image-wrapper mb-2">
-                            <img src="img/p1.png" alt="iPhone 14" class="product-img">
-                        </div>
-                        <div>
-                            <div class="product-title mb-1">iPhone 14 (128GB)</div>
-                            <div class="product-meta mb-1">
-                                Midnight • 6.1&quot; Super Retina XDR
+                {% if not request.user.is_authenticated %}
+                    <div class="col-12">
+                        <div class="wishlist-empty-card p-5 text-center">
+                            <div class="wishlist-empty-icon" style="background: #eff6ff; color: #3b82f6;">
+                                <i class="bi bi-person-lock"></i>
                             </div>
-                            <div class="price-line">
-                                <span class="price-main">₹68,999</span>
-                                <span class="price-old">₹74,999</span>
-                                <span class="price-save">Save ₹6,000</span>
-                            </div>
-                            <div class="wishlist-actions">
-                                <button class="btn btn-sm btn-add-cart">
-                                    <i class="bi bi-cart-plus me-1"></i> Add to cart
-                                </button>
-                                <button class="btn btn-sm btn-remove">
-                                    <i class="bi bi-x-lg"></i> Remove
-                                </button>
-                            </div>
+                            <div class="wishlist-empty-title mb-1">Login Required</div>
+                            <p class="wishlist-empty-text mb-4">
+                                Please log in to your account to view or manage your wishlist.
+                            </p>
+                            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill px-4 py-2 fw-medium shadow-sm">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Login to Continue
+                            </a>
                         </div>
                     </div>
-                </div>
 
-                <!-- Wishlist item 2 -->
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="product-card p-3">
-                        <div class="product-image-wrapper mb-2">
-                            <img src="img/new4.png" alt="HP Victus Gaming" class="product-img">
-                        </div>
-                        <div>
-                            <div class="product-title mb-1">HP Victus Gaming Laptop</div>
-                            <div class="product-meta mb-1">
-                                Ryzen 7 • 16GB RAM • RTX graphics
-                            </div>
-                            <div class="price-line">
-                                <span class="price-main">₹59,999</span>
-                                <span class="price-old">₹69,999</span>
-                                <span class="price-save">Save ₹10,000</span>
-                            </div>
-                            <div class="wishlist-actions">
-                                <button class="btn btn-sm btn-add-cart">
-                                    <i class="bi bi-cart-plus me-1"></i> Add to cart
-                                </button>
-                                <button class="btn btn-sm btn-remove">
-                                    <i class="bi bi-x-lg"></i> Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% elif variant_list %}
 
-                <!-- Wishlist item 3 -->
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="product-card p-3">
-                        <div class="product-image-wrapper mb-2">
-                            <img src="img/watch.png" alt="Smartwatch" class="product-img">
-                        </div>
-                        <div>
-                            <div class="product-title mb-1">Boat Smartwatch</div>
-                            <div class="product-meta mb-1">
-                                SpO₂ • Heart rate • 1.69&quot; display
+                    {% for v in variant_list %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="product-card p-3">
+                            <div class="product-image-wrapper mb-2" onclick="location.href='#'" style="cursor:pointer;">
+                                <img src="{{v.image}}" alt="{{v.product_name}}" class="product-img">
                             </div>
-                            <div class="price-line">
-                                <span class="price-main">₹1,999</span>
-                                <span class="price-old">₹2,499</span>
-                                <span class="price-save">Save ₹500</span>
-                            </div>
-                            <div class="wishlist-actions">
-                                <button class="btn btn-sm btn-add-cart">
-                                    <i class="bi bi-cart-plus me-1"></i> Add to cart
-                                </button>
-                                <button class="btn btn-sm btn-remove">
-                                    <i class="bi bi-x-lg"></i> Remove
-                                </button>
+                            <div class="product-body">
+                                <div class="product-title mb-1">{{v.brand}} {{v.product_name}}</div>
+                                <div class="product-meta mb-1">
+                                    {{ v.attributes|join:" | " }}
+                                </div>
+                                <div class="price-line">
+                                    <span class="price-main">₹{{v.discount_price}}</span>
+                                    <span class="price-old">₹{{v.price}}</span>
+                                    <span class="price-save">{{v.discount_percentage}}% OFF</span>
+                                </div>
+                                <div class="wishlist-actions">
+                                    <button class="btn btn-sm btn-add-cart">
+                                        <i class="bi bi-cart-plus me-1"></i> Add to cart
+                                    </button>
+                                    
+                                    <form action="{% url 'add_to_wishlist' v.variant_id %}" method="POST" class="m-0">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-remove">
+                                            <i class="bi bi-x-lg"></i> Remove
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Example empty state card (use when no items, and hide the items above) -->
-                <!--
-                <div class="col-12">
-                    <div class="wishlist-empty-card p-4 text-center">
-                        <div class="wishlist-empty-icon">
-                            <i class="bi bi-heart"></i>
+                    {% endfor %}
+                    
+                {% else %}
+                    <div class="col-12">
+                        <div class="wishlist-empty-card p-5 text-center">
+                            <div class="wishlist-empty-icon">
+                                <i class="bi bi-heart"></i>
+                            </div>
+                            <div class="wishlist-empty-title mb-1">Your wishlist is empty</div>
+                            <p class="wishlist-empty-text mb-4">
+                                Start saving products you like. Add them to your wishlist and move to cart anytime.
+                            </p>
+                            <a href="{% url 'products' %}" class="btn btn-success rounded-pill px-4 py-2 fw-medium shadow-sm">
+                                <i class="bi bi-plus-lg me-1"></i> Browse products
+                            </a>
                         </div>
-                        <div class="wishlist-empty-title mb-1">Your wishlist is empty</div>
-                        <p class="wishlist-empty-text mb-3">
-                            Start saving products you like. Add them to your wishlist and move to cart anytime.
-                        </p>
-                        <a href="products.html" class="btn btn-sm btn-success rounded-pill px-4">
-                            <i class="bi bi-plus-lg me-1"></i> Browse products
-                        </a>
                     </div>
-                </div>
-                -->
+                {% endif %}
 
             </div>
         </div>
