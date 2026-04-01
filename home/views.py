@@ -168,6 +168,9 @@ def add_address(request):
  
 
 
+def remove_address(request,id):
+    return redirect('profile')
+
 def product_review(request, variant_id):
     # 1. Fetch the specific variant the user is viewing
     variant = get_object_or_404(
