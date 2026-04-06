@@ -125,7 +125,7 @@ def profile(request):
             return redirect('profile')
 
     context = {
-        'profile': user_profile,  # Passes the single object to the template
+        'profile': user_profile,  
         'addresses': user_addresses
     }
     return render(request, 'profile.html', context)
@@ -165,10 +165,29 @@ def add_address(request):
     }
     return render(request,'add_address.html',context)
 
- 
+@login_required
+def edit_address(request,id):
 
+    address = get_object_or_404(Address,id=id)
 
+    if request.method == 'POST':
+        form = AddressForm(request.POST,instance=address)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+
+    else:
+        form = AddressForm(instance=address)
+
+    context = {
+        'form': form
+    }
+    return render(request,'add_address.html',context)
+
+@login_required
 def remove_address(request,id):
+    if request.method == 'POST':
+        address = get_object_or_404(Address,id=id,user=request.user).delete()     
     return redirect('profile')
 
 def product_review(request, variant_id):

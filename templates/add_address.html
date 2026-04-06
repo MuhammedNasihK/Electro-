@@ -319,7 +319,7 @@
             </div>
             
             <div class="address-card-body">
-                <form method="POST" action="{% url 'add_address' %}">
+                <form method="POST">
                     {% csrf_token %}
                     
                     <div class="row g-4">

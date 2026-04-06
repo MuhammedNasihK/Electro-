@@ -1,0 +1,72 @@
+<style>
+    /* --- PURE CSS PRELOADER --- */
+    .preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.4); 
+        backdrop-filter: blur(2px); 
+        -webkit-backdrop-filter: blur(2px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Fades out after 0.8s */
+        animation: hidePreloader 0.4s ease-in-out 0.8s forwards;
+    }
+
+    /* --- MODERN BOUNCING DOTS ANIMATION --- */
+    .spinner {
+        display: flex;
+        gap: 12px;
+    }
+
+    .spinner div {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: #22c55e; /* Veintro Green */
+        
+        /* THE FIX: Hardware acceleration for buttery smoothness */
+        will-change: transform; 
+        
+        /* THE FIX: Changed from 'alternate' to a continuous 1-second loop */
+        animation: bounce 1s infinite ease-in-out;
+    }
+
+    .spinner div:nth-child(2) {
+        background-color: #0f172a; /* Veintro Primary Dark */
+        animation-delay: 0.15s;
+    }
+
+    .spinner div:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    /* THE FIX: Explicit, continuous looping keyframes */
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    /* Fade out logic */
+    @keyframes hidePreloader {
+        0% { opacity: 1; visibility: visible; }
+        99% { opacity: 0; visibility: visible; }
+        100% { 
+            opacity: 0; 
+            visibility: hidden; 
+            z-index: -1; 
+        }
+    }
+</style>
+
+<div class="preloader">
+    <div class="spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>

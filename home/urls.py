@@ -10,6 +10,7 @@ urlpatterns = [
     path('profile/',views.profile,name='profile'),
     path('primary_mobile_number/',views.add_primary_mobile_number,name='add_primary_mobile_number'),
     path('add_address/',views.add_address,name='add_address'),
+    path('edit_address/<int:id>',views.edit_address,name='edit_address'),
     path('remove_address/<int:id>',views.remove_address,name='remove_address'),
     path('product_review/<int:variant_id>',views.product_review,name='product_review'),
     path('cart/',views.cart,name='cart'),
