@@ -5,7 +5,7 @@ from .decorators import admin_login_required
 from django.views.decorators.cache import never_cache
 from django.db.models import Q
 from .forms import *
-# Create your views here.
+import random
 
 User = get_user_model()
 
@@ -68,6 +68,8 @@ def admin_products(request):
             'image_url': main_image.image.url
         })
 
+    
+    random.shuffle(variants_list)
     context = {
         "admin_data": admin_data,
         "variants_list": variants_list,

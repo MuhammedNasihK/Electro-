@@ -6,15 +6,17 @@
         left: 0;
         width: 100%;
         height: 100vh;
-        background: rgba(255, 255, 255, 0.4); 
-        backdrop-filter: blur(2px); 
-        -webkit-backdrop-filter: blur(2px);
+        
+        /* THE FIX 1: Completely removed the white background and blur */
+        background: transparent; 
+        
         z-index: 9999;
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Fades out after 0.8s */
-        animation: hidePreloader 0.4s ease-in-out 0.8s forwards;
+        
+        /* THE FIX 2: Decreased the delay from 0.8s to 0.4s, and made the fade faster (0.3s) */
+        animation: hidePreloader 0.3s ease-in-out 0.4s forwards;
     }
 
     /* --- MODERN BOUNCING DOTS ANIMATION --- */
@@ -28,11 +30,7 @@
         height: 18px;
         border-radius: 50%;
         background-color: #22c55e; /* Veintro Green */
-        
-        /* THE FIX: Hardware acceleration for buttery smoothness */
         will-change: transform; 
-        
-        /* THE FIX: Changed from 'alternate' to a continuous 1-second loop */
         animation: bounce 1s infinite ease-in-out;
     }
 
@@ -45,7 +43,6 @@
         animation-delay: 0.3s;
     }
 
-    /* THE FIX: Explicit, continuous looping keyframes */
     @keyframes bounce {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-20px); }

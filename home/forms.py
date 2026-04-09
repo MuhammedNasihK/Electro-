@@ -51,8 +51,8 @@ class AddressForm(forms.ModelForm):
         
         widgets = {
             'full_name': forms.TextInput(attrs={'class': 'form-control custom-input'}),
-            'mobile_number': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': '10-digit mobile number'}),
-            'pincode': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': '6 digits [0-9] PIN code'}),
+            'mobile_number': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': '10-digit mobile number','maxlenght':'10'}),
+            'pincode': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': '6 digits [0-9] PIN code','maxlength':'6'}),
             'flat': forms.TextInput(attrs={'class': 'form-control custom-input'}),
             'area': forms.TextInput(attrs={'class': 'form-control custom-input'}),
             'landmark': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'E.g. near apollo hospital'}),
