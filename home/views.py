@@ -346,27 +346,28 @@ def product_review(request, variant_id):
 
 def cart(request):
 
-    cart_objects = Cart.objects.select_related('variant','variant__product','variant__product__category','variant__product__brand').prefetch_related('variant__attribute','variant__productimage_set')
-    product_details =[]
+    product_details = []
+    if request.user.is_authenticated:
+        cart_objects = Cart.objects.filter(user=request.user).select_related('variant','variant__product','variant__product__category','variant__product__brand').prefetch_related('variant__attribute','variant__productimage_set')
 
-    for c in cart_objects:
 
-        
-        main_img = c.variant.productimage_set.filter(variant=c.variant,is_main=True).first()
-        product_details.append({
-            'cart_id':c.pk,
-            'product_id':c.variant.product.id,
-            'variant_id':c.variant.id,
-            'product_name':c.variant.product.name,
-            'category':c.variant.product.category.name,
-            'brand':c.variant.product.brand.name,
-            'price':c.variant.price,
-            'discount_price':c.variant.discount_price if c.variant.discount_price else None,
-            'discount_percentage':c.variant.discount_percentage() if c.variant.discount_price else None,
-            'image':main_img.image.url if main_img else None
-
+        for c in cart_objects:
             
-        })
+            main_img = c.variant.productimage_set.filter(variant=c.variant,is_main=True).first()
+            product_details.append({
+                'cart_id':c.pk,
+                'product_id':c.variant.product.id,
+                'variant_id':c.variant.id,
+                'product_name':c.variant.product.name,
+                'category':c.variant.product.category.name,
+                'brand':c.variant.product.brand.name,
+                'price':c.variant.price,
+                'discount_price':c.variant.discount_price if c.variant.discount_price else None,
+                'discount_percentage':c.variant.discount_percentage() if c.variant.discount_price else None,
+                'image':main_img.image.url if main_img else None
+
+                
+            })
 
     context = {
         'product_details': product_details
