@@ -345,6 +345,8 @@
 </head>
 <body>
 
+    {% include 'loading_animation.html' %}
+
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container-fluid-custom">
         <a class="navbar-brand" href="{% url 'home' %}">
@@ -538,12 +540,12 @@
                         <h2 class="summary-title mb-3">Price details</h2>
 
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
-                            <span>Price (4 items)</span>
-                            <span>₹1,32,996</span>
+                            <span>Price ({{product_count}} Items)</span>
+                            <span>₹{{total_price}}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Discount</span>
-                            <span class="text-success">− ₹17,000</span>
+                            <span class="text-success">− ₹{{total_discount}}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Delivery charges</span>
@@ -558,10 +560,10 @@
 
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="summary-total">Total amount</span>
-                            <span class="summary-total">₹1,16,095</span>
+                            <span class="summary-total">₹{{total_amount}}</span>
                         </div>
                         <p class="summary-note mb-3">
-                            You will save <span class="text-success fw-semibold">₹17,000</span> on this order compared to MRP.
+                            You will save <span class="text-success fw-semibold">₹{{total_discount}}</span> on this order compared to MRP.
                         </p>
 
                         <button class="btn btn-checkout w-100 mb-2 py-2" type="button" onclick="window.location.href='{% url 'checkout' %}'">

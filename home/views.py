@@ -369,8 +369,20 @@ def cart(request):
                 
             })
 
+        
+        total_price = 0
+        total_discount = 0
+
+        for i in product_details:
+            total_price = total_price + i['price']
+            total_discount = total_discount + i['discount_price']
+
     context = {
-        'product_details': product_details
+        'product_details': product_details,
+        'product_count' : len(product_details),
+        'total_price' : total_price,
+        'total_discount' : total_price - total_discount,
+        'total_amount' : total_discount
     }
     return render(request,'cart.html',context)
 
