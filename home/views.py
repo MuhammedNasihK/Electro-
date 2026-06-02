@@ -29,7 +29,7 @@ def home(request):                                                              
             'attribute':{a.attribute.name: a.value for a in v.attribute.all()},
             'price':v.price,
             'discount_price':v.discount_price,
-            'percentage':v.discount_percentage,
+            'percentage':v.discount_percentage(),
             'in_wishlist':in_wishlist,
             'image':main_image.image.url
         })
@@ -47,7 +47,36 @@ def home(request):                                                              
     return render(request,'home.html',context)
 
 def products(request):
-    return render(request,'products.html')
+
+    products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
+    product_details = []
+    for p in products:
+        product_img = p.productimage_set.filter(is_main=True).first()
+
+        is_in_wishlist = None
+
+        if request.user.is_authenticated:
+            is_in_wishlist = Wishlist.objects.filter(product_variant=p,user=request.user)
+
+        product_details.append({
+            'variant_id' : p.id,
+            'product_name' : p.product.name,
+            'brand' : p.product.brand,
+            'category' : p.product.category,
+            'price' : p.price,
+            'discount_price' : p.discount_price,
+            'discount_percentage' : p.discount_percentage(),
+            'attributes' : {a.attribute.name : a.value for a in p.attribute.all()},
+            'is_in_wishlist' : is_in_wishlist,
+            'main_img' : product_img.image.url if product_img else None
+        })
+
+    context = {
+        'product_details' : product_details
+    }
+
+
+    return render(request,'products.html',context)
 
 
 @login_required
@@ -131,7 +160,7 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 
-
+@login_required
 def add_primary_mobile_number(request):
     if request.method=='POST':
         action = request.POST.get('primary_mobile_number')
