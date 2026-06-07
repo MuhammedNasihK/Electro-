@@ -3,8 +3,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from admin_panel.models import *
+from django.db.models import Q
 from .models import *
 from .forms import *
+from decimal import Decimal
 import random
 
 
@@ -47,11 +49,14 @@ def home(request):                                                              
     }
     return render(request,'home.html',context)
 
+
+
 def products(request):
 
 
     filter_category = request.GET.getlist('category')
     filter_brand = request.GET.getlist('brand')
+    filter_price = request.GET.get('price')
 
     products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
     product_details = []
@@ -60,6 +65,12 @@ def products(request):
         products = products.filter(product__category__name__in=filter_category)
     if filter_brand:
         products = products.filter(product__brand__name__in=filter_brand)
+    if filter_price:
+        filter_price = Decimal(filter_price)
+        if filter_price == 30000:
+            products = products.filter(Q(discount_price__gte=filter_price) | Q(price__gte=filter_price))
+        else:
+            products = products.filter(Q(discount_price__range=(1,filter_price))|Q(discount_price=0,price__range=(1,filter_price)))
 
     for p in products:
         product_img = p.productimage_set.filter(is_main=True).first()
@@ -180,6 +191,7 @@ def profile(request):
         if 'profile_picture' in request.FILES:
             
             # Assign the image directly to the model without using forms.py
+            user_profile.profile_picture.delete()
             user_profile.profile_picture = request.FILES['profile_picture']
             user_profile.save()
             

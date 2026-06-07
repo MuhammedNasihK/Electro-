@@ -430,18 +430,18 @@
                     </div>
 
                     <!-- PRICE (Dropdown — unchanged) -->
-                    {% comment %} <div class="mb-3">
+                    <div class="mb-3">
                         <span class="filter-label mb-1 d-block">Price</span>
                         <select name="price" class="form-select form-select-sm mt-1 filter-select">
                             <option value="">Any price</option>
-                            <option value="under_1000" {% if request.GET.price == 'under_1000' %}selected{% endif %}>Under ₹1000</option>
-                            <option value="under_5000" {% if request.GET.price == 'under_5000' %}selected{% endif %}>Under ₹5000</option>
-                            <option value="under_10000" {% if request.GET.price == 'under_10000' %}selected{% endif %}>Under ₹10000</option>
-                            <option value="under_15000" {% if request.GET.price == 'under_15000' %}selected{% endif %}>Under ₹15000</option>
-                            <option value="under_20000" {% if request.GET.price == 'under_20000' %}selected{% endif %}>Under ₹20000</option>
-                            <option value="above_80000" {% if request.GET.price == 'above_80000' %}selected{% endif %}>Above ₹80,000</option>
+                            <option value="1000" {% if request.GET.price == '1000' %}selected{% endif %}>Under ₹1000</option>
+                            <option value="5000" {% if request.GET.price == '5000' %}selected{% endif %}>Under ₹5000</option>
+                            <option value="10000" {% if request.GET.price == '10000' %}selected{% endif %}>Under ₹10000</option>
+                            <option value="15000" {% if request.GET.price == '15000' %}selected{% endif %}>Under ₹15000</option>
+                            <option value="20000" {% if request.GET.price == '20000' %}selected{% endif %}>Under ₹20000</option>
+                            <option value="30000" {% if request.GET.price == '30000' %}selected{% endif %}>Above ₹30,000</option>
                         </select>
-                    </div> {% endcomment %}
+                    </div>
 
                     <!-- BRAND (Checkbox Dynamic) -->
                     <div class="mb-2">
