@@ -167,7 +167,7 @@
             color: #22c55e;
         }
         .hero-subtitle {
-            color: #9ca3af;
+            color: #eeeeee;
             font-size: 0.96rem;
         }
         .hero-cta-main {
@@ -648,16 +648,16 @@
                         <div class="col-7 position-relative">
                             <div class="product-image-wrapper mb-2">
                                 <span class="hero-chip">Featured • Laptop</span>
-                                <img src="{% static 'img/pc.png' %}" alt="Laptop" class="product-img">
+                                <img src="{% static 'img/3.webp' %}" alt="Laptop" class="product-img">
                                 <span class="hero-tag">Up to 35% off</span>
                             </div>
                         </div>
                         <div class="col-5 d-flex flex-column justify-content-between">
                             <div class="product-image-wrapper mb-2">
-                                <img src="{% static 'img/pc.png' %}" alt="Smartphone" class="product-img" style="height:120px;">
+                                <img src="{% static 'img/4.webp' %}" alt="Smartphone" class="product-img" style="height:120px;">
                             </div>
                             <div class="product-image-wrapper">
-                                <img src="{% static 'img/pc.png' %}" alt="Smart TV" class="product-img" style="height:120px;">
+                                <img src="{% static 'img/5.webp' %}" alt="Smart TV" class="product-img" style="height:120px;">
                             </div>
                         </div>
                     </div>
@@ -814,41 +814,49 @@
             <a href="products.html" class="btn btn-sm btn-outline-dark rounded-pill">Browse all</a>
         </div>
 
+        {% comment %} Product card {% endcomment %}
+
         <div class="row g-4 mb-3">
             {% for v in product_list|slice:":8" %}
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100" onclick="location.href='{% url 'product_review' v.variant_id %}'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        {% if request.user.is_authenticated %}
-                        
-                        <form action="{% url 'add_to_wishlist' v.variant_id %}" method="POST" onsubmit="handleWishlistSubmit(event, this)" onclick="event.stopPropagation();">
-                            {% csrf_token %}
-                            <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
-                                <i class="bi {% if v.in_wishlist %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
-                            </button>
-                        </form>
-                        
-                        {% endif %}
-                        
-                        <img src="{{ v.image }}" class="product-img mb-2" alt="{{ v.product_name }}">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">{{ v.product_name }}</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">{{ v.attribute.RAM }} | {{v.attribute.Storage}} | {{v.attribute.Colour}}</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div>
-                                <span class="product-price">₹{{ v.discount_price }}</span>
-                                <span class="product-old-price ms-1">₹{{ v.price }}</span>
-                            </div>
-                            <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">{{ v.percentage }}% OFFER</span>
+                <div class="col-6 col-md-3">
+                    <div class="product-card p-2 h-100" onclick="location.href='{% url 'product_review' v.variant_id %}'" style="cursor:pointer;">
+                        <div class="product-image-wrapper">
+                            {% if request.user.is_authenticated %}
+                            
+                            <form action="{% url 'add_to_wishlist' v.variant_id %}" method="POST" onsubmit="handleWishlistSubmit(event, this)" onclick="event.stopPropagation();">
+                                {% csrf_token %}
+                                <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
+                                    <i class="bi {% if v.in_wishlist %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+                                </button>
+                            </form>
+                            
+                            {% endif %}
+                            
+                            <img src="{{ v.image }}" class="product-img mb-2" alt="{{ v.product_name }}">
                         </div>
-                        <form action="{% url 'add_to_cart' v.variant_id %}" method="POST">
-                            {% csrf_token %}
-                            <button class="btn btn-cart w-100" type="submit" onclick="event.stopPropagation();">Add to cart</button>
-                        </form>
+                        <div class="product-body p-2 mt-2">
+                            <h6 class="mb-1">{{v.brand_name}} {{ v.product_name }}</h6>
+                            <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">{{ v.attribute.RAM }} | {{v.attribute.Storage}} | {{v.attribute.Colour}}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                {%if v.discount_price%}
+                                    <div>
+                                        <span class="product-price">₹{{ v.discount_price }}</span>
+                                        <span class="product-old-price ms-1">₹{{ v.price }}</span>
+                                    </div>
+                                {%else%}
+                                        <div>
+                                        <span class="product-price">₹{{ v.price }}</span>
+                                    </div>
+                                {% endif %}
+                                <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">{{ v.percentage }}% OFFER</span>
+                            </div>
+                            <form action="{% url 'add_to_cart' v.variant_id %}" method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-cart w-100" type="submit" onclick="event.stopPropagation();">Add to cart</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endfor %}
             
         </div>

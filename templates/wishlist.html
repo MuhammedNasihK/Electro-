@@ -390,29 +390,7 @@
                 </li>
 
 
-                <!-- PROFILE ICON DROPDOWN -->
-                <li class="nav-item dropdown ms-3">
-                    <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown"
-                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5"></i>
-                    </a>
-
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
-                                <i class="bi bi-person-circle me-2"></i> Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
-                                <i class="bi bi-bag-check me-2"></i> Orders</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login</a>
-                        </li>
-                    </ul>
-                </li>
+                
             </ul>
 
             <!-- Wishlist Icon (active) -->
@@ -424,6 +402,30 @@
             <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
                 <i class="bi bi-cart"></i>
             </a>
+
+            <!-- PROFILE ICON DROPDOWN -->
+            <li class="nav-item dropdown ms-3">
+                <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light" href="#" id="menuDropdown"
+                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle fs-5"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                    <li>
+                        <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
+                            <i class="bi bi-person-circle me-2"></i> Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item fw-semibold" href="{% url 'orders' %}">
+                            <i class="bi bi-bag-check me-2"></i> Orders</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Login</a>
+                    </li>
+                </ul>
+            </li>
 
         </div>
     </div>

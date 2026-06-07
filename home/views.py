@@ -26,6 +26,7 @@ def home(request):                                                              
         product_list.append({
             'variant_id':v.pk,
             'product_name':v.product.name,
+            'brand_name' : v.product.brand,
             'attribute':{a.attribute.name: a.value for a in v.attribute.all()},
             'price':v.price,
             'discount_price':v.discount_price,
@@ -48,8 +49,18 @@ def home(request):                                                              
 
 def products(request):
 
+
+    filter_category = request.GET.getlist('category')
+    filter_brand = request.GET.getlist('brand')
+
     products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
     product_details = []
+
+    if filter_category:
+        products = products.filter(product__category__name__in=filter_category)
+    if filter_brand:
+        products = products.filter(product__brand__name__in=filter_brand)
+
     for p in products:
         product_img = p.productimage_set.filter(is_main=True).first()
 
@@ -71,12 +82,34 @@ def products(request):
             'main_img' : product_img.image.url if product_img else None
         })
 
+    brands = Brand.objects.all()
+    category = Category.objects.all()
+
+    random.shuffle(product_details)
+
     context = {
-        'product_details' : product_details
+        'product_details' : product_details,
+        'category' : category,
+        'brands' : brands,
+        'filter_category' : filter_category,
+        'filter_brand' : filter_brand
     }
 
 
     return render(request,'products.html',context)
+
+
+
+def products_filter(request):
+    
+    category = request.GET.get(category)
+    price = request.GET.get(price)
+    brand = request.GET.get(brand)
+
+    all_products = ProductVariant.objects.filter(is_active=True).select_related('product','product__brand','product__category').prefetch_related('attribute__attribute','productimage_set')
+    products_details = []
+
+
 
 
 @login_required
@@ -375,10 +408,12 @@ def product_review(request, variant_id):
 
 def cart(request):
 
+    total_price = 0
+    total_discount = 0
+
     product_details = []
     if request.user.is_authenticated:
         cart_objects = Cart.objects.filter(user=request.user).select_related('variant','variant__product','variant__product__category','variant__product__brand').prefetch_related('variant__attribute','variant__productimage_set')
-
 
         for c in cart_objects:
             
@@ -391,16 +426,13 @@ def cart(request):
                 'category':c.variant.product.category.name,
                 'brand':c.variant.product.brand.name,
                 'price':c.variant.price,
-                'discount_price':c.variant.discount_price if c.variant.discount_price else None,
+                'discount_price':c.variant.discount_price if c.variant.discount_price else 0,
                 'discount_percentage':c.variant.discount_percentage() if c.variant.discount_price else None,
                 'image':main_img.image.url if main_img else None
 
                 
             })
 
-        
-        total_price = 0
-        total_discount = 0
 
         for i in product_details:
             total_price = total_price + i['price']

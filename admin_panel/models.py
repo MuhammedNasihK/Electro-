@@ -51,7 +51,7 @@ class AttributeValue(models.Model):
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product,on_delete = models.CASCADE,related_name='variants')
     price = models.DecimalField(max_digits=10,decimal_places=2)
-    discount_price = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
+    discount_price = models.DecimalField(max_digits=10,decimal_places=2,default=0,blank=True)
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     added_date = models.DateField(auto_now_add=True)
@@ -63,6 +63,8 @@ class ProductVariant(models.Model):
             percentage = (discount/self.price) * 100
             return round(percentage,1)
         return 0 
+    
+
 
 
 class SpecificationTitle(models.Model):
