@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from admin_panel.models import *
-from django.db.models import Q
+from django.db.models import Q,When,Case,F,DecimalField
 from .models import *
 from .forms import *
 from decimal import Decimal
@@ -57,9 +57,25 @@ def products(request):
     filter_category = request.GET.getlist('category')
     filter_brand = request.GET.getlist('brand')
     filter_price = request.GET.get('price')
+    sort = request.GET.get('sort')
 
     products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
     product_details = []
+
+    if sort:
+        products = products.annotate(final_price = Case(
+                When(discount_price__gt=0,then=F('discount_price')),
+                default=F('price'),
+                output_field = DecimalField()))
+        
+        if sort == 'price_asc':
+            products = products.order_by('final_price')
+
+        elif sort == 'price_desc':
+            products = products.order_by('-final_price')
+        
+        else:
+            products = products.order_by('-added_date')
 
     if filter_category:
         products = products.filter(product__category__name__in=filter_category)
@@ -96,7 +112,8 @@ def products(request):
     brands = Brand.objects.all()
     category = Category.objects.all()
 
-    random.shuffle(product_details)
+    if not sort or sort == 'featured':
+        random.shuffle(product_details)
 
     context = {
         'product_details' : product_details,
