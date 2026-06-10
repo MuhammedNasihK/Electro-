@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -840,12 +840,12 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 {%if v.discount_price%}
                                     <div>
-                                        <span class="product-price">₹{{ v.discount_price }}</span>
-                                        <span class="product-old-price ms-1">₹{{ v.price }}</span>
+                                        <span class="product-price">₹{{v.discount_price|intcomma}}</span>
+                                        <span class="product-old-price ms-1">₹{{v.price|intcomma}}</span>
                                     </div>
                                 {%else%}
                                         <div>
-                                        <span class="product-price">₹{{ v.price }}</span>
+                                        <span class="product-price">₹{{v.price|intcomma}}</span>
                                     </div>
                                 {% endif %}
                                 <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">{{ v.percentage }}% OFFER</span>

@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -505,10 +506,16 @@
                                         </div>
                                         
                                         <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
-                                            <div>
-                                                <span class="cart-price-main">₹{{p.discount_price}}</span>
-                                                <span class="cart-price-old ms-1">₹{{p.price}}</span>
-                                            </div>
+                                            {%if p.discount_price%}
+                                                <div>
+                                                    <span class="cart-price-main">₹{{p.discount_price|intcomma}}</span>
+                                                    <span class="cart-price-old ms-1">₹{{p.price|intcomma}}</span>
+                                                </div>
+                                            {%else%}
+                                                <div>
+                                                    <span class="cart-price-main">₹{{p.price|intcomma}}</span>
+                                                </div>
+                                            {%endif%}
                                             <div class="mt-1">
                                                 <span class="cart-price-save">{{p.discount_percentage}}% OFFER</span>
                                             </div>
@@ -541,29 +548,31 @@
 
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Price ({{product_count}} Items)</span>
-                            <span>₹{{total_price}}</span>
+                            <span>₹{{total_price|intcomma}}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Discount</span>
-                            <span class="text-success">− ₹{{total_discount}}</span>
+                            <span class="text-success">− ₹{{total_discount|intcomma}}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Delivery charges</span>
-                            <span class="text-success">Free</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center summary-line mb-3">
-                            <span>Secure packaging fee</span>
-                            <span>₹99</span>
+                            <span class="text-success">
+                                {%if total_amount and total_amount < 15000%}
+                                    ₹29
+                                {%else%}
+                                    ₹0
+                                {%endif%}
+                            </span>
                         </div>
 
                         <hr>
 
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="summary-total">Total amount</span>
-                            <span class="summary-total">₹{{total_amount}}</span>
+                            <span class="summary-total">₹{{total_amount|intcomma}}</span>
                         </div>
                         <p class="summary-note mb-3">
-                            You will save <span class="text-success fw-semibold">₹{{total_discount}}</span> on this order compared to MRP.
+                            You will save <span class="text-success fw-semibold">₹{{total_discount|intcomma}}</span> on this order compared to MRP.
                         </p>
 
                         <button class="btn btn-checkout w-100 mb-2 py-2" type="button" onclick="window.location.href='{% url 'checkout' %}'">

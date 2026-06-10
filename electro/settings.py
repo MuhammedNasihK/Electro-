@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #Django template library
+    'django.contrib.humanize',
+
     # required by all auth
     'django.contrib.sites',
 

@@ -455,24 +455,35 @@ def cart(request):
                 'category':c.variant.product.category.name,
                 'brand':c.variant.product.brand.name,
                 'price':c.variant.price,
-                'discount_price':c.variant.discount_price if c.variant.discount_price else 0,
-                'discount_percentage':c.variant.discount_percentage() if c.variant.discount_price else None,
+                'discount_price':c.variant.discount_price,
+                'discount_percentage':c.variant.discount_percentage(),
                 'image':main_img.image.url if main_img else None
 
                 
             })
 
 
-        for i in product_details:
-            total_price = total_price + i['price']
-            total_discount = total_discount + i['discount_price']
+    total_amount = 0   
+    total_discount = 0 
+
+    for i in product_details:
+        price = i['price']
+        discount_price = i['discount_price']
+
+        total_price += price
+
+        if discount_price and discount_price > 0:
+            total_amount += discount_price
+            total_discount += (price - discount_price)
+        else:
+            total_amount += price
 
     context = {
         'product_details': product_details,
-        'product_count' : len(product_details),
-        'total_price' : total_price,
-        'total_discount' : total_price - total_discount,
-        'total_amount' : total_discount
+        'product_count': len(product_details),
+        'total_price': total_price,
+        'total_discount': total_discount,
+        'total_amount': total_amount
     }
     return render(request,'cart.html',context)
 
