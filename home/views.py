@@ -16,7 +16,9 @@ User = get_user_model()
 
 def home(request):                                                                                                            # here the first attribute is attribute field in ProductVariant which is related to AttributeValue by using ManyToMany relation and the second attribute is the attribute field in the AttributeValue table which is related to Attribute table by using ForeignKey relation.
     trending_products = ProductVariant.objects.filter(is_active=True).select_related('product','product__category','product__brand').prefetch_related('attribute__attribute','productimage_set')
+    latest_mobiles = trending_products.filter(product__category=1).order_by("-added_date")
     product_list=[]
+    latest_mobiles_list = []
     for v in trending_products:
         main_image = v.productimage_set.filter(is_main=True).first()
 
@@ -37,14 +39,36 @@ def home(request):                                                              
             'image':main_image.image.url
         })
 
-        random.shuffle(product_list)
+    
+    for l in latest_mobiles:
+        main_image = l.productimage_set.filter(is_main=True).first()
+        in_wishlist = False
+
+        if request.user.is_authenticated:
+            in_wishlist = Wishlist.objects.filter(user = request.user,product_variant = l).exists()
+        
+        latest_mobiles_list.append({
+            'variant_id':l.pk,
+            'product_name':l.product.name,
+            'brand_name' : l.product.brand,
+            'attribute':{a.attribute.name: a.value for a in v.attribute.all()},
+            'price':l.price,
+            'discount_price':l.discount_price,
+            'percentage':l.discount_percentage(),
+            'in_wishlist':in_wishlist,
+            'image':main_image.image.url
+        })
+
+    random.shuffle(product_list)
+    random.shuffle(latest_mobiles_list)
 
     brands = Brand.objects.all()
 
     product_count = len(product_list)
     context = {
-        'product_list':[product_list[i] for i in range(product_count)],
-        'brands':brands
+        'product_list': product_list,
+        'brands':brands,
+        'latest_mobiles_list' : latest_mobiles_list
         
     }
     return render(request,'home.html',context)
@@ -126,16 +150,6 @@ def products(request):
 
     return render(request,'products.html',context)
 
-
-
-def products_filter(request):
-    
-    category = request.GET.get(category)
-    price = request.GET.get(price)
-    brand = request.GET.get(brand)
-
-    all_products = ProductVariant.objects.filter(is_active=True).select_related('product','product__brand','product__category').prefetch_related('attribute__attribute','productimage_set')
-    products_details = []
 
 
 
@@ -280,6 +294,8 @@ def remove_address(request,id):
     if request.method == 'POST':
         address = get_object_or_404(Address,id=id,user=request.user).delete()     
     return redirect('profile')
+
+
 
 def product_review(request, variant_id):
     # 1. Fetch the specific variant the user is viewing
@@ -507,6 +523,11 @@ def add_to_cart(request,variant_id):
                 return redirect('cart')
 
     return redirect(request.META.get('HTTP_REFERER','home'))
+
+
+
+def buy_now(request,variant_id):
+    pass
 
 def payment(request):
     return render(request,'payment.html')

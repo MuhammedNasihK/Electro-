@@ -149,7 +149,12 @@
 
         .cart-item {
             border-bottom: 1px solid #e5e7eb;
-            padding: 14px 0;
+            padding: 14px 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+        .cart-item:hover {
+            background-color: #f9fafb;
         }
         .cart-item:last-child {
             border-bottom: none;
@@ -159,11 +164,15 @@
             width: 90px;
             height: 90px;
             border-radius: 12px;
-            background: #f9fafb;
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .cart-item-img-wrap:hover {
+            transform: scale(1.05);
         }
         .cart-item-img-wrap img {
             max-width: 100%;
@@ -174,6 +183,10 @@
         .cart-item-title {
             font-size: 0.95rem;
             font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .cart-item-title:hover {
+            color: #16a34a !important;
         }
         .cart-item-meta {
             font-size: 0.8rem;
@@ -204,6 +217,8 @@
             border-radius: 999px;
             text-align: center;
             font-size: 0.85rem;
+            position: relative;
+            z-index: 2;
         }
         .qty-input::-webkit-outer-spin-button,
         .qty-input::-webkit-inner-spin-button {
@@ -213,6 +228,8 @@
         /* More professional inline action buttons */
         .cart-item-actions {
             font-size: 0.78rem;
+            position: relative;
+            z-index: 2;
         }
         .cart-action-link {
             border-radius: 999px;
@@ -230,7 +247,7 @@
         }
         .cart-action-link:hover {
             border-color: #e5e7eb;
-            background: #f9fafb;
+            background: #ffffff;
             color: #111827;
         }
         .cart-action-link.text-danger:hover {
@@ -473,24 +490,28 @@
                                 <div class="cart-item">
                                     <div class="row g-3 align-items-center">
                                         <div class="col-3 col-md-2">
-                                            <div class="cart-item-img-wrap">
-                                                <img src="{{p.image}}" alt="{{p.product_name}}">
-                                            </div>
+                                            <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none d-block">
+                                                <div class="cart-item-img-wrap">
+                                                    <img src="{{p.image}}" alt="{{p.product_name}}">
+                                                </div>
+                                            </a>
                                         </div>
                                         <div class="col-9 col-md-5">
-                                            <div class="cart-item-title mb-1">{{p.brand}} {{p.product_name}}</div>
-                                            <div class="cart-item-meta mb-2">
-                                                {{p.attribute}}
-                                            </div>
+                                            <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none text-dark d-block mb-2">
+                                                <div class="cart-item-title mb-1">{{p.brand}} {{p.product_name}}</div>
+                                                <div class="cart-item-meta">
+                                                    {{p.attribute}}
+                                                </div>
+                                            </a>
                                             <div class="cart-item-actions d-flex flex-wrap gap-2">
-                                                <form action="{%url 'add_to_wishlist' p.variant_id %}" method="POST">
+                                                <form action="{%url 'add_to_wishlist' p.variant_id %}" method="POST" class="m-0">
                                                     {% csrf_token %}
                                                     <button type="submit" class="cart-action-link">
                                                         <i class="bi bi-heart"></i> Move to wishlist
                                                     </button>
                                                 </form>
                                                 
-                                                <form action="{% url 'add_to_cart' p.variant_id%}" method="POST">
+                                                <form action="{% url 'add_to_cart' p.variant_id%}" method="POST" class="m-0">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="action" value="remove">
                                                     <button type="submit" class="cart-action-link text-danger">
@@ -506,19 +527,21 @@
                                         </div>
                                         
                                         <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
-                                            {%if p.discount_price%}
-                                                <div>
-                                                    <span class="cart-price-main">₹{{p.discount_price|intcomma}}</span>
-                                                    <span class="cart-price-old ms-1">₹{{p.price|intcomma}}</span>
+                                            <a href="{% url 'product_review' p.variant_id %}" class="text-decoration-none text-dark d-block">
+                                                {%if p.discount_price%}
+                                                    <div>
+                                                        <span class="cart-price-main">₹{{p.discount_price|intcomma}}</span>
+                                                        <span class="cart-price-old ms-1">₹{{p.price|intcomma}}</span>
+                                                    </div>
+                                                {%else%}
+                                                    <div>
+                                                        <span class="cart-price-main">₹{{p.price|intcomma}}</span>
+                                                    </div>
+                                                {%endif%}
+                                                <div class="mt-1">
+                                                    <span class="cart-price-save">{{p.discount_percentage}}% OFFER</span>
                                                 </div>
-                                            {%else%}
-                                                <div>
-                                                    <span class="cart-price-main">₹{{p.price|intcomma}}</span>
-                                                </div>
-                                            {%endif%}
-                                            <div class="mt-1">
-                                                <span class="cart-price-save">{{p.discount_percentage}}% OFFER</span>
-                                            </div>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

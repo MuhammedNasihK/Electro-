@@ -184,7 +184,7 @@
         /* Simpler, professional hover for View All Categories */
         .hero-cta-ghost {
             border-radius: 999px;
-            border: 1px solid #4b5563;
+            border: 1px solid #22c55e;
             color: #e5e7eb;
             padding-inline: 22px;
             font-weight: 500;
@@ -840,17 +840,17 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 {%if v.discount_price%}
                                     <div>
-                                        <span class="product-price">₹{{v.discount_price|intcomma}}</span>
-                                        <span class="product-old-price ms-1">₹{{v.price|intcomma}}</span>
+                                        <span class="product-price">₹{{ v.discount_price }}</span>
+                                        <span class="product-old-price ms-1">₹{{ v.price }}</span>
                                     </div>
                                 {%else%}
                                         <div>
-                                        <span class="product-price">₹{{v.price|intcomma}}</span>
+                                        <span class="product-price">₹{{ v.price }}</span>
                                     </div>
                                 {% endif %}
                                 <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">{{ v.percentage }}% OFFER</span>
                             </div>
-                            <form action="{% url 'add_to_cart' v.variant_id %}" method="POST">
+                            <form action="{% url 'add_to_cart' v.variant_id %}" method="POST" onsubmit="handleCartSubmit(event, this)" onclick="event.stopPropagation();">
                                 {% csrf_token %}
                                 <button class="btn btn-cart w-100" type="submit" onclick="event.stopPropagation();">Add to cart</button>
                             </form>
@@ -891,98 +891,47 @@
         </div>
 
         <div class="row g-4">
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100" onclick="location.href='PRODUCT_URL_HERE_9'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        <form action="#" method="POST" onsubmit="handleWishlistSubmit(event, this)" onclick="event.stopPropagation();">
-                            {% csrf_token %}
-                            <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </form>
-                        <img src="img/mobile.png" class="product-img mb-2" alt="Oppo Reno 10">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">Oppo Reno 10</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">67W charging • 64MP camera</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="product-price">₹29,499</span>
-                            <span class="product-old-price">₹32,999</span>
+            {% for l in latest_mobiles_list|slice:":8" %}
+                <div class="col-6 col-md-3">
+                    <div class="product-card p-2 h-100" onclick="location.href='{% url 'product_review' l.variant_id %}'" style="cursor:pointer;">
+                        <div class="product-image-wrapper">
+                            {% if request.user.is_authenticated %}
+
+                            <form action="{% url 'add_to_wishlist' l.variant_id %}" method="POST" onsubmit="handleWishlistSubmit(event, this)" onclick="event.stopPropagation();">
+                                {% csrf_token %}
+                                <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
+                                    <i class="bi {% if l.in_wishlist %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+                                </button>
+                            </form>
+
+                            {% endif %}
+
+                            <img src="{{ l.image }}" class="product-img mb-2" alt="{{ l.product_name }}">
                         </div>
-                        <button class="btn btn-cart w-100" type="button" onclick="event.stopPropagation();">Add to cart</button>
+                        <div class="product-body p-2 mt-2">
+                            <h6 class="mb-1">{{l.brand_name}} {{ l.product_name }}</h6>
+                            <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">{{ l.attribute.RAM }} | {{l.attribute.Storage}} | {{l.attribute.Colour}}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                {%if l.discount_price%}
+                                    <div>
+                                        <span class="product-price">₹{{l.discount_price|intcomma}}</span>
+                                        <span class="product-old-price ms-1">₹{{l.price|intcomma}}</span>
+                                    </div>
+                                {%else%}
+                                    <div>
+                                        <span class="product-price">₹{{l.price|intcomma}}</span>
+                                    </div>
+                                {% endif %}
+                                <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">{{ l.percentage }}% OFFER</span>
+                            </div>
+                            <form action="{% url 'add_to_cart' l.variant_id %}" method="POST" onsubmit="handleCartSubmit(event, this)" onclick="event.stopPropagation();">
+                                {% csrf_token %}
+                                <button class="btn btn-cart w-100" type="submit" onclick="event.stopPropagation();">Add to cart</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100" onclick="location.href='PRODUCT_URL_HERE_10'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        <form action="#" method="POST" onsubmit="handleWishlistSubmit(event, this)" onclick="event.stopPropagation();">
-                            {% csrf_token %}
-                            <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </form>
-                        <img src="img/p2.png" class="product-img mb-2" alt="Samsung S23">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">Samsung S23</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">Flagship camera • AMOLED</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="product-price">₹54,999</span>
-                            <span class="product-old-price">₹59,999</span>
-                        </div>
-                        <button class="btn btn-cart w-100" type="button" onclick="event.stopPropagation();">Add to cart</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100" onclick="location.href='PRODUCT_URL_HERE_11'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        <form action="#" method="POST" onsubmit="handleWishlistSubmit(event, this)" onclick="event.stopPropagation();">
-                            {% csrf_token %}
-                            <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </form>
-                        <img src="img/p1.png" class="product-img mb-2" alt="iPhone 13">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">iPhone 13</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">A15 • Dual camera</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="product-price">₹56,499</span>
-                            <span class="product-old-price">₹61,999</span>
-                        </div>
-                        <button class="btn btn-cart w-100" type="button" onclick="event.stopPropagation();">Add to cart</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-                <div class="product-card p-2 h-100" onclick="location.href='PRODUCT_URL_HERE_12'" style="cursor:pointer;">
-                    <div class="product-image-wrapper">
-                        <form action="#" method="POST" onsubmit="handleWishlistSubmit(event, this)" onclick="event.stopPropagation();">
-                            {% csrf_token %}
-                            <button type="submit" class="wishlist-btn" onclick="event.stopPropagation();">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </form>
-                        <img src="img/new2.png" class="product-img mb-2" alt="Samsung A55">
-                    </div>
-                    <div class="product-body p-2 mt-2">
-                        <h6 class="mb-1">Samsung A55</h6>
-                        <p class="mb-1" style="font-size:0.8rem; color:#6b7280;">OIS • AMOLED display</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="product-price">₹27,999</span>
-                            <span class="product-old-price">₹30,999</span>
-                        </div>
-                        <button class="btn btn-cart w-100" type="button" onclick="event.stopPropagation();">Add to cart</button>
-                    </div>
-                </div>
-            </div>
-
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -1062,6 +1011,44 @@
         });
     });
 
+    // Helper: show a floating alert dynamically
+    function showFloatingAlert(message, type) {
+        let container = document.querySelector('.floating-alert-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'floating-alert-container';
+            document.body.appendChild(container);
+        }
+
+        const iconMap = {
+            success: '<i class="bi bi-check-circle-fill text-success"></i>',
+            error:   '<i class="bi bi-exclamation-circle-fill text-danger"></i>',
+            danger:  '<i class="bi bi-exclamation-circle-fill text-danger"></i>',
+            warning: '<i class="bi bi-exclamation-triangle-fill text-warning"></i>',
+            info:    '<i class="bi bi-info-circle-fill text-primary"></i>',
+        };
+
+        const alertEl = document.createElement('div');
+        alertEl.className = `alert alert-dismissible fade show floating-alert alert-${type}`;
+        alertEl.setAttribute('role', 'alert');
+        alertEl.innerHTML = `
+            <div class="d-flex align-items-center">
+                <div class="alert-icon">${iconMap[type] || iconMap.info}</div>
+                <div>${message}</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-progress"></div>
+        `;
+        container.appendChild(alertEl);
+
+        setTimeout(function() {
+            alertEl.style.animation = "fadeOutRight 0.5s forwards";
+            setTimeout(function() {
+                alertEl.remove();
+            }, 500);
+        }, 2000);
+    }
+
     // Wishlist AJAX function to stop page refresh
     function handleWishlistSubmit(event, formElement) {
         event.preventDefault();
@@ -1077,9 +1064,67 @@
                 if (icon.classList.contains('bi-heart')) {
                     icon.classList.remove('bi-heart');
                     icon.classList.add('bi-heart-fill', 'text-danger');
+                    showFloatingAlert('Added to wishlist!', 'success');
                 } else {
                     icon.classList.remove('bi-heart-fill', 'text-danger');
                     icon.classList.add('bi-heart');
+                    showFloatingAlert('Removed from wishlist.', 'info');
+                }
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Helper: show a floating alert dynamically
+    function showFloatingAlert(message, type) {
+        let container = document.querySelector('.floating-alert-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'floating-alert-container';
+            document.body.appendChild(container);
+        }
+        const iconMap = {
+            success: '<i class="bi bi-check-circle-fill text-success"></i>',
+            error:   '<i class="bi bi-exclamation-circle-fill text-danger"></i>',
+            danger:  '<i class="bi bi-exclamation-circle-fill text-danger"></i>',
+            warning: '<i class="bi bi-exclamation-triangle-fill text-warning"></i>',
+            info:    '<i class="bi bi-info-circle-fill text-primary"></i>',
+        };
+        const alertEl = document.createElement('div');
+        alertEl.className = `alert alert-dismissible fade show floating-alert alert-${type}`;
+        alertEl.setAttribute('role', 'alert');
+        alertEl.innerHTML = `
+            <div class="d-flex align-items-center">
+                <div class="alert-icon">${iconMap[type] || iconMap.info}</div>
+                <div>${message}</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert-progress"></div>
+        `;
+        container.appendChild(alertEl);
+        setTimeout(function () {
+            alertEl.style.animation = "fadeOutRight 0.5s forwards";
+            setTimeout(function () { alertEl.remove(); }, 500);
+        }, 2000);
+    }
+
+    // Cart AJAX function to stop page refresh
+    function handleCartSubmit(event, formElement) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        fetch(formElement.action, {
+            method: 'POST',
+            body: new FormData(formElement)
+        })
+        .then(response => {
+            if (response.ok) {
+                // View redirects to 'cart' if item already exists, otherwise back to referer
+                const finalUrl = response.url;
+                if (finalUrl.includes('/cart')) {
+                    showFloatingAlert('Already in cart!', 'warning');
+                } else {
+                    showFloatingAlert('Added to cart!', 'success');
                 }
             }
         })
