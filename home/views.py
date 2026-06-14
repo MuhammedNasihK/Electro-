@@ -525,9 +525,41 @@ def add_to_cart(request,variant_id):
     return redirect(request.META.get('HTTP_REFERER','home'))
 
 
-
+@login_required
 def buy_now(request,variant_id):
-    pass
+    
+    if not request.user.is_authenticated:
+        return redirect('login')
+    product = ProductVariant.objects.filter(id=variant_id,is_active=True).select_related(
+        'product','product__category','product__brand').prefetch_related(
+            'attribute__attribute','productimage_set')
+    product_details = {}
+
+    for p in product:
+
+        main_img = p.productimage_set.filter(is_main=True).first()
+        product_details = {
+            'variant_id' : p.id,
+            'name' : p.product.name,
+            'category' : p.product.category.name,
+            'brand' : p.product.brand.name,
+            'price' : p.price,
+            'discount_price' : p.discount_price,
+            'discount_percentage': p.discount_percentage(),
+            'stock' : p.stock,
+            'attribute' : {a.attribute.name: a.value for a in p.attribute.all()},
+            'image' : main_img.image.url if main_img else None
+
+        }
+
+
+    context = {
+        'product_details' : product_details
+    }
+
+    return render(request,'buy_now.html',context)
+
+
 
 def payment(request):
     return render(request,'payment.html')
