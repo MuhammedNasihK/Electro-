@@ -1,13 +1,13 @@
+{% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electro - Checkout</title>
+    <title>Veintro - Checkout</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
@@ -25,13 +25,41 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Navbar */
+        /* Navbar - Veintro Logo Specifications */
         .navbar {
             background: linear-gradient(90deg, #16a34a 0%, #0b1020 40%, #020617 100%) !important;
+            height: 72px;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
         }
+        
+        .container-fluid-custom {
+            width: 100%;
+            max-width: 1320px;
+            padding-inline: 20px;
+            margin-inline: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; 
+        }
+        
         .navbar-brand {
-            letter-spacing: 1px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: -45px; 
         }
+
+        .navbar-brand img {
+            width: 240px;
+            height: 70px;  
+            object-fit: contain;
+            display: block;
+        }
+
         .navbar .nav-link {
             color: #e5e7eb !important;
             font-weight: 500;
@@ -78,6 +106,18 @@
             color: #bbf7d0;
             transform: translateY(-1px) scale(1.03);
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Show dropdown arrow */
+        .dropdown-toggle::after {
+            display: inline-block !important;
+            margin-left: 0.255em;
+            vertical-align: 0.255em;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
         }
 
         /* Header */
@@ -206,6 +246,19 @@
             border-color: #9ca3af;
         }
 
+        /* Pure CSS Toggle for New Address - NO JAVASCRIPT REQUIRED */
+        .new-address-wrapper {
+            display: none;
+            animation: fadeInDown 0.3s ease forwards;
+        }
+        body:has(#optNew:checked) .new-address-wrapper {
+            display: block;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         footer {
             background: #020617;
             color: #9ca3af;
@@ -219,15 +272,9 @@
             color: #f9fafb;
         }
 
-        /* Animated collapse block */
-        .collapse-inner {
-            opacity: 0;
-            transform: translateY(-4px);
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
-        .collapse.show .collapse-inner {
-            opacity: 1;
-            transform: translateY(0);
+        @media (max-width: 991.98px) {
+            .navbar-brand { margin-left: -20px; }
+            .navbar-brand img { width: 180px; }
         }
     </style>
 </head>
@@ -235,8 +282,10 @@
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-light fs-3" href="{% url 'home' %}">Electro</a>
+    <div class="container-fluid-custom">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro">
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
@@ -256,10 +305,15 @@
                 <li class="nav-item dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5"></i>
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.email }}
+                        {% else %}
+                            <i class="bi bi-person-circle fs-5"></i>
+                        {% endif %}
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
+                        {% if request.user.is_authenticated %}
                         <li>
                             <a class="dropdown-item fw-semibold" href="{% url 'profile' %}">
                                 <i class="bi bi-person-circle me-2"></i> Profile
@@ -270,6 +324,7 @@
                                 <i class="bi bi-bag-check me-2"></i> Orders
                             </a>
                         </li>
+                        {% endif %}
                         <li>
                             <a class="dropdown-item fw-semibold" href="{% url 'about' %}">
                                 <i class="bi bi-info-circle me-2"></i> About
@@ -277,9 +332,15 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                            </a>
+                            {% if request.user.is_authenticated %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Logout
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item fw-semibold" href="{% url 'login' %}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </a>
+                            {% endif %}
                         </li>
                     </ul>
                 </li>
@@ -322,119 +383,120 @@
 <!-- CHECKOUT CONTENT -->
 <section class="pb-4">
     <div class="container checkout-layout">
-
-        <!-- Address choice + form -->
-        <div class="checkout-card p-3 p-md-4 mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <div class="section-heading">Delivery address</div>
-                    <div class="section-caption">
-                        Use the address saved in your profile or enter a new address for this order.
+        
+        <!-- Form completely wraps the address selection and submit button -->
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            <!-- Address choice + form -->
+            <div class="checkout-card p-3 p-md-4 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <div class="section-heading">Delivery address</div>
+                        <div class="section-caption">
+                            Use the address saved in your profile or enter a new address for this order.
+                        </div>
                     </div>
-                </div>
-                <a href="profile.html" class="btn-link-sm">
-                    <i class="bi bi-person-lines-fill me-1"></i>View in profile
-                </a>
-            </div>
-
-            <!-- Option 1: profile address (default) -->
-            <div class="mb-3">
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="addressMode" id="optProfile" checked
-                           data-bs-toggle="collapse" data-bs-target="#newAddressCollapse"
-                           aria-expanded="false" aria-controls="newAddressCollapse">
-                    <label class="form-check-label fw-semibold" for="optProfile" style="font-size:0.85rem;">
-                        Use profile address
-                    </label>
+                    <a href="{% url 'profile' %}" class="btn-link-sm">
+                        <i class="bi bi-person-lines-fill me-1"></i>View in profile
+                    </a>
                 </div>
 
-                <div class="profile-address-card">
-                    <div class="profile-address-header">
-                        <div>
-                            <div class="profile-address-name">John Doe</div>
-                            <div class="profile-address-meta">
-                                +91 98765 43210 · john@example.com
+                <!-- Option 1: profile address (default) -->
+                {% if address_list %}
+                    {% for a in address_list %}
+                        <div class="mb-3">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="addressMode" id="optProfile_{{ forloop.counter }}" value="{{ a.id }}" {% if forloop.first %}checked{% endif %}>
+                                <label class="form-check-label fw-semibold" for="optProfile_{{ forloop.counter }}" style="font-size:0.85rem;">
+                                    Use profile address
+                                </label>
+                            </div>
+
+                            <div class="profile-address-card">
+                                <div class="profile-address-header">
+                                    <div>
+                                        <div class="profile-address-name">{{a.full_name}}</div>
+                                        <div class="profile-address-meta">
+                                            {{a.mobile_number}} · {{request.user.email}}
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Profile address</span>
+                                </div>
+                                <div style="font-size:0.8rem;">
+                                    {{a.flat}}, {{a.area}}, {{a.landmark}}, {{a.city}}, {{a.state}} - {{a.pincode}}
+                                </div>
                             </div>
                         </div>
-                        <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Profile address</span>
-                    </div>
-                    <div style="font-size:0.8rem;">
-                        #21, 4th Cross, MG Road, Indiranagar, Bengaluru, Karnataka - 560001
+                    {% endfor %}
+                {% endif %}
+                <hr class="my-3">
+
+                <!-- Option 2: new address -->
+                <div class="mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="addressMode" id="optNew" value="new" {% if not address_list %}checked{% endif %}>
+                        <label class="form-check-label fw-semibold" for="optNew" style="font-size:0.85rem;">
+                            Use a new address for this order
+                        </label>
                     </div>
                 </div>
-            </div>
 
-            <hr class="my-3">
-
-            <!-- Option 2: new address -->
-            <div class="mb-2">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="addressMode" id="optNew"
-                           data-bs-toggle="collapse" data-bs-target="#newAddressCollapse"
-                           aria-expanded="false" aria-controls="newAddressCollapse">
-                    <label class="form-check-label fw-semibold" for="optNew" style="font-size:0.85rem;">
-                        Use a new address for this order
-                    </label>
-                </div>
-            </div>
-
-            <!-- New address + notes with animated collapse -->
-            <div class="collapse mt-3" id="newAddressCollapse">
-                <div class="collapse-inner">
+                <!-- New address form controlled by pure CSS :has() logic -->
+                <div class="new-address-wrapper mt-3">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Full name</label>
-                            <input type="text" class="form-control" placeholder="John Doe">
+                            {{form.full_name}}
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Mobile number</label>
-                            <input type="tel" class="form-control" placeholder="+91 98765 43210">
+                            {{form.mobile_number}}
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Address line</label>
-                            <input type="text" class="form-control" placeholder="House no, street, locality">
+                            <label class="form-label">Flat</label>
+                            {{form.flat}}
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Pincode</label>
-                            <input type="text" class="form-control" placeholder="560001">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">City</label>
-                            <input type="text" class="form-control" placeholder="Bengaluru">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">State</label>
-                            <select class="form-select">
-                                <option selected disabled>Select state</option>
-                                <option>Karnataka</option>
-                                <option>Maharashtra</option>
-                                <option>Tamil Nadu</option>
-                                <option>Delhi</option>
-                            </select>
+                        <div class="col-12">
+                            <label class="form-label">Area</label>
+                            {{form.area}}
                         </div>
                         <div class="col-12">
                             <label class="form-label">Landmark (optional)</label>
-                            <input type="text" class="form-control" placeholder="Near mall, bus stop, etc.">
+                            {{form.landmark}}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pincode</label>
+                            {{form.pincode}}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">City</label>
+                            {{form.city}}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">State</label>
+                            {{form.state}}
                         </div>
                         <div class="col-12">
                             <label class="form-label">Order notes (optional)</label>
-                            <textarea class="form-control" rows="3"
+                            <textarea name="order_notes" class="form-control" rows="3"
                                       placeholder="Add delivery instructions or preferences for the delivery partner."></textarea>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Actions -->
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
-            <a href="cart.html" class="btn btn-back-cart">
-                <i class="bi bi-arrow-left me-1"></i> Back to cart
-            </a>
-            <a href="{% url 'payment' %}" class="btn btn-next-step">
-                Continue to payment
-            </a>
-        </div>
+            <!-- Actions -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
+                <a href="{% url 'cart' %}" class="btn btn-back-cart px-4 py-2">
+                    <i class="bi bi-arrow-left me-1"></i> Back to cart
+                </a>
+                <button type="submit" class="btn btn-next-step py-2">
+                    Continue to payment
+                </button>
+            </div>
+            
+        </form>
     </div>
 </section>
 
@@ -443,7 +505,7 @@
     <div class="container pb-3">
         <div class="row g-4">
             <div class="col-md-4">
-                <h5 class="text-light mb-2">Electro</h5>
+                <img src="{% static 'img/veintro_logo_3d.png' %}" alt="Veintro" style="width: 180px; margin-left: -20px; margin-bottom: 10px;">
                 <p style="font-size:0.85rem;">
                     Your modern destination for laptops, mobiles, TVs and everyday tech, curated for performance and value.
                 </p>
@@ -451,19 +513,19 @@
             <div class="col-md-2">
                 <h6 class="text-light mb-2" style="font-size:0.9rem;">Shop</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="products.html">All products</a></li>
-                    <li><a href="products.html">Mobiles</a></li>
-                    <li><a href="products.html">Laptops</a></li>
-                    <li><a href="products.html">Televisions</a></li>
+                    <li><a href="{% url 'products' %}">All products</a></li>
+                    <li><a href="{% url 'products' %}">Mobiles</a></li>
+                    <li><a href="{% url 'products' %}">Laptops</a></li>
+                    <li><a href="{% url 'products' %}">Televisions</a></li>
                 </ul>
             </div>
             <div class="col-md-2">
                 <h6 class="text-light mb-2" style="font-size:0.9rem;">Account</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="profile.html">Profile</a></li>
-                    <li><a href="orders.html">Orders</a></li>
-                    <li><a href="wishlist.html">Wishlist</a></li>
-                    <li><a href="cart.html">Cart</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'orders' %}">Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                    <li><a href="{% url 'cart' %}">Cart</a></li>
                 </ul>
             </div>
             <div class="col-md-4">
@@ -477,13 +539,12 @@
         </div>
         <hr class="border-secondary mt-4 mb-2">
         <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem;">
-            <span>© 2025 Electro. All rights reserved.</span>
-            <span>Made with Bootstrap &amp; HTML/CSS.</span>
+            <span>© 2026 Veintro. All rights reserved.</span>
+            <span>Made with Bootstrap & HTML/CSS.</span>
         </div>
     </div>
 </footer>
 
-<!-- Bootstrap JS only -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

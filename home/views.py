@@ -552,9 +552,17 @@ def buy_now(request,variant_id):
 
         }
 
+    stock = int(product_details.get('stock'))
+    if stock >=5:
+        stock_range = range(1,6)
+    else:
+        stock_range = range(1,stock+1)
+    print(type(product_details['stock']))
 
     context = {
-        'product_details' : product_details
+        'product_details' : product_details,
+        'stock_range' : stock_range,
+        'stock' : stock
     }
 
     return render(request,'buy_now.html',context)
@@ -567,8 +575,41 @@ def payment(request):
 def orders(request):
     return render(request,'orders.html')
 
-def checkout(request):
-    return render(request,'checkout.html')
+@login_required
+def checkout(request,variant_id):
+    user_address = Address.objects.filter(user = request.user)
+    form = AddressForm()
+
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            pass
+    
+    address_list = []
+
+    for a in user_address:
+        address_list.append({
+            'full_name' : a.full_name,
+            'mobile_number' : a.mobile_number,
+            'pincode' : a.pincode,
+            'flat' : a.flat,
+            'area' : a.area,
+            'landmark' : a.landmark,
+            'city' : a.city,
+            'state' : a.state
+        })
+
+    
+
+    qty = request.GET.get('quantity')
+
+    context = {
+        'address_list' : address_list,
+        'quantity' : qty,
+        'form' : form
+    }
+
+    return render(request,'checkout.html',context)
 
 def about(request):
     return render(request,'about.html')

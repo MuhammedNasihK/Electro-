@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veintro - Buy now</title>
+    <title>Veintro - Cart</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -211,18 +211,19 @@
             padding: 2px 8px;
         }
 
-        /* Quantity control: number input only (no JS) */
+        /* Quantity control: dropdown */
         .qty-input {
-            width: 80px;
+            width: 75px;
             border-radius: 999px;
-            text-align: center;
             font-size: 0.85rem;
             position: relative;
             z-index: 2;
+            cursor: pointer;
+            padding-left: 12px;
         }
-        .qty-input::-webkit-outer-spin-button,
-        .qty-input::-webkit-inner-spin-button {
-            opacity: 1;
+        .qty-input:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
         }
 
         /* More professional inline action buttons */
@@ -294,6 +295,7 @@
             display: inline-block;
             text-decoration: none;
             transition: all 0.2s ease;
+            cursor: pointer;
         }
         .btn-checkout:hover {
             background: #16a34a;
@@ -468,7 +470,7 @@
                         <p class="empty-cart-text mb-4">
                             Please log in to your account to view your cart items, calculate shipping, and proceed to checkout.
                         </p>
-                        <a href="{% url 'login' %}" class="btn btn-checkout px-5 py-2">
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-checkout px-5 py-2">
                             <i class="bi bi-box-arrow-in-right me-1"></i> Login to Continue
                         </a>
                     </div>
@@ -480,72 +482,74 @@
                     <div class="cart-card p-3 p-md-4 mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h2 class="h6 mb-0">Items in your cart</h2>
-                            <a class="btn btn-sm btn-continue py-1 px-3" href="{%url 'products'%}">
+                            <a class="btn btn-sm btn-continue py-1 px-3" href="{% url 'products' %}">
                                 <i class="bi bi-arrow-left me-1"></i> Continue shopping
                             </a>
                         </div>
 
                         {% if product_details %}
-                            
-                                <div class="cart-item">
-                                    <div class="row g-3 align-items-center">
-                                        <div class="col-3 col-md-2">
-                                            <a href="{% url 'product_review' product_details.variant_id %}" class="text-decoration-none d-block">
-                                                <div class="cart-item-img-wrap">
-                                                    <img src="{{product_details.image}}" alt="{{product_details.name}}">
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <div class="col-9 col-md-5">
-                                            <a href="{% url 'product_review' product_details.variant_id %}" class="text-decoration-none text-dark d-block mb-2">
-                                                <div class="cart-item-title mb-1">{{product_details.brand}} {{product_details.name}}</div>
-                                                <div class="cart-item-meta">
-                                                    {{product_details.attribute.RAM}} | {{product_details.attribute.Storage}} | {{product_details.attribute.Colour}}
-                                                </div>
-                                            </a>
-                                            <div class="cart-item-actions d-flex flex-wrap gap-2">
-                                                <form action="{%url 'add_to_wishlist' product_details.variant_id %}" method="POST" class="m-0">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="cart-action-link">
-                                                        <i class="bi bi-heart"></i> Move to wishlist
-                                                    </button>
-                                                </form>
-                                                
-                                                <form action="{% url 'add_to_cart' product_details.variant_id%}" method="POST" class="m-0">
-                                                    {% csrf_token %}
-                                                    <input type="hidden" name="action" value="remove">
-                                                    <button type="submit" class="cart-action-link text-danger">
-                                                        <i class="bi bi-trash3"></i> Remove
-                                                    </button>
-                                                </form>
+                            <div class="cart-item">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-3 col-md-2">
+                                        <a href="{% url 'product_review' product_details.variant_id %}" class="text-decoration-none d-block">
+                                            <div class="cart-item-img-wrap">
+                                                <img src="{{product_details.image}}" alt="{{product_details.product_name}}">
                                             </div>
-                                        </div>
-                                        
-                                        <div class="col-6 col-md-2 mt-2 mt-md-0">
-                                            <div class="mb-1" style="font-size: 0.75rem; color: #6b7280; font-weight: 500; padding-left: 8px;">Qty</div>
-                                            <input type="number" class="form-control form-control-sm qty-input" min="1" value="1">
-                                        </div>
-                                        
-                                        <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
-                                            <a href="{% url 'product_review' product_details.variant_id %}" class="text-decoration-none text-dark d-block">
-                                                {%if product_details.discount_price%}
-                                                    <div>
-                                                        <span class="cart-price-main">₹{{product_details.discount_price|intcomma}}</span>
-                                                        <span class="cart-price-old ms-1">₹{{product_details.price|intcomma}}</span>
-                                                    </div>
-                                                {%else%}
-                                                    <div>
-                                                        <span class="cart-price-main">₹{{product_details.price|intcomma}}</span>
-                                                    </div>
-                                                {%endif%}
-                                                <div class="mt-1">
-                                                    <span class="cart-price-save">{{product_details.discount_percentage}}% OFFER</span>
-                                                </div>
-                                            </a>
+                                        </a>
+                                    </div>
+                                    <div class="col-9 col-md-5">
+                                        <a href="{% url 'product_review' product_details.variant_id %}" class="text-decoration-none text-dark d-block mb-2">
+                                            <div class="cart-item-title mb-1">{{product_details.brand}} {{product_details.product_name}}</div>
+                                            <div class="cart-item-meta">
+                                                 {{product_details.attribute.RAM}} | {{product_details.attribute.Storage}} | {{product_details.attribute.Colour}}
+                                            </div>
+                                        </a>
+                                        <div class="cart-item-actions d-flex flex-wrap gap-2">
+                                            <form action="{% url 'add_to_wishlist' product_details.variant_id %}" method="POST" class="m-0">
+                                                {% csrf_token %}
+                                                <button type="submit" class="cart-action-link">
+                                                    <i class="bi bi-heart"></i> Move to wishlist
+                                                </button>
+                                            </form>
+                                            
+                                            <form action="{% url 'add_to_cart' product_details.variant_id %}" method="POST" class="m-0">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="remove">
+                                                <button type="submit" class="cart-action-link text-danger">
+                                                    <i class="bi bi-trash3"></i> Remove
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
+                                    
+                                    <div class="col-6 col-md-2 mt-2 mt-md-0">
+                                        <div class="mb-1" style="font-size: 0.75rem; color: #6b7280; font-weight: 500; padding-left: 8px;">Qty</div>
+                                        <select id="qtyInput" class="form-select form-select-sm qty-input">
+                                            {% for n in stock_range %}
+                                                <option value="{{n}}">{{n}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
+                                        <a href="{% url 'product_review' product_details.variant_id %}" class="text-decoration-none text-dark d-block">
+                                            {% if product_details.discount_price %}
+                                                <div>
+                                                    <span class="cart-price-main" id="itemPriceMain">₹{{product_details.discount_price|intcomma}}</span>
+                                                    <span class="cart-price-old ms-1" id="itemPriceOld">₹{{product_details.price|intcomma}}</span>
+                                                </div>
+                                            {% else %}
+                                                <div>
+                                                    <span class="cart-price-main" id="itemPriceMain">₹{{product_details.price|intcomma}}</span>
+                                                </div>
+                                            {% endif %}
+                                            <div class="mt-1">
+                                                <span class="cart-price-save">{{product_details.discount_percentage}}% OFFER</span>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
-                            
+                            </div>
                         {% else %}
                             <div class="cart-card p-4 border-0">
                                 <div class="empty-cart">
@@ -566,48 +570,66 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="summary-card p-3 p-md-4">
+                    <div class="summary-card p-3 p-md-4" 
+                         data-base-price="{{ product_details.price }}" 
+                         data-base-discount="{% if product_details.discount_price %}{{ product_details.discount_price }}{% else %}{{ product_details.price }}{% endif %}">
+                         
                         <h2 class="summary-title mb-3">Price details</h2>
 
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
-                            <span>Price ({{1}} Items)</span>
-                            <span>₹{{product_details.price|intcomma}}</span>
+                            <span id="summaryItemCount">Price (1 Item)</span>
+                            <span id="summaryOriginalPrice">₹{{product_details.price|intcomma}}</span>
                         </div>
+                        
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Discount</span>
-                            <span class="text-success">− ₹{{product_details.discount_price |intcomma}}</span>
+                            <span class="text-success" id="summaryDiscountAmount">
+                                {% if product_details.discount_price %}
+                                    − ₹0
+                                {% else %}
+                                    − ₹0
+                                {% endif %}
+                            </span>
                         </div>
+                        
                         <div class="d-flex justify-content-between align-items-center summary-line mb-2">
                             <span>Delivery charges</span>
-                            <span class="text-success">
-                                {%if total_amount and total_amount < 15000%}
+                            <span class="text-success" id="summaryDelivery">
+                                {% if product_details.discount_price and product_details.discount_price < 15000 %}
                                     ₹29
-                                {%else%}
+                                {% elif product_details.price < 15000 %}
+                                    ₹29
+                                {% else %}
                                     ₹0
-                                {%endif%}
+                                {% endif %}
                             </span>
                         </div>
 
                         <hr>
 
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            {%if product_details.discount_price%}
-                                <span class="summary-total">Total amount</span>
-                                <span class="summary-total">₹{{product_details.discount_price|intcomma}}</span>
-                            {%else%}
-                                <span class="summary-total">Total amount</span>
-                                <span class="summary-total">₹{{product_details.price|intcomma}}</span>
-                            {%endif%}
+                            <span class="summary-total">Total amount</span>
+                            <span class="summary-total" id="summaryFinalTotal">
+                                {% if product_details.discount_price %}
+                                    ₹{{product_details.discount_price|intcomma}}
+                                {% else %}
+                                    ₹{{product_details.price|intcomma}}
+                                {% endif %}
+                            </span>
                         </div>
                         <p class="summary-note mb-3">
-                            You will save <span class="text-success fw-semibold">₹{{product_details.discount_price|intcomma}}</span> on this order compared to MRP.
+                            You will save <span class="text-success fw-semibold" id="summarySavingsNote">₹0</span> on this order compared to MRP.
                         </p>
 
-                        <button class="btn btn-checkout w-100 mb-2 py-2" type="button" onclick="window.location.href='{% url 'checkout' %}'">
-                            Proceed to checkout
-                        </button>
+                        <form action="{% url 'checkout' product_details.variant_id %}" method="GET">
+                            <input type="hidden" name="quantity" id="checkoutQuantity" value="1">
+                            <button class="btn btn-checkout w-100 mb-2 py-2" type="submit">
+                                Proceed to checkout
+                            </button>
+                        </form>
+                        
                         <a class="btn btn-continue w-100 text-center d-block py-2" href="{% url 'products' %}">
-                            <i class="bi bi-arrow-left me-1"></i> Continue shopping
+                            <i class="bi bi-arrow-left me-1"></i> Cancel
                         </a>
 
                         <hr class="mt-4 mb-3">
@@ -671,6 +693,83 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const qtyInput = document.getElementById("qtyInput");
+        const summaryCard = document.querySelector(".summary-card");
+
+        if (!qtyInput || !summaryCard) return;
+
+        // Parse baseline prices generated by Django context
+        const basePriceStr = summaryCard.getAttribute("data-base-price") || "0";
+        const baseDiscountStr = summaryCard.getAttribute("data-base-discount") || "0";
+        
+        const basePrice = parseFloat(basePriceStr) || 0;
+        const baseDiscountPrice = parseFloat(baseDiscountStr) || 0;
+
+        // Detect decimal places from the backend output to preserve the exact same format
+        function getDecimalCount(valStr) {
+            if (valStr.includes('.')) {
+                return valStr.split('.')[1].length;
+            }
+            return 0;
+        }
+        
+        const decimalPlaces = Math.max(getDecimalCount(basePriceStr), getDecimalCount(baseDiscountStr));
+        
+        // Define UI elements to update dynamically
+        const elItemCount = document.getElementById("summaryItemCount");
+        const elOriginalPrice = document.getElementById("summaryOriginalPrice");
+        const elDiscountAmount = document.getElementById("summaryDiscountAmount");
+        const elDelivery = document.getElementById("summaryDelivery");
+        const elFinalTotal = document.getElementById("summaryFinalTotal");
+        const elSavingsNote = document.getElementById("summarySavingsNote");
+        const elItemPriceMain = document.getElementById("itemPriceMain");
+        const elItemPriceOld = document.getElementById("itemPriceOld");
+
+        // Indian Currency Formatter that respects backend decimals
+        const formatINR = new Intl.NumberFormat('en-IN', {
+            minimumFractionDigits: decimalPlaces,
+            maximumFractionDigits: decimalPlaces
+        });
+
+        function updateTotals() {
+            let qty = parseInt(qtyInput.value);
+            if (isNaN(qty) || qty < 1) qty = 1;
+
+            // Mathematical Calculations for dynamic fields
+            const currentOriginalTotal = basePrice * qty;
+            const currentDiscountTotal = baseDiscountPrice * qty;
+            const savings = currentOriginalTotal - currentDiscountTotal;
+            const deliveryCharge = currentDiscountTotal < 15000 ? 29 : 0;
+            const finalAmount = currentDiscountTotal + deliveryCharge;
+
+            // DOM UI Updates
+            elItemCount.textContent = `Price (${qty} Item${qty > 1 ? 's' : ''})`;
+            elOriginalPrice.textContent = `₹${formatINR.format(currentOriginalTotal)}`;
+            elDiscountAmount.textContent = `− ₹${formatINR.format(savings)}`;
+            elDelivery.textContent = deliveryCharge === 0 ? "₹0" : `₹${deliveryCharge}`;
+            elFinalTotal.textContent = `₹${formatINR.format(finalAmount)}`;
+            elSavingsNote.textContent = `₹${formatINR.format(savings)}`;
+
+            if (elItemPriceMain) elItemPriceMain.textContent = `₹${formatINR.format(currentDiscountTotal)}`;
+            if (elItemPriceOld) elItemPriceOld.textContent = `₹${formatINR.format(currentOriginalTotal)}`;
+            
+            // Sync the checkout form's hidden input
+            const checkoutQtyInput = document.getElementById("checkoutQuantity");
+            if (checkoutQtyInput) {
+                checkoutQtyInput.value = qty;
+            }
+        }
+
+        // Listen for the dropdown change to update everything
+        qtyInput.addEventListener("change", updateTotals);
+        
+        // Fire initially on page load
+        updateTotals();
+    });
+</script>
 
 </body>
 </html>
