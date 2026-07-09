@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.contrib import messages
 from admin_panel.models import *
 from django.db.models import Q,When,Case,F,DecimalField
@@ -236,6 +237,7 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 
+@never_cache
 @login_required
 def add_primary_mobile_number(request):
     if request.method=='POST':
@@ -251,6 +253,7 @@ def add_primary_mobile_number(request):
     return render(request,'add_primary_mobile_number.html')
 
 
+@never_cache
 @login_required
 def add_address(request):
 
@@ -270,6 +273,8 @@ def add_address(request):
     }
     return render(request,'add_address.html',context)
 
+
+@never_cache
 @login_required
 def edit_address(request,id):
 
@@ -289,6 +294,8 @@ def edit_address(request,id):
     }
     return render(request,'add_address.html',context)
 
+
+@never_cache
 @login_required
 def remove_address(request,id):
     if request.method == 'POST':
@@ -504,6 +511,7 @@ def cart(request):
     return render(request,'cart.html',context)
 
 
+@never_cache
 def add_to_cart(request,variant_id):
 
     if not request.user.is_authenticated:
@@ -575,15 +583,18 @@ def payment(request):
 def orders(request):
     return render(request,'orders.html')
 
+
 @login_required
 def checkout(request,variant_id):
     user_address = Address.objects.filter(user = request.user)
-    form = AddressForm()
 
     if request.method == 'POST':
-        form = AddressForm(request.POST)
-        if form.is_valid():
-            pass
+        address_id = request.POST.get('addressMode')
+
+        address = get_object_or_404(Address,id = address_id,user = request.user)
+        if address:
+            request.session['address_id'] = address_id
+            return redirect('payment')
     
     address_list = []
 
@@ -606,7 +617,6 @@ def checkout(request,variant_id):
     context = {
         'address_list' : address_list,
         'quantity' : qty,
-        'form' : form
     }
 
     return render(request,'checkout.html',context)

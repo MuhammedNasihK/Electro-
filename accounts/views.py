@@ -41,6 +41,10 @@ def login(request):
 
     if request.user.is_authenticated:
         return redirect('home')
+    
+    if 'admin_id' in request.session:
+        return redirect('admin_dashboard')
+    
     form = LoginForm()
 
     if request.method == 'POST':

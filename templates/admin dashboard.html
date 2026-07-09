@@ -60,7 +60,7 @@
                      style="width:30px;height:30px;">
                     <i class="bi bi-lightning-charge-fill"></i>
                 </div>
-                <span class="fw-bold">Electro Admin</span>
+                <span class="fw-bold">Veintro Admin</span>
             </div>
             <span class="badge bg-light text-muted border" style="font-size:0.65rem;">v1.0</span>
         </div>
@@ -143,16 +143,16 @@
                     <div class="col-6 col-md-3">
                         <div class="metric-card">
                             <div class="metric-label">Total users</div>
-                            <div class="metric-value">3,482</div>
+                            <div class="metric-value">{{user_count}}</div>
                             <div class="metric-trend text-success">
-                                <i class="bi bi-person-plus me-1"></i>+214 this month
+                                <i class="bi bi-person-plus me-1"></i>+{{new_users_this_month}} this month
                             </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="metric-card">
                             <div class="metric-label">Total products</div>
-                            <div class="metric-value">196</div>
+                            <div class="metric-value">{{total_products}}</div>
                             <div class="metric-trend text-muted">
                                 <i class="bi bi-box-seam me-1"></i>Across all categories
                             </div>
@@ -233,31 +233,24 @@
                             <div class="admin-card-body" style="font-size:0.82rem;">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-muted">Items below threshold</span>
-                                    <span class="badge bg-warning-subtle text-warning border">5 products</span>
+                                    <span class="badge bg-warning-subtle text-warning border">{{low_stock_products|length}} products</span>
                                 </div>
 
                                 <ul class="list-unstyled mb-0">
-                                    <li class="d-flex justify-content-between align-items-center py-1">
-                                        <div>
-                                            <div class="fw-semibold">HP Victus Gaming Laptop</div>
-                                            <div class="text-muted" style="font-size:0.78rem;">Laptops · Current stock: 8</div>
-                                        </div>
-                                        <span class="badge bg-warning-subtle text-warning border">Low</span>
-                                    </li>
-                                    <li class="d-flex justify-content-between align-items-center py-1">
-                                        <div>
-                                            <div class="fw-semibold">Boat Smartwatch</div>
-                                            <div class="text-muted" style="font-size:0.78rem;">Accessories · Current stock: 0</div>
-                                        </div>
-                                        <span class="badge bg-danger-subtle text-danger border">Out</span>
-                                    </li>
-                                    <li class="d-flex justify-content-between align-items-center py-1">
-                                        <div>
-                                            <div class="fw-semibold">Sony Headphones</div>
-                                            <div class="text-muted" style="font-size:0.78rem;">Accessories · Current stock: 3</div>
-                                        </div>
-                                        <span class="badge bg-warning-subtle text-warning border">Low</span>
-                                    </li>
+                                    {%for p in low_stock_products%}
+                                        <li class="d-flex justify-content-between align-items-center py-1">
+                                            <div>
+                                                <div class="fw-semibold">{{p.product.name}}</div>
+                                                <div class="text-muted" style="font-size:0.78rem;">{{p.product.category}} · Current stock: {{p.stock}}</div>
+                                            </div>
+                                            {%if p.stock == 0%}
+                                                <span class="badge bg-danger-subtle text-danger border">Out</span>
+                                            {%else%}
+                                                <span class="badge bg-warning-subtle text-warning border">Low</span>
+                                            {%endif%}    
+                                        </li>
+                                    {%endfor%}
+                                    
                                 </ul>
                             </div>
                         </div>

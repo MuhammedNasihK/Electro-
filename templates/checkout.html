@@ -23,6 +23,7 @@
         body {
             background: #f3f4f6;
             font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
         }
 
         /* Navbar - Veintro Logo Specifications */
@@ -53,9 +54,10 @@
             margin-left: -45px; 
         }
 
+        /* FIXED: same as all other pages */
         .navbar-brand img {
             width: 240px;
-            height: 70px;  
+            height: auto;
             object-fit: contain;
             display: block;
         }
@@ -108,7 +110,6 @@
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
         }
 
-        /* Show dropdown arrow */
         .dropdown-toggle::after {
             display: inline-block !important;
             margin-left: 0.255em;
@@ -119,6 +120,70 @@
             border-bottom: 0;
             border-left: 0.3em solid transparent;
         }
+
+        /* ===== FLOATING ALERTS — CSS ONLY, NO JS ===== */
+        .floating-alert-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 9999;
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .floating-alert {
+            pointer-events: all;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-left: 5px solid #22c55e;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #1f2937;
+            font-weight: 500;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.5s forwards, fadeOutRight 0.5s 2s forwards;
+        }
+        .floating-alert.alert-error,
+        .floating-alert.alert-danger { border-left-color: #ef4444; }
+        .floating-alert.alert-warning { border-left-color: #f59e0b; }
+        .floating-alert.alert-info    { border-left-color: #3b82f6; }
+        .alert-icon { font-size: 1.2rem; margin-right: 10px; display: flex; align-items: center; }
+        .floating-alert .btn-close { padding: 1rem; opacity: 0.5; }
+        .floating-alert .btn-close:hover { opacity: 1; }
+        .alert-progress {
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 3px;
+            background: #22c55e;
+            width: 100%;
+            animation: progress 2s linear forwards;
+        }
+        .floating-alert.alert-error .alert-progress,
+        .floating-alert.alert-danger .alert-progress { background: #ef4444; }
+        .floating-alert.alert-warning .alert-progress { background: #f59e0b; }
+        .floating-alert.alert-info .alert-progress    { background: #3b82f6; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(110%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+        @keyframes fadeOutRight {
+            from { transform: translateX(0);    opacity: 1; }
+            to   { transform: translateX(110%); opacity: 0; }
+        }
+        @keyframes progress {
+            from { width: 100%; }
+            to   { width: 0%;   }
+        }
+        /* ===== END FLOATING ALERTS ===== */
 
         /* Header */
         .checkout-header {
@@ -154,77 +219,109 @@
         }
 
         .section-heading {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
         }
         .section-caption {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #6b7280;
         }
 
-        .profile-address-card {
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            padding: 12px 14px;
-            font-size: 0.84rem;
-            background: #f9fafb;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        /* Professional Clickable Address Cards */
+        .address-card-wrapper {
+            cursor: pointer;
+            display: block;
+            height: 100%;
+            margin: 0;
         }
-        .profile-address-card:hover {
-            border-color: #22c55e;
-            box-shadow: 0 0 0 1px rgba(34,197,94,0.35);
-            background: #f3faf6;
-        }
-        .profile-address-header {
+        .address-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 16px 20px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            height: 100%;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
+            flex-direction: column;
         }
-        .profile-address-name {
-            font-weight: 600;
+        .address-card-wrapper:hover .address-card {
+            border-color: #cbd5e1;
+            background: #f8fafc;
         }
-        .profile-address-meta {
-            font-size: 0.78rem;
-            color: #6b7280;
+        
+        /* Proper CSS Selection Logic */
+        .address-radio:checked + .address-card-wrapper .address-card {
+            border-color: #22c55e;
+            background: #f0fdf4;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.15);
+        }
+        
+        .check-circle {
+            color: #d1d5db;
+            font-size: 1.4rem;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+        .address-radio:checked + .address-card-wrapper .check-circle {
+            color: #22c55e;
+            transform: scale(1.1);
         }
 
-        .form-label {
-            font-size: 0.82rem;
+        .address-name {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1rem;
+        }
+        .address-text {
+            font-size: 0.85rem;
+            color: #4b5563;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .address-phone {
+            font-size: 0.85rem;
             font-weight: 500;
             color: #374151;
-        }
-        .form-control, .form-select {
-            font-size: 0.86rem;
-            border-radius: 10px;
-            transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #22c55e;
-            box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
-            background-color: #ffffff;
+            margin-top: auto;
         }
 
         .btn-link-sm {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             padding: 0;
             border: none;
             background: transparent;
             color: #2563eb;
+            text-decoration: none;
         }
         .btn-link-sm:hover {
             text-decoration: underline;
             color: #1d4ed8;
         }
 
+        /* Redirect Button for New Address */
+        .btn-add-address {
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+            color: #4b5563;
+            border-radius: 14px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .btn-add-address:hover {
+            border-color: #22c55e;
+            color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        /* Buttons */
         .btn-next-step {
             background: #22c55e;
             border-radius: 999px;
             border: none;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #0f172a;
-            padding-inline: 26px;
+            padding: 10px 28px;
             transition: all 0.2s ease-out;
         }
         .btn-next-step:hover {
@@ -236,27 +333,17 @@
         .btn-back-cart {
             border-radius: 999px;
             border: 1px solid #d1d5db;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #374151;
             background: #f9fafb;
+            padding: 10px 24px;
             transition: all 0.18s ease-out;
+            text-decoration: none;
         }
         .btn-back-cart:hover {
             background: #ffffff;
             border-color: #9ca3af;
-        }
-
-        /* Pure CSS Toggle for New Address - NO JAVASCRIPT REQUIRED */
-        .new-address-wrapper {
-            display: none;
-            animation: fadeInDown 0.3s ease forwards;
-        }
-        body:has(#optNew:checked) .new-address-wrapper {
-            display: block;
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            color: #111827;
         }
 
         footer {
@@ -272,9 +359,38 @@
             color: #f9fafb;
         }
 
+        /* ===== MOBILE RESPONSIVE FIXES ===== */
         @media (max-width: 991.98px) {
             .navbar-brand { margin-left: -20px; }
-            .navbar-brand img { width: 180px; }
+            .navbar-brand img { width: 180px; height: auto; }
+        }
+
+        @media (max-width: 575.98px) {
+            .navbar-brand { margin-left: -10px; }
+            .navbar-brand img { width: 150px; }
+            .checkout-title { font-size: 1.4rem; }
+            .checkout-subtitle { font-size: 0.85rem; }
+            .checkout-card { padding: 16px !important; border-radius: 14px; }
+            
+            .address-card { padding: 14px 16px; }
+            .address-name { font-size: 0.95rem; }
+            .check-circle { font-size: 1.2rem; }
+            
+            .action-buttons-wrapper {
+                flex-direction: column-reverse;
+                align-items: stretch !important;
+            }
+            .btn-next-step, .btn-back-cart {
+                width: 100%;
+                text-align: center;
+            }
+
+            .floating-alert-container {
+                right: 8px;
+                left: 8px;
+                max-width: 100%;
+                top: 76px;
+            }
         }
     </style>
 </head>
@@ -296,12 +412,11 @@
                 <li class="nav-item">
                     <a class="nav-link fw-semibold special-hover" href="{% url 'home' %}">Home</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link fw-semibold special-hover" href="{% url 'products' %}">Products</a>
                 </li>
 
-                <!-- Profile dropdown (icon) -->
+                <!-- Profile dropdown -->
                 <li class="nav-item dropdown ms-3">
                     <a class="btn btn-outline-secondary border-0 dropdown-toggle fw-semibold text-light"
                        href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -311,7 +426,6 @@
                             <i class="bi bi-person-circle fs-5"></i>
                         {% endif %}
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuDropdown">
                         {% if request.user.is_authenticated %}
                         <li>
@@ -346,17 +460,41 @@
                 </li>
             </ul>
 
-            <!-- Wishlist -->
+            <!-- Wishlist & Cart -->
             <a class="btn icon-btn fw-semibold ms-3" href="{% url 'wishlist' %}">
                 <i class="bi bi-heart"></i>
             </a>
-            <!-- Cart -->
             <a class="btn icon-btn fw-semibold ms-2" href="{% url 'cart' %}">
                 <i class="bi bi-cart"></i>
             </a>
         </div>
     </div>
 </nav>
+
+{% if messages %}
+    <div class="floating-alert-container">
+        {% for message in messages %}
+            <div class="alert alert-dismissible fade show floating-alert alert-{{ message.tags }}" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="alert-icon">
+                        {% if message.tags == 'success' %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}
+                            <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill text-primary"></i>
+                        {% endif %}
+                    </div>
+                    <div>{{ message }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-progress"></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <!-- CHECKOUT HEADER -->
 <section class="checkout-header">
@@ -371,7 +509,7 @@
                     Step 1 of 2 · Delivery details → Payment
                 </p>
             </div>
-            <div class="text-end">
+            <div class="text-end d-none d-md-block">
                 <span class="badge bg-light text-dark me-1" style="font-size:0.75rem;">
                     <i class="bi bi-lock-fill me-1 text-success"></i> Payment is completed on the next step
                 </span>
@@ -384,115 +522,82 @@
 <section class="pb-4">
     <div class="container checkout-layout">
         
-        <!-- Form completely wraps the address selection and submit button -->
+        <!-- Main Form wrapper -->
         <form method="POST" action="">
             {% csrf_token %}
             
-            <!-- Address choice + form -->
             <div class="checkout-card p-3 p-md-4 mb-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-start align-items-md-center mb-4 flex-column flex-md-row gap-2">
                     <div>
-                        <div class="section-heading">Delivery address</div>
-                        <div class="section-caption">
-                            Use the address saved in your profile or enter a new address for this order.
+                        <div class="section-heading">Delivery Address</div>
+                        <div class="section-caption mt-1">
+                            Select an address below or add a new one for this order.
                         </div>
                     </div>
-                    <a href="{% url 'profile' %}" class="btn-link-sm">
-                        <i class="bi bi-person-lines-fill me-1"></i>View in profile
+                    <a href="{% url 'profile' %}" class="btn-link-sm fw-medium">
+                        <i class="bi bi-gear me-1"></i>Manage in profile
                     </a>
                 </div>
 
-                <!-- Option 1: profile address (default) -->
-                {% if address_list %}
-                    {% for a in address_list %}
-                        <div class="mb-3">
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="addressMode" id="optProfile_{{ forloop.counter }}" value="{{ a.id }}" {% if forloop.first %}checked{% endif %}>
-                                <label class="form-check-label fw-semibold" for="optProfile_{{ forloop.counter }}" style="font-size:0.85rem;">
-                                    Use profile address
-                                </label>
-                            </div>
-
-                            <div class="profile-address-card">
-                                <div class="profile-address-header">
-                                    <div>
-                                        <div class="profile-address-name">{{a.full_name}}</div>
-                                        <div class="profile-address-meta">
-                                            {{a.mobile_number}} · {{request.user.email}}
+                <!-- Saved Addresses & Add New Address Container -->
+                <div class="row align-items-stretch">
+                    
+                    {% if address_list %}
+                        {% for a in address_list %}
+                        <div class="col-12 col-md-6 mb-3">
+                            <input type="radio" name="addressMode" id="address_{{ forloop.counter }}" value="{{ a.id }}" class="address-radio d-none" {% if forloop.first %}checked{% endif %} required>
+                            
+                            <label class="address-card-wrapper w-100 h-100 m-0" for="address_{{ forloop.counter }}">
+                                <div class="address-card">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="address-name mb-0">{{ a.full_name }} 
+                                            {% if forloop.first %}
+                                            <span class="badge bg-success-subtle text-success ms-1 align-middle" style="font-size: 0.65rem; font-weight: 600;">Default</span>
+                                            {% endif %}
+                                        </h6>
+                                        <div class="check-circle ms-2">
+                                            <i class="bi bi-check-circle-fill"></i>
                                         </div>
                                     </div>
-                                    <span class="badge bg-success-subtle text-success" style="font-size:0.7rem;">Profile address</span>
+                                    <div class="address-text">
+                                        {{ a.flat }}, {{ a.area }}<br>
+                                        {% if a.landmark %}{{ a.landmark }},<br>{% endif %}
+                                        {{ a.city }}, {{ a.state }} - {{ a.pincode }}
+                                    </div>
+                                    <div class="address-phone">
+                                        <i class="bi bi-telephone text-muted me-1"></i>+91 {{ a.mobile_number }}
+                                    </div>
                                 </div>
-                                <div style="font-size:0.8rem;">
-                                    {{a.flat}}, {{a.area}}, {{a.landmark}}, {{a.city}}, {{a.state}} - {{a.pincode}}
-                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 mb-3">
+                            <div class="alert alert-light border text-center p-4 rounded-3 text-muted">
+                                <i class="bi bi-geo-alt fs-2 d-block mb-2"></i>
+                                You don't have any saved addresses yet.
                             </div>
                         </div>
-                    {% endfor %}
-                {% endif %}
-                <hr class="my-3">
-
-                <!-- Option 2: new address -->
-                <div class="mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="addressMode" id="optNew" value="new" {% if not address_list %}checked{% endif %}>
-                        <label class="form-check-label fw-semibold" for="optNew" style="font-size:0.85rem;">
-                            Use a new address for this order
-                        </label>
+                    {% endif %}
+                    
+                    <!-- Dedicated "Add New Address" Button Card -->
+                    <div class="col-12 col-md-6 mb-3">
+                        <a href="{% url 'add_address' %}" class="btn-add-address w-100 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none p-4">
+                            <i class="bi bi-plus-circle fs-2 mb-2 text-success"></i>
+                            <span class="fw-semibold">Add a new address</span>
+                        </a>
                     </div>
-                </div>
 
-                <!-- New address form controlled by pure CSS :has() logic -->
-                <div class="new-address-wrapper mt-3">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Full name</label>
-                            {{form.full_name}}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Mobile number</label>
-                            {{form.mobile_number}}
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Flat</label>
-                            {{form.flat}}
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Area</label>
-                            {{form.area}}
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Landmark (optional)</label>
-                            {{form.landmark}}
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Pincode</label>
-                            {{form.pincode}}
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">City</label>
-                            {{form.city}}
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">State</label>
-                            {{form.state}}
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Order notes (optional)</label>
-                            <textarea name="order_notes" class="form-control" rows="3"
-                                      placeholder="Add delivery instructions or preferences for the delivery partner."></textarea>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             <!-- Actions -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
-                <a href="{% url 'cart' %}" class="btn btn-back-cart px-4 py-2">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4 action-buttons-wrapper">
+                <a href="{% url 'cart' %}" class="btn btn-back-cart">
                     <i class="bi bi-arrow-left me-1"></i> Back to cart
                 </a>
-                <button type="submit" class="btn btn-next-step py-2">
-                    Continue to payment
+                <button type="submit" class="btn btn-next-step">
+                    Continue to payment <i class="bi bi-arrow-right ms-1"></i>
                 </button>
             </div>
             
@@ -501,7 +606,7 @@
 </section>
 
 <!-- FOOTER -->
-<footer class="pt-4 mt-4">
+<footer class="pt-4 mt-5">
     <div class="container pb-3">
         <div class="row g-4">
             <div class="col-md-4">

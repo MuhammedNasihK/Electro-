@@ -1,10 +1,12 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.contrib import messages
 from .decorators import admin_login_required
 from django.views.decorators.cache import never_cache
 from django.db.models import Q
 from .forms import *
+from .models import *
 import random
 
 User = get_user_model()
@@ -15,7 +17,21 @@ def admin_dashboard(request):
     if 'admin_id' in request.session:
         admin_data = User.objects.get(id = request.session['admin_id'])
 
-    return render(request,'admin dashboard.html',{'admin_data':admin_data})
+    today_date = timezone.now()
+
+    user_count = User.objects.filter(is_superuser=False,is_staff=False).count()
+
+    new_users_this_month = User.objects.filter(is_superuser = False,is_staff=False,created_date__year = today_date.year,created_date__month = today_date.month).count()
+    total_products = ProductVariant.objects.count()
+    low_stock_products = ProductVariant.objects.filter(is_active=True,stock__lte=5).select_related('product','product__category','product__brand')
+    context = {
+        'admin_data': admin_data,
+        'user_count' : user_count,
+        'new_users_this_month' : new_users_this_month,
+        'total_products' : total_products,
+        'low_stock_products' :low_stock_products
+    }
+    return render(request,'admin dashboard.html',context)
 
 @never_cache
 @admin_login_required
