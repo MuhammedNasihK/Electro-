@@ -70,3 +70,29 @@ class Orders(models.Model):
     def __str__(self):
         return f"{self.user.username}-{self.city}"
 
+
+
+class Order(models.Model):
+    STATUS_CHOICE = (
+        ('Pending','Pending'),
+        ('Shipped','Shipped'),
+        ('Delivered','Delivered'),
+        ('Cancelled','Cancelled')
+    )
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+
+    # Address -->
+
+    full_name = models.CharField(max_length=250)
+    mobile_number = models.CharField(max_length=14)
+    pincode = models.CharField(max_length=10)
+    flat = models.CharField(max_length=250,verbose_name="Flat, House no., Building, Company, Apartment")
+    area = models.CharField(max_length=250,verbose_name="Area, Street, Sector, Village")
+    landmark = models.CharField(max_length=250,blank=True,null=True)
+    city = models.CharField(max_length=250,verbose_name='Town/City')
+    state = models.CharField(max_length=100)
+
+    total_amount = models.DecimalField(max_digits=12,decimal_places=2)
+    status = models.CharField(choices=STATUS_CHOICE,default='Pending')
+    created_time = models.DateTimeField(auto_now_add=True)
