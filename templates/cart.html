@@ -523,11 +523,9 @@
                                         <div class="col-6 col-md-2 mt-2 mt-md-0">
                                             <div class="mb-1" style="font-size: 0.75rem; color: #6b7280; font-weight: 500; padding-left: 8px;">Qty</div>
                                             <select class="form-select form-select-sm qty-input">
-                                                <option value="1" selected>1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
+                                                {%for i in p.stock%}
+                                                    <option value={{i}}>{{i}}</option>
+                                                {%endfor%}
                                             </select>
                                         </div>
                                         
@@ -603,9 +601,12 @@
                             You will save <span class="text-success fw-semibold">₹{{total_discount|intcomma}}</span> on this order compared to MRP.
                         </p>
 
-                        <button class="btn btn-checkout w-100 mb-2 py-2" type="button" onclick="window.location.href=''">
-                            Proceed to checkout
-                        </button>
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <button class="btn btn-checkout w-100 mb-2 py-2" type="submit">
+                                Proceed to checkout
+                            </button>
+                        </form>
                         <a class="btn btn-continue w-100 text-center d-block py-2" href="{% url 'products' %}">
                             <i class="bi bi-arrow-left me-1"></i> Continue shopping
                         </a>

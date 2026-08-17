@@ -463,6 +463,8 @@ def cart(request):
     total_price = 0
     total_discount = 0
 
+
+
     product_details = []
     if request.user.is_authenticated:
         cart_objects = Cart.objects.filter(user=request.user).select_related('variant','variant__product','variant__product__category','variant__product__brand').prefetch_related('variant__attribute','variant__productimage_set')
@@ -478,6 +480,7 @@ def cart(request):
                 'category':c.variant.product.category.name,
                 'brand':c.variant.product.brand.name,
                 'price':c.variant.price,
+                'stock':range(1,6) if c.variant.stock > 5 else range(1,c.variant.stock + 1),
                 'discount_price':c.variant.discount_price,
                 'discount_percentage':c.variant.discount_percentage(),
                 'image':main_img.image.url if main_img else None
@@ -502,6 +505,7 @@ def cart(request):
             total_amount += price
 
     context = {
+        'user_details' : request.user,
         'product_details': product_details,
         'product_count': len(product_details),
         'total_price': total_price,
@@ -585,7 +589,7 @@ def orders(request):
 
 
 @login_required
-def checkout(request,variant_id):
+def checkout(request,user_id):
     user_address = Address.objects.filter(user = request.user)
 
     if request.method == 'POST':
@@ -620,6 +624,10 @@ def checkout(request,variant_id):
     }
 
     return render(request,'checkout.html',context)
+
+def buy_now_checkout(request,variant_id):
+    return render()
+
 
 def about(request):
     return render(request,'about.html')
